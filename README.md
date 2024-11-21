@@ -1,2 +1,6 @@
 # Color-Sensor
-Blank for now
+Name
+- Jeff Kim
+- David Mei
+- Dante Berouty
+- Jason Marquez
