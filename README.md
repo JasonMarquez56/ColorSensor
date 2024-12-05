@@ -1,10 +1,10 @@
 # Color-Sensor
 Name
-- Jeff Kim
-- David Mei
-- Dante Berouty
-- Jason Marquez
 
+    Jeff Kim
+    David Mei
+    Dante Berouty
+    Jason Marquez
 
 Makes use of the following softwares:
 
