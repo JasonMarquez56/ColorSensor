@@ -6,19 +6,19 @@ Name
     Dante Berouty
     Jason Marquez
 
-Makes use of the following softwares:
+All setups should be included in the project currently. If not, the current Java version is Java 21
 
-**Gradle** - I do not recall downloading, just install the VSCode extension
+In Tools > SDK Manager, make sure the following are installed
 
-**Java 21** - Set JAVA_HOME in User Variables of Environment Variables to the jdk-21 folder path. https://www.oracle.com/java/technologies/downloads/#java21
+**SDK Platforms** 
+Android 14.0 ("UpsideDownCake") API Level 34
+Android 15.0 ("UpsideDownCake") API Level 35
 
-**Kotlin Command Line Compiler Version 2.1.0** - Download the zip and extract it to a folder. Then set the path as listed: set "Path" to the bin folder of the compiler folder in environment variables for User Variables (possibly also for System Varaibles just to be safe if it is not being recognized in command prompt) https://github.com/JetBrains/kotlin/releases/tag/v2.1.0
+**SDK Tools**
+Android SDK Build-Tools 36-rc1
+Android SDK Command-line Tools (latest)
+Android Emulator
+Android Emulator hypervisor driver (installer)
+Android SDK Platform-Tools
 
-
-**Code is ran from command line. Ensure that you are in the Color-Sensor directory or gradle will not be recognized**
-
-For building and cleaning, use:
-
-"gradlew clean" and "gradlew build" or " gradlew clean build"
-
-To run the code, use "gradlew run"
+Current some files may be a bit outdated, but it is working. If issues are ran into, versions can be updated for build.gradle (app and root) and settings.gradle
