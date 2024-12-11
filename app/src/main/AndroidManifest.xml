@@ -33,6 +33,11 @@
             android:exported="true"
             android:theme="@style/Theme.ColorSensor" />
 
+        <activity
+            android:name=".HomeActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ColorSensor" />
+
     </application>
 
 </manifest>

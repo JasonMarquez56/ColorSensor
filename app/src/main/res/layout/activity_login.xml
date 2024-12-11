@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@android:color/white"
     android:gravity="center"
-    android:background="@android:color/white">
+    android:orientation="vertical">
 
     <!-- Logo -->
 
@@ -19,37 +18,38 @@
         android:contentDescription="App Logo"
         android:src="@drawable/logo_color_sensor" />
 
+    <!-- Register Button -->
+
     <Button
         android:id="@+id/login_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="40dp"
         android:layout_marginTop="20dp"
-        android:text="Login"
         android:backgroundTint="@color/black"
+        android:text="Login"
         android:textColor="@android:color/white" />
 
-    <!-- Register Button -->
     <Button
         android:id="@+id/register_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="40dp"
         android:layout_marginTop="10dp"
-        android:text="Register"
         android:backgroundTint="@android:color/white"
-        android:textColor="@color/black"
         android:strokeWidth="1.0"
-        android:strokeColor="@color/black" />
+        android:strokeColor="@color/black"
+        android:text="Register"
+        android:textColor="@color/black" />
 
     <!-- Continue as Guest -->
-    <TextView
-        android:id="@+id/continue_as_guest"
-        android:layout_width="wrap_content"
+
+    <Button
+        android:id="@+id/guest_button"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal"
-        android:text="Continue as guest"
-        android:textColor="@android:color/black" />
+        android:backgroundTint="@android:color/white"
+        android:text="Continue as Guest"
+        android:textColor="#000000" />
 
 </LinearLayout>

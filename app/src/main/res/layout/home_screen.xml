@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <Button
+        android:id="@+id/home_button"
+        android:layout_width="332dp"
+        android:layout_height="61dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="1dp"
+        android:backgroundTint="@android:color/white"
+        android:strokeWidth="1.0"
+        android:strokeColor="@color/black"
+        android:text="Home"
+        android:textColor="@color/black" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="128dp"
+        android:layout_height="105dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="43dp"
+        android:layout_marginBottom="130dp"
+        android:backgroundTint="#C6C48D"
+        android:text="Shop" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="138dp"
+        android:layout_height="105dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="49dp"
+        android:layout_marginEnd="224dp"
+        android:layout_marginBottom="130dp"
+        android:backgroundTint="#C69D8D"
+        android:text="Profile" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="wrap_content"
+        android:layout_height="109dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="262dp"
+        android:backgroundTint="#8DBBC6"
+        android:text="Live Color" />
+
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="136dp"
+        android:layout_height="108dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="226dp"
+        android:layout_marginBottom="263dp"
+        android:backgroundTint="#8DC6A2"
+        android:text="Find Color" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="290dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="441dp"
+        app:srcCompat="@drawable/color_photo_background" />
+
+</RelativeLayout>
