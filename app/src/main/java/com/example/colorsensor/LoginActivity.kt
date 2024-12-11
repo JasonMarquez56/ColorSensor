@@ -12,8 +12,17 @@ class LoginActivity : AppCompatActivity() {
 
         // Find the button by its ID
         val btnGoToHome = findViewById<Button>(R.id.guest_button)
+        val btnGoToLogin = findViewById<Button>(R.id.login_button)
 
-        // Set a click listener for the button
+        // Set a click listener for the Login button
+        btnGoToLogin.setOnClickListener {
+            // Navigate to LoginScreen
+            val intent = Intent(this, LoginScreen::class.java)
+            startActivity(intent)
+//            finish() // Finish SplashActivity to prevent going back
+        }
+
+        // Set a click listener for the Guest button
         btnGoToHome.setOnClickListener {
             // Navigate to HomeActivity
             val intent = Intent(this, HomeActivity::class.java)

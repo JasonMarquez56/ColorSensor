@@ -22,7 +22,7 @@
 
     <Button
         android:id="@+id/login_button"
-        android:layout_width="match_parent"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="40dp"
         android:layout_marginTop="20dp"
@@ -30,9 +30,11 @@
         android:text="Login"
         android:textColor="@android:color/white" />
 
+    <!-- Continue as Guest -->
+
     <Button
         android:id="@+id/register_button"
-        android:layout_width="match_parent"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="40dp"
         android:layout_marginTop="10dp"
@@ -42,11 +44,9 @@
         android:text="Register"
         android:textColor="@color/black" />
 
-    <!-- Continue as Guest -->
-
     <Button
         android:id="@+id/guest_button"
-        android:layout_width="match_parent"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:backgroundTint="@android:color/white"
         android:text="Continue as Guest"
