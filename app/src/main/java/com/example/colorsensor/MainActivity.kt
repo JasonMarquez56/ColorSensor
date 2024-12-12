@@ -13,15 +13,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
+import android.util.Log
+import com.google.firebase.FirebaseApp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Initialize Firebase
+        FirebaseApp.initializeApp(this)
+        Log.d("FirebaseInit", "Firebase has been initialized successfully")
+
         setContent {
             AppContent()
         }
     }
 }
+
 
 @Composable
 fun AppContent() {

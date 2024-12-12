@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -33,16 +34,23 @@
             android:exported="true"
             android:theme="@style/Theme.ColorSensor" />
 
+        <!-- Login Screen -->
         <activity
             android:name=".LoginScreen"
             android:exported="true"
             android:theme="@style/Theme.ColorSensor" />
 
+        <!-- Home Activity -->
         <activity
             android:name=".HomeActivity"
             android:exported="true"
             android:theme="@style/Theme.ColorSensor" />
 
-    </application>
+        <!-- Register Activity -->
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ColorSensor" />
 
+    </application>
 </manifest>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "129677896483",
+    "project_id": "colorsensor-9e711",
+    "storage_bucket": "colorsensor-9e711.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:129677896483:android:ef557e6d680e4d6dca3a96",
+        "android_client_info": {
+          "package_name": "com.example.colorsensor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkT1IbymvbMy3wuQQG0hSIB_9hGls3WeA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
