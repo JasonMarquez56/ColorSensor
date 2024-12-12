@@ -51,11 +51,24 @@ class LoginScreen : AppCompatActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
                     } else {
-                        // Successful login
-                        Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this, HomeActivity::class.java)
-                        startActivity(intent)
-                        finish() // Close LoginScreen
+                        // Successful login, store user data
+                        for (document in documents) {
+                            val username = document.getString("username")
+
+                            // Save username to SharedPreferences
+                            val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
+                            with(sharedPreferences.edit()) {
+                                putString("username", username)
+                                apply()
+                            }
+
+                            Toast.makeText(this, "Welcome back, $username!", Toast.LENGTH_SHORT).show()
+
+                            // Navigate to HomeActivity
+                            val intent = Intent(this, HomeActivity::class.java)
+                            startActivity(intent)
+                            finish() // Close LoginScreen
+                        }
                     }
                 }
                 .addOnFailureListener {

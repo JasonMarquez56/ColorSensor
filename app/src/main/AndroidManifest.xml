@@ -52,5 +52,11 @@
             android:exported="true"
             android:theme="@style/Theme.ColorSensor" />
 
+        <!-- Profile Activity -->
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ColorSensor" />
+
     </application>
 </manifest>
