@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
@@ -27,6 +28,7 @@ class RegisterActivity : AppCompatActivity() {
         val confirmPasswordField = findViewById<EditText>(R.id.confirmPasswordField)
         val registerButton = findViewById<Button>(R.id.registerButton)
         val loginLink = findViewById<TextView>(R.id.loginLink)
+        val backButton = findViewById<ImageButton>(R.id.backButton)
 
         // Handle Register button click
         registerButton.setOnClickListener {
@@ -70,8 +72,14 @@ class RegisterActivity : AppCompatActivity() {
 
         // Handle Login link click
         loginLink.setOnClickListener {
-            // Navigate back to LoginActivity
-            finish() // Close RegisterActivity and return to LoginActivity
+            val intent = Intent(this, LoginScreen::class.java)
+            startActivity(intent)
+        }
+
+        // Handle Back button click
+        backButton.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
         }
     }
 }
