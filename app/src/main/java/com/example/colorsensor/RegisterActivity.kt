@@ -47,7 +47,12 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.makeText(this, "Passwords do not match.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
+            val passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$"
+            val regex = Regex(passwordRegex)
+            if(!regex.matches(password)){
+                Toast.makeText(this, "Password must be at least 8 characters and contains one of each lowercase,Uppercase, and a number .", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             // Add user to Firestore
             val user = hashMapOf(
                 "username" to username,
