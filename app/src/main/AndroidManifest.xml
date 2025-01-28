@@ -58,5 +58,11 @@
             android:exported="true"
             android:theme="@style/Theme.ColorSensor" />
 
+        <!-- Photo Activity -->
+        <activity
+            android:name=".PhotoActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ColorSensor" />
+
     </application>
 </manifest>
