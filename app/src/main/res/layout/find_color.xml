@@ -6,55 +6,70 @@
     android:layout_height="match_parent"
     android:background="#30545E">
 
-    <Button
-        android:id="@+id/home_button2"
-        android:layout_width="404dp"
-        android:layout_height="91dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="@android:color/white"
-        android:strokeColor="@color/black"
-        android:text="Home"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        app:itemIconTint="@color/white"
+        app:itemRippleColor="@color/white"
+        app:itemTextColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.428"
         app:layout_constraintStart_toStartOf="parent"
-        app:strokeWidth="2dp" />
+        app:menu="@menu/bottom_nav" />
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="158dp"
-        android:layout_height="143dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="244dp"
-        android:layout_marginEnd="36dp"
-        android:backgroundTint="#8DBBC6"
-        android:text="Upload Photo"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        app:cornerRadius="25dp"
+    <FrameLayout
+        android:id="@+id/frameLayout2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="158dp"
-        android:layout_height="143dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="244dp"
-        android:backgroundTint="#8DC6A2"
-        android:text="Camera"
-        android:textAllCaps="false"
+        android:id="@+id/photoButton3"
+        android:layout_width="128dp"
+        android:layout_height="116dp"
+        android:backgroundTint="#8DBBC6"
+        android:drawableTop="@drawable/upload"
+        android:paddingLeft="0dp"
+        android:paddingTop="16dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="16dp"
+        android:text="Upload"
         android:textColor="@color/black"
-        app:cornerRadius="25dp"
+        android:textStyle="bold"
+        app:iconPadding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/photoButton2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.288"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <Button
+        android:id="@+id/photoButton2"
+        android:layout_width="128dp"
+        android:layout_height="116dp"
+        android:backgroundTint="#8DC6A2"
+        android:drawableTop="@drawable/camera_outline"
+        android:paddingLeft="0dp"
+        android:paddingTop="16dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="16dp"
+        android:text="Camera"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:iconPadding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/photoButton3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.288"
+        app:layout_constraintWidth_percent="0.85" />
 
     <ImageButton
         android:id="@+id/backButton"
@@ -94,4 +109,5 @@
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
