@@ -25,6 +25,11 @@ class HomeActivity : AppCompatActivity() {
             val intent = Intent(this, ProfileActivity::class.java)
             startActivity(intent)
         }
+        val colorbuttonTest = findViewById<Button>(R.id.videoButton) // find color
+        colorbuttonTest.setOnClickListener {
+            val intent = Intent(this, FindColorActivity::class.java) // Renamed CameraActivity
+            startActivity(intent)
+        }
 
     }
 }

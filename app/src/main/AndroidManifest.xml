@@ -69,5 +69,10 @@
             android:exported="true"
             android:theme="@style/Theme.ColorSensor" />
 
+        <activity
+            android:name=".FindColorActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ColorSensor" />
+
     </application>
 </manifest>
