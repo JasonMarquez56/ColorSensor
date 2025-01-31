@@ -7,24 +7,43 @@
 
     <View
         android:id="@+id/viewColor"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="186dp"
+        android:layout_height="204dp"
         android:background="#8DC6A2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.149"
+        app:layout_constraintHorizontal_bias="0.061"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.116" />
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="450dp"
-        android:layout_height="658dp"
+        android:layout_width="459dp"
+        android:layout_height="250dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/colorsensor_home_banner" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="181dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="84dp"
+        android:text="Hex:"
+        app:layout_constraintStart_toEndOf="@+id/viewColor"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="181dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="24dp"
+        android:text="RGB: "
+        app:layout_constraintStart_toEndOf="@+id/viewColor"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

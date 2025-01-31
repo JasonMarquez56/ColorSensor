@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import java.lang.String
 
 class FindColorActivity : AppCompatActivity() {
 
@@ -17,6 +19,16 @@ class FindColorActivity : AppCompatActivity() {
     private val viewColor: View by lazy{
         findViewById(R.id.viewColor)
     }
+
+    private val textHex: TextView by lazy{
+        findViewById(R.id.textView)
+    }
+
+    private val textRGB: TextView by lazy{
+        findViewById(R.id.textView2)
+    }
+
+    //val textViewHex = findViewById<TextView>(R.id.textView) // TextView to show the hex color
 
     private lateinit var bitmap: Bitmap
 
@@ -56,6 +68,11 @@ class FindColorActivity : AppCompatActivity() {
                     val alpha = Color.alpha(pixel)
 
                     viewColor.setBackgroundColor(Color.argb(alpha, red, green, blue))
+                    val hex = String.format("#%02X%02X%02X%02X", alpha, red, green, blue)
+                    val rgb = String.format("rgb(%d, %d, %d)", red, green, blue)
+                    textHex.text = "Hex: " + hex
+                    textRGB.text = "RGB: " + rgb
+
                 }
             }
             true
