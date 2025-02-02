@@ -62,6 +62,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview:1.5.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
     implementation("androidx.activity:activity-compose:1.7.2")
+    implementation(libs.androidx.core.splashscreen)
 
     // Debugging and Testing
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.0")

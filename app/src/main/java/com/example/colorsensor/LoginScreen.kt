@@ -86,8 +86,7 @@ class LoginScreen : AppCompatActivity() {
 
         // Handle Back button click
         backButton.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
+            onBackPressed()
         }
     }
 }

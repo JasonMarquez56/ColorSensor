@@ -11,26 +11,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ColorSensor">
 
-        <!-- Splash Activity -->
+        <!-- Main Activity with SplashScreen theme -->
         <activity
-            android:name=".SplashActivity"
+            android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.ColorSensor.Splash">
+            android:theme="@style/Theme.App.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- Main Activity -->
+        <!-- Landing Activity -->
         <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.ColorSensor" />
-
-        <!-- Login Activity -->
-        <activity
-            android:name=".LoginActivity"
+            android:name=".LandingActivity"
             android:exported="true"
             android:theme="@style/Theme.ColorSensor" />
 

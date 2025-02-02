@@ -40,7 +40,7 @@ class ProfileActivity : AppCompatActivity() {
             sharedPreferences.edit().clear().apply()
 
             // Redirect to LoginActivity
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, LandingActivity::class.java)
             startActivity(intent)
             finish() // Close ProfileActivity
         }

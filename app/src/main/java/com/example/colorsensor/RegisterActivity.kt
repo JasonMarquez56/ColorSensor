@@ -83,7 +83,7 @@ class RegisterActivity : AppCompatActivity() {
 
         // Handle Back button click
         backButton.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, LandingActivity::class.java)
             startActivity(intent)
         }
     }
