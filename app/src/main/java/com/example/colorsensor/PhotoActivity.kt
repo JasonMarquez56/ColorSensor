@@ -1,10 +1,13 @@
 package com.example.colorsensor
 
 import android.content.Intent
-import android.graphics.Camera
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
+import android.view.View
 import android.widget.Button
-import android.widget.ImageButton
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
 import androidx.appcompat.app.AppCompatActivity
 
 class PhotoActivity : AppCompatActivity() {
@@ -12,17 +15,26 @@ class PhotoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.find_color) // Ensure the correct layout file is referenced here
 
-        val backButton = findViewById<ImageButton>(R.id.backButton)
+        // val cameraButton = findViewById<Button>(R.id.cameraButton) // find color
+        val takePhoto = findViewById<Button>(R.id.cameraButton)
 
-        // Handle Back button click
-        backButton.setOnClickListener {
-            finish() // Go back to the previous activity
-        }
+        activityResultLauncher = registerForActivityResult<Intent, ActivityResult>(
+            StartActivityForResult(),
+            object : ActivityResultCallback<ActivityResult?> {
+                override fun onActivityResult(result: ActivityResult) {
+                    if (result.resultCode == RESULT_OK && result.data != null) {
+                        val bundle = result.data!!.extras
+                        val bitmap = bundle!!["data"] as Bitmap?
+                        imageProfile.setImageBitmap(bitmap)
+                    }
+                }
+            })
 
-        val canerabutton = findViewById<Button>(R.id.button) // find color
-        canerabutton.setOnClickListener {
-            val intent = Intent(this, CameraActivity::class.java) // Renamed CameraActivity
-            startActivity(intent)
-        }
+        takePhoto.setOnClickListener(View.OnClickListener {
+            val intent = Intent((MediaStore.ACTION_IMAGE_CAPTURE))
+            if (intent.resolveActivity(packageManager) != null) {
+                startActivity(intent)
+            }
+        })
     }
 }
