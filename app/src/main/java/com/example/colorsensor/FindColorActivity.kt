@@ -106,19 +106,54 @@ class FindColorActivity : AppCompatActivity() {
                     textHex.text = "Hex: #${Integer.toHexString(pixel).uppercase()}"
                     textRGB.text = "RGB: ($red, $green, $blue)"
 
-                    val hex = "rgb($red, $green, $blue)"
+                    val targetRed = red
+                    val targetGreen = green
+                    val targetBlue = blue
 
                     firestore = FirebaseFirestore.getInstance()
                     firestore.collection("paints")
-                        .whereEqualTo("hex", hex)
                         .get()
                         .addOnSuccessListener { documents ->
+                            var closestColorName: String? = null
+                            var closestColorDistance = Double.MAX_VALUE
+                            var closestColorHex: String? = null
+
                             if (documents.isEmpty) {
                                 textName.text = "Color not found"
                             } else {
                                 for (document in documents) {
-                                    val colorname = document.getString("name")
-                                    textName.text = colorname
+                                    val colorName = document.getString("name")
+                                    val colorHex = document.getString("hex")
+
+                                    // Assuming colorHex is in the format "rgb(red, green, blue)"
+                                    val regex = Regex("rgb\\((\\d+), (\\d+), (\\d+)\\)")
+                                    val matchResult = regex.find(colorHex ?: "")
+                                    if (matchResult != null) {
+                                        val dbRed = matchResult.groupValues[1].toInt()
+                                        val dbGreen = matchResult.groupValues[2].toInt()
+                                        val dbBlue = matchResult.groupValues[3].toInt()
+
+                                        // Calculate Euclidean distance between the target color and the database color
+                                        val distance = Math.sqrt(
+                                            Math.pow((targetRed - dbRed).toDouble(), 2.0) +
+                                                    Math.pow((targetGreen - dbGreen).toDouble(), 2.0) +
+                                                    Math.pow((targetBlue - dbBlue).toDouble(), 2.0)
+                                        )
+
+                                        // If the current color is closer, update the closest color
+                                        if (distance < closestColorDistance) {
+                                            closestColorDistance = distance
+                                            closestColorName = colorName
+                                            closestColorHex = colorHex
+                                        }
+                                    }
+                                }
+
+                                // Display the closest color name or "Color not found" if no match
+                                if (closestColorName != null) {
+                                    textName.text = "Closest color: $closestColorName \n($closestColorHex)"
+                                } else {
+                                    textName.text = "Color not found"
                                 }
                             }
                         }

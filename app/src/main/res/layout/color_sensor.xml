@@ -29,25 +29,6 @@
         app:srcCompat="@drawable/colorsensor_home_banner" />
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="181dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="84dp"
-        android:text="Hex:"
-        app:layout_constraintStart_toEndOf="@+id/viewColor"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="181dp"
-        android:layout_height="31dp"
-        android:layout_marginStart="24dp"
-        android:text="RGB: "
-        app:layout_constraintStart_toEndOf="@+id/viewColor"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-    <TextView
         android:id="@+id/textView3"
         android:layout_width="126dp"
         android:layout_height="38dp"
@@ -128,12 +109,32 @@
 
     <TextView
         android:id="@+id/textView8"
-        android:layout_width="176dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="24dp"
+        android:layout_width="204dp"
+        android:layout_height="72dp"
+        android:layout_marginStart="4dp"
         android:layout_marginBottom="4dp"
         android:text="TextView"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintStart_toEndOf="@+id/viewColor" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="181dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="12dp"
+        android:text="RGB: "
+        app:layout_constraintStart_toEndOf="@+id/viewColor"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="202dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="144dp"
+        android:text="Hex:"
+        app:layout_constraintStart_toEndOf="@+id/viewColor"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
