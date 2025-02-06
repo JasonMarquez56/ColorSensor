@@ -15,24 +15,19 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import java.io.IOException
+import com.google.firebase.firestore.FirebaseFirestore
 
 class FindColorActivity : AppCompatActivity() {
 
     private lateinit var bitmap: Bitmap
+    private lateinit var firestore: FirebaseFirestore
+
 
     private val imageView: ImageView by lazy { findViewById(R.id.imageView) }
     private val viewColor: View by lazy { findViewById(R.id.viewColor) }
-    private val viewColor2: View by lazy { findViewById(R.id.viewColor2) }
-    private val viewColor3: View by lazy { findViewById(R.id.viewColor3) }
-    private val viewColor4: View by lazy { findViewById(R.id.viewColor4) }
-    private val viewColor5: View by lazy { findViewById(R.id.viewColor5) }
-    private val viewColor6: View by lazy { findViewById(R.id.viewColor6) }
-    private val viewColor7: View by lazy { findViewById(R.id.viewColor7) }
-    private val viewColor8: View by lazy { findViewById(R.id.viewColor8) }
-    private val viewColor9: View by lazy { findViewById(R.id.viewColor9) }
-    private val viewColor10: View by lazy { findViewById(R.id.viewColor10) }
     private val textHex: TextView by lazy { findViewById(R.id.textView) }
     private val textRGB: TextView by lazy { findViewById(R.id.textView2) }
+    private val textName: TextView by lazy { findViewById(R.id.textView8) }
 
     private var xRatioForBitmap = 1f
     private var yRatioForBitmap = 1f
@@ -110,6 +105,23 @@ class FindColorActivity : AppCompatActivity() {
                     }
                     textHex.text = "Hex: #${Integer.toHexString(pixel).uppercase()}"
                     textRGB.text = "RGB: ($red, $green, $blue)"
+
+                    val hex = "rgb($red, $green, $blue)"
+
+                    firestore = FirebaseFirestore.getInstance()
+                    firestore.collection("paints")
+                        .whereEqualTo("hex", hex)
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            if (documents.isEmpty) {
+                                textName.text = "Color not found"
+                            } else {
+                                for (document in documents) {
+                                    val colorname = document.getString("name")
+                                    textName.text = colorname
+                                }
+                            }
+                        }
                 }
             }
             true
