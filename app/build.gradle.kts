@@ -64,6 +64,11 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.7.2")
     implementation(libs.androidx.core.splashscreen)
 
+    // Google Play
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.4.3")
+
+
     // Debugging and Testing
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.0")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.0")
