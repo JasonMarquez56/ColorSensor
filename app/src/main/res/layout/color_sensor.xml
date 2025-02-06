@@ -53,14 +53,14 @@
 
         <View
             android:id="@+id/viewColor6"
-            android:layout_width="41dp"
+            android:layout_width="40dp"
             android:layout_height="39dp"
             android:background ="@drawable/border"
             />
 
         <View
             android:id="@+id/viewColor5"
-            android:layout_width="35dp"
+            android:layout_width="40dp"
             android:layout_height="39dp"
             android:background ="@drawable/border" />
 
