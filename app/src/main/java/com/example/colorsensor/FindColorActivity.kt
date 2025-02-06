@@ -16,6 +16,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import java.io.IOException
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Timer
 
 class FindColorActivity : AppCompatActivity() {
 
@@ -70,122 +71,130 @@ class FindColorActivity : AppCompatActivity() {
         }
 
         // Set touch listener for color detection
-        imageView.setOnTouchListener { _, motionEvent ->
-            if (this::bitmap.isInitialized && motionEvent.action == MotionEvent.ACTION_DOWN ||
-                motionEvent.action == MotionEvent.ACTION_MOVE ||
-                motionEvent.action == MotionEvent.ACTION_UP) {
 
-                val touchXtoBitmap = motionEvent.x * xRatioForBitmap
-                val touchYtoBitmap = motionEvent.y * yRatioForBitmap
+        Timer().schedule(timerTask, 2000) {
+            imageView.setOnTouchListener { _, motionEvent ->
+                if (this::bitmap.isInitialized && motionEvent.action == MotionEvent.ACTION_DOWN ||
+                    motionEvent.action == MotionEvent.ACTION_MOVE ||
+                    motionEvent.action == MotionEvent.ACTION_UP
+                ) {
 
-                if (touchXtoBitmap in 0f..bitmap.width.toFloat() &&
-                    touchYtoBitmap in 0f..bitmap.height.toFloat()) {
+                    val touchXtoBitmap = motionEvent.x * xRatioForBitmap
+                    val touchYtoBitmap = motionEvent.y * yRatioForBitmap
 
-                    try {
+                    if (touchXtoBitmap in 0f..bitmap.width.toFloat() &&
+                        touchYtoBitmap in 0f..bitmap.height.toFloat()
+                    ) {
 
-                        val pixel = bitmap.getPixel(touchXtoBitmap.toInt(), touchYtoBitmap.toInt())
+                        try {
 
-                        val red = Color.red(pixel)
-                        val green = Color.green(pixel)
-                        val blue = Color.blue(pixel)
-                        val alpha = Color.alpha(pixel)
+                            val pixel =
+                                bitmap.getPixel(touchXtoBitmap.toInt(), touchYtoBitmap.toInt())
 
-                        viewColor.setBackgroundColor(Color.argb(alpha, red, green, blue))
+                            val red = Color.red(pixel)
+                            val green = Color.green(pixel)
+                            val blue = Color.blue(pixel)
+                            val alpha = Color.alpha(pixel)
 
-                        var step = 15 // Adjust this value to control the lightening effect
-                        for (i in 2..6) { // Loop through viewColor2 to viewColor10
-                            val newRed = Math.max(0, red - (i - 2) * step)
-                            val newGreen = Math.max(0, green - (i - 2) * step)
-                            val newBlue = Math.max(0, blue - (i - 2) * step)
+                            viewColor.setBackgroundColor(Color.argb(alpha, red, green, blue))
 
-                            val color = Color.argb(alpha, newRed, newGreen, newBlue)
+                            var step = 15 // Adjust this value to control the lightening effect
+                            for (i in 2..6) { // Loop through viewColor2 to viewColor10
+                                val newRed = Math.max(0, red - (i - 2) * step)
+                                val newGreen = Math.max(0, green - (i - 2) * step)
+                                val newBlue = Math.max(0, blue - (i - 2) * step)
+
+                                val color = Color.argb(alpha, newRed, newGreen, newBlue)
 
 
-                            // Set background color dynamically
-                            val resID = resources.getIdentifier("viewColor$i", "id", packageName)
-                            val childView = findViewById<View>(resID)
-                            childView?.setBackgroundColor(color)
-                        }
-                        step = 5
-                        for (i in 7..10) { // Loop through viewColor2 to viewColor10
-                            val newRed = Math.min(255, red + (i - 2) * step)
-                            val newGreen = Math.min(255, green + (i - 2) * step)
-                            val newBlue = Math.min(255, blue + (i - 2) * step)
+                                // Set background color dynamically
+                                val resID =
+                                    resources.getIdentifier("viewColor$i", "id", packageName)
+                                val childView = findViewById<View>(resID)
+                                childView?.setBackgroundColor(color)
+                            }
+                            step = 5
+                            for (i in 7..10) { // Loop through viewColor2 to viewColor10
+                                val newRed = Math.min(255, red + (i - 2) * step)
+                                val newGreen = Math.min(255, green + (i - 2) * step)
+                                val newBlue = Math.min(255, blue + (i - 2) * step)
 
-                            val color = Color.argb(alpha, newRed, newGreen, newBlue)
+                                val color = Color.argb(alpha, newRed, newGreen, newBlue)
 
-                            // Set background color dynamically
-                            val resID = resources.getIdentifier("viewColor$i", "id", packageName)
-                            val childView = findViewById<View>(resID)
-                            childView?.setBackgroundColor(color)
-                        }
-                        textHex.text = "Hex: #${Integer.toHexString(pixel).uppercase()}"
-                        textRGB.text = "RGB: ($red, $green, $blue)"
+                                // Set background color dynamically
+                                val resID =
+                                    resources.getIdentifier("viewColor$i", "id", packageName)
+                                val childView = findViewById<View>(resID)
+                                childView?.setBackgroundColor(color)
+                            }
+                            textHex.text = "Hex: #${Integer.toHexString(pixel).uppercase()}"
+                            textRGB.text = "RGB: ($red, $green, $blue)"
 
-                        val targetRed = red
-                        val targetGreen = green
-                        val targetBlue = blue
+                            val targetRed = red
+                            val targetGreen = green
+                            val targetBlue = blue
 
-                        firestore = FirebaseFirestore.getInstance()
-                        firestore.collection("paints")
-                            .get()
-                            .addOnSuccessListener { documents ->
-                                var closestColorName: String? = null
-                                var closestColorDistance = Double.MAX_VALUE
-                                var closestColorHex: String? = null
+                            firestore = FirebaseFirestore.getInstance()
+                            firestore.collection("paints")
+                                .get()
+                                .addOnSuccessListener { documents ->
+                                    var closestColorName: String? = null
+                                    var closestColorDistance = Double.MAX_VALUE
+                                    var closestColorHex: String? = null
 
-                                if (documents.isEmpty) {
-                                    textName.text = "Color not found"
-                                } else {
-                                    for (document in documents) {
-                                        val colorName = document.getString("name")
-                                        val colorHex = document.getString("hex")
+                                    if (documents.isEmpty) {
+                                        textName.text = "Color not found"
+                                    } else {
+                                        for (document in documents) {
+                                            val colorName = document.getString("name")
+                                            val colorHex = document.getString("hex")
 
-                                        // Assuming colorHex is in the format "rgb(red, green, blue)"
-                                        val regex = Regex("rgb\\((\\d+), (\\d+), (\\d+)\\)")
-                                        val matchResult = regex.find(colorHex ?: "")
-                                        if (matchResult != null) {
-                                            val dbRed = matchResult.groupValues[1].toInt()
-                                            val dbGreen = matchResult.groupValues[2].toInt()
-                                            val dbBlue = matchResult.groupValues[3].toInt()
+                                            // Assuming colorHex is in the format "rgb(red, green, blue)"
+                                            val regex = Regex("rgb\\((\\d+), (\\d+), (\\d+)\\)")
+                                            val matchResult = regex.find(colorHex ?: "")
+                                            if (matchResult != null) {
+                                                val dbRed = matchResult.groupValues[1].toInt()
+                                                val dbGreen = matchResult.groupValues[2].toInt()
+                                                val dbBlue = matchResult.groupValues[3].toInt()
 
-                                            // Calculate Euclidean distance between the target color and the database color
-                                            val distance = Math.sqrt(
-                                                Math.pow((targetRed - dbRed).toDouble(), 2.0) +
-                                                        Math.pow(
-                                                            (targetGreen - dbGreen).toDouble(),
-                                                            2.0
-                                                        ) +
-                                                        Math.pow(
-                                                            (targetBlue - dbBlue).toDouble(),
-                                                            2.0
-                                                        )
-                                            )
+                                                // Calculate Euclidean distance between the target color and the database color
+                                                val distance = Math.sqrt(
+                                                    Math.pow((targetRed - dbRed).toDouble(), 2.0) +
+                                                            Math.pow(
+                                                                (targetGreen - dbGreen).toDouble(),
+                                                                2.0
+                                                            ) +
+                                                            Math.pow(
+                                                                (targetBlue - dbBlue).toDouble(),
+                                                                2.0
+                                                            )
+                                                )
 
-                                            // If the current color is closer, update the closest color
-                                            if (distance < closestColorDistance) {
-                                                closestColorDistance = distance
-                                                closestColorName = colorName
-                                                closestColorHex = colorHex
+                                                // If the current color is closer, update the closest color
+                                                if (distance < closestColorDistance) {
+                                                    closestColorDistance = distance
+                                                    closestColorName = colorName
+                                                    closestColorHex = colorHex
+                                                }
                                             }
                                         }
-                                    }
 
-                                    // Display the closest color name or "Color not found" if no match
-                                    if (closestColorName != null) {
-                                        textName.text =
-                                            "Closest color: $closestColorName \n($closestColorHex)"
-                                    } else {
-                                        textName.text = "Color not found"
+                                        // Display the closest color name or "Color not found" if no match
+                                        if (closestColorName != null) {
+                                            textName.text =
+                                                "Closest color: $closestColorName \n($closestColorHex)"
+                                        } else {
+                                            textName.text = "Color not found"
+                                        }
                                     }
                                 }
-                            }
-                    } catch (e: Exception) {
-                        Log.e("FindColorActivity", "Error: $e")
+                        } catch (e: Exception) {
+                            Log.e("FindColorActivity", "Error: $e")
+                        }
                     }
                 }
+                true
             }
-            true
         }
     }
 
