@@ -8,7 +8,6 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -16,7 +15,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import java.io.IOException
-import java.lang.String
 
 class FindColorActivity : AppCompatActivity() {
 
@@ -24,6 +22,15 @@ class FindColorActivity : AppCompatActivity() {
 
     private val imageView: ImageView by lazy { findViewById(R.id.imageView) }
     private val viewColor: View by lazy { findViewById(R.id.viewColor) }
+    private val viewColor2: View by lazy { findViewById(R.id.viewColor2) }
+    private val viewColor3: View by lazy { findViewById(R.id.viewColor3) }
+    private val viewColor4: View by lazy { findViewById(R.id.viewColor4) }
+    private val viewColor5: View by lazy { findViewById(R.id.viewColor5) }
+    private val viewColor6: View by lazy { findViewById(R.id.viewColor6) }
+    private val viewColor7: View by lazy { findViewById(R.id.viewColor7) }
+    private val viewColor8: View by lazy { findViewById(R.id.viewColor8) }
+    private val viewColor9: View by lazy { findViewById(R.id.viewColor9) }
+    private val viewColor10: View by lazy { findViewById(R.id.viewColor10) }
     private val textHex: TextView by lazy { findViewById(R.id.textView) }
     private val textRGB: TextView by lazy { findViewById(R.id.textView2) }
 
@@ -73,6 +80,34 @@ class FindColorActivity : AppCompatActivity() {
                     val alpha = Color.alpha(pixel)
 
                     viewColor.setBackgroundColor(Color.argb(alpha, red, green, blue))
+
+                    var step = 15 // Adjust this value to control the lightening effect
+                    for (i in 2..6) { // Loop through viewColor2 to viewColor10
+                        val newRed = Math.max(0, red - (i - 2) * step)
+                        val newGreen = Math.max(0, green - (i - 2) * step)
+                        val newBlue = Math.max(0, blue - (i - 2) * step)
+
+                        val color = Color.argb(alpha, newRed, newGreen, newBlue)
+
+
+                        // Set background color dynamically
+                        val resID = resources.getIdentifier("viewColor$i", "id", packageName)
+                        val childView = findViewById<View>(resID)
+                        childView?.setBackgroundColor(color)
+                    }
+                    step = 5
+                    for (i in 7..10) { // Loop through viewColor2 to viewColor10
+                        val newRed = Math.min(255, red + (i - 2) * step)
+                        val newGreen = Math.min(255, green + (i - 2) * step)
+                        val newBlue = Math.min(255, blue + (i - 2) * step)
+
+                        val color = Color.argb(alpha, newRed, newGreen, newBlue)
+
+                        // Set background color dynamically
+                        val resID = resources.getIdentifier("viewColor$i", "id", packageName)
+                        val childView = findViewById<View>(resID)
+                        childView?.setBackgroundColor(color)
+                    }
                     textHex.text = "Hex: #${Integer.toHexString(pixel).uppercase()}"
                     textRGB.text = "RGB: ($red, $green, $blue)"
                 }

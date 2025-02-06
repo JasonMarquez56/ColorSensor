@@ -46,4 +46,84 @@
         android:text="RGB: "
         app:layout_constraintStart_toEndOf="@+id/viewColor"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="126dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginBottom="196dp"
+        android:text="Color Strip"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewColor" />
+
+    <LinearLayout
+        android:layout_width="363dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3">
+
+        <View
+            android:id="@+id/viewColor6"
+            android:layout_width="40dp"
+            android:layout_height="39dp"
+            android:background ="@drawable/border"
+            />
+
+        <View
+            android:id="@+id/viewColor5"
+            android:layout_width="40dp"
+            android:layout_height="39dp"
+            android:background="#8DC6A2" />
+
+        <View
+            android:id="@+id/viewColor4"
+            android:layout_width="40dp"
+            android:layout_height="39dp"
+            android:background="#8DC6A2" />
+
+        <View
+            android:id="@+id/viewColor3"
+            android:layout_width="40dp"
+            android:layout_height="39dp"
+            android:background="#8DC6A2" />
+
+        <View
+            android:id="@+id/viewColor2"
+            android:layout_width="40dp"
+            android:layout_height="39dp"
+            android:background="#8DC6A2" />
+
+        <View
+            android:id="@+id/viewColor7"
+            android:layout_width="40dp"
+            android:layout_height="39dp"
+            android:background="#8DC6A2" />
+
+        <View
+            android:id="@+id/viewColor8"
+            android:layout_width="40dp"
+            android:layout_height="39dp"
+            android:background="#8DC6A2" />
+
+        <View
+            android:id="@+id/viewColor9"
+            android:layout_width="40dp"
+            android:layout_height="39dp"
+            android:background="#8DC6A2" />
+
+        <View
+            android:id="@+id/viewColor10"
+            android:layout_width="40dp"
+            android:layout_height="39dp"
+            android:background="#8DC6A2" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
