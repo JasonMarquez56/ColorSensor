@@ -1,6 +1,7 @@
 package com.example.colorsensor
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -11,9 +12,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.firestore.FieldValue
 import java.io.IOException
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -28,7 +32,7 @@ class FindColorActivity : AppCompatActivity() {
     private val textHex: TextView by lazy { findViewById(R.id.textView) }
     private val textRGB: TextView by lazy { findViewById(R.id.textView2) }
     private val textName: TextView by lazy { findViewById(R.id.textView8) }
-
+    private var closestColorName: String? = null
     private var xRatioForBitmap = 1f
     private var yRatioForBitmap = 1f
 
@@ -38,9 +42,44 @@ class FindColorActivity : AppCompatActivity() {
         setContentView(R.layout.color_sensor)
 
         // Get image from intent
+
         val byteArray = intent.getByteArrayExtra("image_bitmap")
         val imageUri = intent.getStringExtra("image_uri")
+        val favoriteButton = findViewById<Button>(R.id.favorite)
+        firestore = FirebaseFirestore.getInstance()
+//        val user = firestore.collection("users").document()
+        favoriteButton.setOnClickListener {
+            val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
+            val allEntries = sharedPreferences.all  // Retrieves all key-value pairs
+            val username = sharedPreferences.getString("username", "Guest")
+            firestore.collection("users")
+                .whereEqualTo("username", username)  // Query by username
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (!documents.isEmpty) {
+                        for (document in documents) {
+                            val userId = document.id  // This is the User ID (document ID)
+                            Toast.makeText(this,  userId, Toast.LENGTH_SHORT).show()
+                            val user = firestore.collection("users").document(userId)
 
+                            user.update("favoriteColors",FieldValue.arrayUnion(closestColorName))
+                                .addOnSuccessListener {
+                                    Toast.makeText(this,  "Succeeded to create", Toast.LENGTH_SHORT).show()
+
+                                }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(this,  "Failed to create", Toast.LENGTH_SHORT).show()
+                                }
+                        }
+                    } else {
+                        Log.d("Firestore", "No user found with username: $username")
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("Firestore", "Error getting documents: ", exception)
+                }
+            return@setOnClickListener
+        }
         bitmap = when {
             byteArray != null -> BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
             imageUri != null -> loadBitmapFromUri(Uri.parse(imageUri)) ?: getDefaultBitmap()
@@ -130,7 +169,6 @@ class FindColorActivity : AppCompatActivity() {
                         firestore.collection("paints")
                             .get()
                             .addOnSuccessListener { documents ->
-                                var closestColorName: String? = null
                                 var closestColorDistance = Double.MAX_VALUE
                                 var closestColorHex: String? = null
 
