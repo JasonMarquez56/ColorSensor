@@ -26,7 +26,6 @@ class FindColorActivity : AppCompatActivity() {
     private lateinit var bitmap: Bitmap
     private lateinit var firestore: FirebaseFirestore
 
-
     private val imageView: ImageView by lazy { findViewById(R.id.imageView) }
     private val viewColor: View by lazy { findViewById(R.id.viewColor) }
     private val textHex: TextView by lazy { findViewById(R.id.textView) }
@@ -42,12 +41,12 @@ class FindColorActivity : AppCompatActivity() {
         setContentView(R.layout.color_sensor)
 
         // Get image from intent
-
         val byteArray = intent.getByteArrayExtra("image_bitmap")
         val imageUri = intent.getStringExtra("image_uri")
+
         val favoriteButton = findViewById<Button>(R.id.favorite)
         firestore = FirebaseFirestore.getInstance()
-//        val user = firestore.collection("users").document()
+//      val user = firestore.collection("users").document()
         favoriteButton.setOnClickListener {
             val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
             val allEntries = sharedPreferences.all  // Retrieves all key-value pairs
@@ -59,16 +58,18 @@ class FindColorActivity : AppCompatActivity() {
                     if (!documents.isEmpty) {
                         for (document in documents) {
                             val userId = document.id  // This is the User ID (document ID)
-                            Toast.makeText(this,  userId, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, userId, Toast.LENGTH_SHORT).show()
                             val user = firestore.collection("users").document(userId)
 
-                            user.update("favoriteColors",FieldValue.arrayUnion(closestColorName))
+                            user.update("favoriteColors", FieldValue.arrayUnion(closestColorName))
                                 .addOnSuccessListener {
-                                    Toast.makeText(this,  "Succeeded to create", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this, "Succeeded to create", Toast.LENGTH_SHORT)
+                                        .show()
 
                                 }
                                 .addOnFailureListener { e ->
-                                    Toast.makeText(this,  "Failed to create", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this, "Failed to create", Toast.LENGTH_SHORT)
+                                        .show()
                                 }
                         }
                     } else {
@@ -110,20 +111,15 @@ class FindColorActivity : AppCompatActivity() {
 
         // Set touch listener for color detection
         imageView.setOnTouchListener { _, motionEvent ->
-            if (this::bitmap.isInitialized && motionEvent.action == MotionEvent.ACTION_DOWN ||
-                motionEvent.action == MotionEvent.ACTION_MOVE ||
-                motionEvent.action == MotionEvent.ACTION_UP) {
-
+            if (this::bitmap.isInitialized) {
                 val touchXtoBitmap = motionEvent.x * xRatioForBitmap
                 val touchYtoBitmap = motionEvent.y * yRatioForBitmap
 
                 if (touchXtoBitmap in 0f..bitmap.width.toFloat() &&
-                    touchYtoBitmap in 0f..bitmap.height.toFloat()) {
-
+                    touchYtoBitmap in 0f..bitmap.height.toFloat()
+                ) {
                     try {
-
                         val pixel = bitmap.getPixel(touchXtoBitmap.toInt(), touchYtoBitmap.toInt())
-
                         val red = Color.red(pixel)
                         val green = Color.green(pixel)
                         val blue = Color.blue(pixel)
@@ -131,93 +127,35 @@ class FindColorActivity : AppCompatActivity() {
 
                         viewColor.setBackgroundColor(Color.argb(alpha, red, green, blue))
 
-                        var step = 15 // Adjust this value to control the lightening effect
-                        for (i in 2..6) { // Loop through viewColor2 to viewColor10
+                        var step = 15
+                        for (i in 2..6) {
                             val newRed = Math.max(0, red - (i - 2) * step)
                             val newGreen = Math.max(0, green - (i - 2) * step)
                             val newBlue = Math.max(0, blue - (i - 2) * step)
-
                             val color = Color.argb(alpha, newRed, newGreen, newBlue)
 
-
-                            // Set background color dynamically
                             val resID = resources.getIdentifier("viewColor$i", "id", packageName)
-                            val childView = findViewById<View>(resID)
-                            childView?.setBackgroundColor(color)
+                            findViewById<View>(resID)?.setBackgroundColor(color)
                         }
                         step = 5
-                        for (i in 7..10) { // Loop through viewColor2 to viewColor10
+                        for (i in 7..10) {
                             val newRed = Math.min(255, red + (i - 2) * step)
                             val newGreen = Math.min(255, green + (i - 2) * step)
                             val newBlue = Math.min(255, blue + (i - 2) * step)
-
                             val color = Color.argb(alpha, newRed, newGreen, newBlue)
 
-                            // Set background color dynamically
                             val resID = resources.getIdentifier("viewColor$i", "id", packageName)
-                            val childView = findViewById<View>(resID)
-                            childView?.setBackgroundColor(color)
+                            findViewById<View>(resID)?.setBackgroundColor(color)
                         }
+
                         textHex.text = "Hex: #${Integer.toHexString(pixel).uppercase()}"
                         textRGB.text = "RGB: ($red, $green, $blue)"
 
-                        val targetRed = red
-                        val targetGreen = green
-                        val targetBlue = blue
+                        // Only search the database when the user lifts their finger
+                        if (motionEvent.action == MotionEvent.ACTION_UP) {
+                            searchClosestColor(red, green, blue)
+                        }
 
-                        firestore = FirebaseFirestore.getInstance()
-                        firestore.collection("paints")
-                            .get()
-                            .addOnSuccessListener { documents ->
-                                var closestColorDistance = Double.MAX_VALUE
-                                var closestColorHex: String? = null
-
-                                if (documents.isEmpty) {
-                                    textName.text = "Color not found"
-                                } else {
-                                    for (document in documents) {
-                                        val colorName = document.getString("name")
-                                        val colorHex = document.getString("hex")
-
-                                        // Assuming colorHex is in the format "rgb(red, green, blue)"
-                                        val regex = Regex("rgb\\((\\d+), (\\d+), (\\d+)\\)")
-                                        val matchResult = regex.find(colorHex ?: "")
-                                        if (matchResult != null) {
-                                            val dbRed = matchResult.groupValues[1].toInt()
-                                            val dbGreen = matchResult.groupValues[2].toInt()
-                                            val dbBlue = matchResult.groupValues[3].toInt()
-
-                                            // Calculate Euclidean distance between the target color and the database color
-                                            val distance = Math.sqrt(
-                                                Math.pow((targetRed - dbRed).toDouble(), 2.0) +
-                                                        Math.pow(
-                                                            (targetGreen - dbGreen).toDouble(),
-                                                            2.0
-                                                        ) +
-                                                        Math.pow(
-                                                            (targetBlue - dbBlue).toDouble(),
-                                                            2.0
-                                                        )
-                                            )
-
-                                            // If the current color is closer, update the closest color
-                                            if (distance < closestColorDistance) {
-                                                closestColorDistance = distance
-                                                closestColorName = colorName
-                                                closestColorHex = colorHex
-                                            }
-                                        }
-                                    }
-
-                                    // Display the closest color name or "Color not found" if no match
-                                    if (closestColorName != null) {
-                                        textName.text =
-                                            "Closest color: $closestColorName \n($closestColorHex)"
-                                    } else {
-                                        textName.text = "Color not found"
-                                    }
-                                }
-                            }
                     } catch (e: Exception) {
                         Log.e("FindColorActivity", "Error: $e")
                     }
@@ -226,6 +164,51 @@ class FindColorActivity : AppCompatActivity() {
             true
         }
     }
+
+    // Function to search for the closest color in the database
+    private fun searchClosestColor(targetRed: Int, targetGreen: Int, targetBlue: Int) {
+        firestore.collection("paints")
+            .get()
+            .addOnSuccessListener { documents ->
+                var closestColorDistance = Double.MAX_VALUE
+                var closestColorName: String? = null
+                var closestColorHex: String? = null
+
+                if (documents.isEmpty) {
+                    textName.text = "Color not found"
+                } else {
+                    for (document in documents) {
+                        val colorName = document.getString("name")
+                        val colorHex = document.getString("hex")
+
+                        val regex = Regex("rgb\\((\\d+), (\\d+), (\\d+)\\)")
+                        val matchResult = regex.find(colorHex ?: "")
+                        if (matchResult != null) {
+                            val dbRed = matchResult.groupValues[1].toInt()
+                            val dbGreen = matchResult.groupValues[2].toInt()
+                            val dbBlue = matchResult.groupValues[3].toInt()
+
+                            val distance = Math.sqrt(
+                                Math.pow((targetRed - dbRed).toDouble(), 2.0) +
+                                        Math.pow((targetGreen - dbGreen).toDouble(), 2.0) +
+                                        Math.pow((targetBlue - dbBlue).toDouble(), 2.0)
+                            )
+
+                            if (distance < closestColorDistance) {
+                                closestColorDistance = distance
+                                closestColorName = colorName
+                                closestColorHex = colorHex
+                            }
+                        }
+                    }
+
+                    textName.text = closestColorName?.let {
+                        "Closest color: $it \n($closestColorHex)"
+                    } ?: "Color not found"
+                }
+            }
+    }
+
 
     // Convert Uri to Bitmap
     private fun loadBitmapFromUri(uri: Uri): Bitmap? {
