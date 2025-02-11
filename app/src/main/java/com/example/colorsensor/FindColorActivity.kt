@@ -144,7 +144,7 @@ class FindColorActivity : AppCompatActivity() {
                             findViewById<View>(resID)?.setBackgroundColor(color)
                         }
 
-                        textHex.text = "Hex: #${Integer.toHexString(pixel).uppercase()}"
+                        textHex.text = "Hex: #${Integer.toHexString(pixel).uppercase().substring(2)}"
                         textRGB.text = "RGB: ($red, $green, $blue)"
 
                         // Search the closest color when user lifts their finger
