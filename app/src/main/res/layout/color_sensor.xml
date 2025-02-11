@@ -77,37 +77,37 @@
             android:id="@+id/viewColor3"
             android:layout_width="40dp"
             android:layout_height="39dp"
-            android:background="#8DC6A2" />
+            android:background="@drawable/border" />
 
         <View
             android:id="@+id/viewColor2"
             android:layout_width="40dp"
             android:layout_height="39dp"
-            android:background="#8DC6A2" />
+            android:background="@drawable/border" />
 
         <View
             android:id="@+id/viewColor7"
             android:layout_width="40dp"
             android:layout_height="39dp"
-            android:background="#8DC6A2" />
+            android:background="@drawable/border" />
 
         <View
             android:id="@+id/viewColor8"
             android:layout_width="40dp"
             android:layout_height="39dp"
-            android:background="#8DC6A2" />
+            android:background="@drawable/border" />
 
         <View
             android:id="@+id/viewColor9"
             android:layout_width="40dp"
             android:layout_height="39dp"
-            android:background="#8DC6A2" />
+            android:background="@drawable/border" />
 
         <View
             android:id="@+id/viewColor10"
             android:layout_width="40dp"
             android:layout_height="39dp"
-            android:background="#8DC6A2" />
+            android:background="@drawable/border" />
     </LinearLayout>
 
     <TextView
