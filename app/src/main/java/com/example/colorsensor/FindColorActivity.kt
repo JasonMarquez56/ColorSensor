@@ -1,7 +1,5 @@
 package com.example.colorsensor
 
-import android.annotation.SuppressLint
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -18,8 +16,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FieldValue
-import java.io.IOException
 import com.google.firebase.firestore.FirebaseFirestore
+import java.io.IOException
+import java.lang.ref.WeakReference
 
 class FindColorActivity : AppCompatActivity() {
 
@@ -35,29 +34,27 @@ class FindColorActivity : AppCompatActivity() {
     private var xRatioForBitmap = 1f
     private var yRatioForBitmap = 1f
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.color_sensor)
 
-        // Get image from intent
         val byteArray = intent.getByteArrayExtra("image_bitmap")
         val imageUri = intent.getStringExtra("image_uri")
 
         val favoriteButton = findViewById<Button>(R.id.favorite)
         firestore = FirebaseFirestore.getInstance()
-//      val user = firestore.collection("users").document()
+
         favoriteButton.setOnClickListener {
             val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
-            val allEntries = sharedPreferences.all  // Retrieves all key-value pairs
+            val allEntries = sharedPreferences.all
             val username = sharedPreferences.getString("username", "Guest")
             firestore.collection("users")
-                .whereEqualTo("username", username)  // Query by username
+                .whereEqualTo("username", username)
                 .get()
                 .addOnSuccessListener { documents ->
                     if (!documents.isEmpty) {
                         for (document in documents) {
-                            val userId = document.id  // This is the User ID (document ID)
+                            val userId = document.id
                             Toast.makeText(this, userId, Toast.LENGTH_SHORT).show()
                             val user = firestore.collection("users").document(userId)
 
@@ -65,7 +62,6 @@ class FindColorActivity : AppCompatActivity() {
                                 .addOnSuccessListener {
                                     Toast.makeText(this, "Succeeded to create", Toast.LENGTH_SHORT)
                                         .show()
-
                                 }
                                 .addOnFailureListener { e ->
                                     Toast.makeText(this, "Failed to create", Toast.LENGTH_SHORT)
@@ -81,32 +77,30 @@ class FindColorActivity : AppCompatActivity() {
                 }
             return@setOnClickListener
         }
+
+        // Load bitmap from byte array or URI with WeakReference
         bitmap = when {
             byteArray != null -> BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
             imageUri != null -> loadBitmapFromUri(Uri.parse(imageUri)) ?: getDefaultBitmap()
             else -> getDefaultBitmap()
         }
 
+        // Wrap the bitmap in a WeakReference
+        val weakBitmap = WeakReference(bitmap)
+
         // If the bitmap is null, log the error and set a default image
         if (this::bitmap.isInitialized) {
-            imageView.setImageBitmap(bitmap)
+            imageView.setImageBitmap(weakBitmap.get())  // Use the bitmap from the WeakReference
         } else {
             Log.e("FindColorActivity", "Error: Bitmap is not initialized properly.")
             imageView.setImageBitmap(getDefaultBitmap())
         }
 
-        // Adjust touch coordinates based on image scaling
         imageView.post {
             if (this::bitmap.isInitialized) {
                 xRatioForBitmap = bitmap.width.toFloat() / imageView.width.toFloat()
                 yRatioForBitmap = bitmap.height.toFloat() / imageView.height.toFloat()
             }
-        }
-
-        // Adjust touch coordinates based on image scaling
-        imageView.post {
-            xRatioForBitmap = bitmap.width.toFloat() / imageView.width.toFloat()
-            yRatioForBitmap = bitmap.height.toFloat() / imageView.height.toFloat()
         }
 
         // Set touch listener for color detection
@@ -127,6 +121,7 @@ class FindColorActivity : AppCompatActivity() {
 
                         viewColor.setBackgroundColor(Color.argb(alpha, red, green, blue))
 
+                        // Additional color processing
                         var step = 15
                         for (i in 2..6) {
                             val newRed = Math.max(0, red - (i - 2) * step)
@@ -137,6 +132,7 @@ class FindColorActivity : AppCompatActivity() {
                             val resID = resources.getIdentifier("viewColor$i", "id", packageName)
                             findViewById<View>(resID)?.setBackgroundColor(color)
                         }
+
                         step = 5
                         for (i in 7..10) {
                             val newRed = Math.min(255, red + (i - 2) * step)
@@ -151,7 +147,7 @@ class FindColorActivity : AppCompatActivity() {
                         textHex.text = "Hex: #${Integer.toHexString(pixel).uppercase()}"
                         textRGB.text = "RGB: ($red, $green, $blue)"
 
-                        // Only search the database when the user lifts their finger
+                        // Search the closest color when user lifts their finger
                         if (motionEvent.action == MotionEvent.ACTION_UP) {
                             searchClosestColor(red, green, blue)
                         }
@@ -165,7 +161,6 @@ class FindColorActivity : AppCompatActivity() {
         }
     }
 
-    // Function to search for the closest color in the database
     private fun searchClosestColor(targetRed: Int, targetGreen: Int, targetBlue: Int) {
         firestore.collection("paints")
             .get()
@@ -209,8 +204,6 @@ class FindColorActivity : AppCompatActivity() {
             }
     }
 
-
-    // Convert Uri to Bitmap
     private fun loadBitmapFromUri(uri: Uri): Bitmap? {
         return try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -231,7 +224,6 @@ class FindColorActivity : AppCompatActivity() {
         }
     }
 
-    // Returns the default bitmap if no image is provided
     private fun getDefaultBitmap(): Bitmap {
         return BitmapFactory.decodeResource(resources, R.drawable.colorsensor_home_banner)
     }
