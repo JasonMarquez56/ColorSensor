@@ -1,5 +1,6 @@
 package com.example.colorsensor
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -19,6 +20,8 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import java.io.IOException
 import java.lang.ref.WeakReference
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class FindColorActivity : AppCompatActivity() {
 
@@ -34,6 +37,7 @@ class FindColorActivity : AppCompatActivity() {
     private var xRatioForBitmap = 1f
     private var yRatioForBitmap = 1f
 
+    @SuppressLint("ClickableViewAccessibility", "SetTextI18n", "DiscouragedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.color_sensor)
@@ -46,7 +50,7 @@ class FindColorActivity : AppCompatActivity() {
 
         favoriteButton.setOnClickListener {
             val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
-            val allEntries = sharedPreferences.all
+            sharedPreferences.all
             val username = sharedPreferences.getString("username", "Guest")
             firestore.collection("users")
                 .whereEqualTo("username", username)
@@ -124,9 +128,9 @@ class FindColorActivity : AppCompatActivity() {
                         // Additional color processing
                         var step = 15
                         for (i in 2..6) {
-                            val newRed = Math.max(0, red - (i - 2) * step)
-                            val newGreen = Math.max(0, green - (i - 2) * step)
-                            val newBlue = Math.max(0, blue - (i - 2) * step)
+                            val newRed = 0.coerceAtLeast(red - (i - 2) * step)
+                            val newGreen = 0.coerceAtLeast(green - (i - 2) * step)
+                            val newBlue = 0.coerceAtLeast(blue - (i - 2) * step)
                             val color = Color.argb(alpha, newRed, newGreen, newBlue)
 
                             val resID = resources.getIdentifier("viewColor$i", "id", packageName)
@@ -135,9 +139,9 @@ class FindColorActivity : AppCompatActivity() {
 
                         step = 5
                         for (i in 7..10) {
-                            val newRed = Math.min(255, red + (i - 2) * step)
-                            val newGreen = Math.min(255, green + (i - 2) * step)
-                            val newBlue = Math.min(255, blue + (i - 2) * step)
+                            val newRed = 255.coerceAtMost(red + (i - 2) * step)
+                            val newGreen = 255.coerceAtMost(green + (i - 2) * step)
+                            val newBlue = 255.coerceAtMost(blue + (i - 2) * step)
                             val color = Color.argb(alpha, newRed, newGreen, newBlue)
 
                             val resID = resources.getIdentifier("viewColor$i", "id", packageName)
@@ -161,6 +165,7 @@ class FindColorActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun searchClosestColor(targetRed: Int, targetGreen: Int, targetBlue: Int) {
         firestore.collection("paints")
             .get()
@@ -183,10 +188,10 @@ class FindColorActivity : AppCompatActivity() {
                             val dbGreen = matchResult.groupValues[2].toInt()
                             val dbBlue = matchResult.groupValues[3].toInt()
 
-                            val distance = Math.sqrt(
-                                Math.pow((targetRed - dbRed).toDouble(), 2.0) +
-                                        Math.pow((targetGreen - dbGreen).toDouble(), 2.0) +
-                                        Math.pow((targetBlue - dbBlue).toDouble(), 2.0)
+                            val distance = sqrt(
+                                (targetRed - dbRed).toDouble().pow(2.0) +
+                                        (targetGreen - dbGreen).toDouble().pow(2.0) +
+                                        (targetBlue - dbBlue).toDouble().pow(2.0)
                             )
 
                             if (distance < closestColorDistance) {
