@@ -203,7 +203,7 @@ class FindColorActivity : AppCompatActivity() {
                     }
 
                     textName.text = closestColorName?.let {
-                        "Closest color: $it \n($closestColorHex)"
+                        "Closest color: $it \n$closestColorHex"
                     } ?: "Color not found"
                 }
             }

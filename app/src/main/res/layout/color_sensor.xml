@@ -114,7 +114,7 @@
         android:id="@+id/textView8"
         android:layout_width="204dp"
         android:layout_height="72dp"
-        android:text="TextView"
+        android:text=""
         app:layout_constraintBottom_toBottomOf="@+id/viewColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.057"
