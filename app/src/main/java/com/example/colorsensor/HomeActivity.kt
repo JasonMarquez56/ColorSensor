@@ -17,6 +17,7 @@ class HomeActivity : AppCompatActivity() {
         val profileButton = findViewById<Button>(R.id.profileButton) // profile
         val photoButton = findViewById<Button>(R.id.photoButton) // find color
         val colorButtonTest = findViewById<Button>(R.id.videoButton) // live color
+        val popularColorButton = findViewById<Button>(R.id.popularColor) // popular color
 
         // Set a click listener for the Photo button
         photoButton.setOnClickListener {
@@ -33,6 +34,11 @@ class HomeActivity : AppCompatActivity() {
         // Set a click listener for the Video button
         colorButtonTest.setOnClickListener {
             val intent = Intent(this, FindColorActivity::class.java) // Renamed CameraActivity
+            startActivity(intent)
+        }
+
+        popularColorButton.setOnClickListener {
+            val intent = Intent(this, PopularColor::class.java) // Renamed CameraActivity
             startActivity(intent)
         }
     }

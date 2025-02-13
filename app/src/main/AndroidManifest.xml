@@ -63,5 +63,11 @@
             android:exported="true"
             android:theme="@style/Theme.ColorSensor" />
 
+        <!-- Popular Color -->
+        <activity
+            android:name=".PopularColor"
+            android:exported="true"
+            android:theme="@style/Theme.ColorSensor" />
+
     </application>
 </manifest>
