@@ -26,14 +26,18 @@ import kotlin.math.sqrt
 class FindColorActivity : AppCompatActivity() {
 
     private lateinit var bitmap: Bitmap
-    private lateinit var firestore: FirebaseFirestore
+    private lateinit var firestore: FirebaseFirestore // reference to the database for color and username
 
+    // reference to the layout of an imageview to find color
     private val imageView: ImageView by lazy { findViewById(R.id.imageView) }
+    // show what color has been changed by a view
     private val viewColor: View by lazy { findViewById(R.id.viewColor) }
     private val textHex: TextView by lazy { findViewById(R.id.textView) }
     private val textRGB: TextView by lazy { findViewById(R.id.textView2) }
     private val textName: TextView by lazy { findViewById(R.id.textView8) }
+    // find the closest Color
     private var closestColorName: String? = null
+    // the size of the imageview and bitmap we need to 2 variables
     private var xRatioForBitmap = 1f
     private var yRatioForBitmap = 1f
 
@@ -101,6 +105,7 @@ class FindColorActivity : AppCompatActivity() {
         }
 
         imageView.post {
+            // bitmap is initialized before finding color and update color strip
             if (this::bitmap.isInitialized) {
                 xRatioForBitmap = bitmap.width.toFloat() / imageView.width.toFloat()
                 yRatioForBitmap = bitmap.height.toFloat() / imageView.height.toFloat()
@@ -108,51 +113,61 @@ class FindColorActivity : AppCompatActivity() {
         }
 
         // Set touch listener for color detection
+        // This is for color strip and find color using built-in android studio tools
         imageView.setOnTouchListener { _, motionEvent ->
+            // check the bitmap if it is isInitialized
             if (this::bitmap.isInitialized) {
+                // Convert touch coordinates to match the size of the imageview and bitmap
                 val touchXtoBitmap = motionEvent.x * xRatioForBitmap
                 val touchYtoBitmap = motionEvent.y * yRatioForBitmap
 
+                // Ensure the touch coordinates are within the bitmap bounds
                 if (touchXtoBitmap in 0f..bitmap.width.toFloat() &&
                     touchYtoBitmap in 0f..bitmap.height.toFloat()
                 ) {
                     try {
+                        // Get the pixel color at the touched position
                         val pixel = bitmap.getPixel(touchXtoBitmap.toInt(), touchYtoBitmap.toInt())
+                        // Extract RGBA components from the pixel color
                         val red = Color.red(pixel)
                         val green = Color.green(pixel)
                         val blue = Color.blue(pixel)
                         val alpha = Color.alpha(pixel)
-
+                        // update teh viewColor background color
                         viewColor.setBackgroundColor(Color.argb(alpha, red, green, blue))
 
                         // Additional color processing
-                        var step = 15
+                        var step = 15 // Color strip get the darkest color use steps to update next rgb
                         for (i in 2..6) {
                             val newRed = 0.coerceAtLeast(red - (i - 2) * step)
                             val newGreen = 0.coerceAtLeast(green - (i - 2) * step)
                             val newBlue = 0.coerceAtLeast(blue - (i - 2) * step)
                             val color = Color.argb(alpha, newRed, newGreen, newBlue)
-
+                            // Find corresponding view by ID and set the background color
+                            // this avoid manually getting each viewColor by viewColor2 - 10
                             val resID = resources.getIdentifier("viewColor$i", "id", packageName)
                             findViewById<View>(resID)?.setBackgroundColor(color)
                         }
 
-                        step = 5
+                        step = 5 // Color strip get the next lighter color use steps to update next rgb
                         for (i in 7..10) {
                             val newRed = 255.coerceAtMost(red + (i - 2) * step)
                             val newGreen = 255.coerceAtMost(green + (i - 2) * step)
                             val newBlue = 255.coerceAtMost(blue + (i - 2) * step)
                             val color = Color.argb(alpha, newRed, newGreen, newBlue)
 
+                            // Find corresponding view by ID and set the background color
+                            // this avoid manually getting each viewColor by viewColor2 - 10
                             val resID = resources.getIdentifier("viewColor$i", "id", packageName)
-                            findViewById<View>(resID)?.setBackgroundColor(color)
+                            findViewById<View>(resID)?.setBackgroundColor(color) //set the background color
                         }
-
+                        // update the text for Hex and RGB to the target color
                         textHex.text = "Hex: #${Integer.toHexString(pixel).uppercase().substring(2)}"
                         textRGB.text = "RGB: ($red, $green, $blue)"
 
                         // Search the closest color when user lifts their finger
                         if (motionEvent.action == MotionEvent.ACTION_UP) {
+                            // call the function to update the textView -> textName
                             searchClosestColor(red, green, blue)
                         }
 
@@ -165,35 +180,44 @@ class FindColorActivity : AppCompatActivity() {
         }
     }
 
+    // Function to search inside the database for color to find the closest matching color name
+    // example: searchClosestColor(red, green, blue)
     @SuppressLint("SetTextI18n")
     private fun searchClosestColor(targetRed: Int, targetGreen: Int, targetBlue: Int) {
+        // Our firebase database with the collection label paints store rgb and name.
         firestore.collection("paints")
             .get()
             .addOnSuccessListener { documents ->
+                // variables name and rgb
                 var closestColorDistance = Double.MAX_VALUE
                 var closestColorName: String? = null
                 var closestColorHex: String? = null
 
-                if (documents.isEmpty) {
+                if (documents.isEmpty) { // if empty exit
                     textName.text = "Color not found"
                 } else {
+                    // for loop through the document to find color
                     for (document in documents) {
+                        // variables for name and rgb
                         val colorName = document.getString("name")
                         val colorHex = document.getString("hex")
-
+                        // Regular expression to extract RGB values from the hex string
                         val regex = Regex("rgb\\((\\d+), (\\d+), (\\d+)\\)")
                         val matchResult = regex.find(colorHex ?: "")
+                        // get the red, green, and blue of the rgb
                         if (matchResult != null) {
                             val dbRed = matchResult.groupValues[1].toInt()
                             val dbGreen = matchResult.groupValues[2].toInt()
                             val dbBlue = matchResult.groupValues[3].toInt()
 
+                            // find the distance between the target and database by subtracting the distance
+                            // searchClosestColor(red, green, blue) - matchResult
                             val distance = sqrt(
                                 (targetRed - dbRed).toDouble().pow(2.0) +
                                         (targetGreen - dbGreen).toDouble().pow(2.0) +
                                         (targetBlue - dbBlue).toDouble().pow(2.0)
                             )
-
+                            // if distance < closestColorDistance then update the closestColorDistance
                             if (distance < closestColorDistance) {
                                 closestColorDistance = distance
                                 closestColorName = colorName
@@ -201,7 +225,7 @@ class FindColorActivity : AppCompatActivity() {
                             }
                         }
                     }
-
+                    // Update the text to show closestColorName
                     textName.text = closestColorName?.let {
                         "Closest color: $it \n$closestColorHex"
                     } ?: "Color not found"
