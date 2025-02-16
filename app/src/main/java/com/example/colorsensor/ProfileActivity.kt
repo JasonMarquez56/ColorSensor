@@ -24,7 +24,7 @@ class ProfileActivity : AppCompatActivity() {
 
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance()
-
+        firestore = FirebaseFirestore.getInstance()
         // Get username from SharedPreferences
         val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
         var username = sharedPreferences.getString("username", "Guest")
@@ -38,7 +38,7 @@ class ProfileActivity : AppCompatActivity() {
         firestore.collection("users")
             .whereEqualTo("username", username)  // Query by username
             .get()
-            .addOnSuccessListener { documents ->
+            .addOnSuccessListener {documents ->
                 if (!documents.isEmpty) {
                     for (document in documents) {
 //                        Retrieve the user's favorite colors
