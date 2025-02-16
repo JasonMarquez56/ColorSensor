@@ -42,7 +42,7 @@ class LoginScreen : AppCompatActivity() {
             // Query Firestore for the user
             firestore.collection("users")
                 .whereEqualTo("email", email)
-                .whereEqualTo("password", password)
+                .whereEqualTo("password", RegisterActivity.hashPassword(password))//calls .hashpsasword() in registeractivity
                 .get()
                 .addOnSuccessListener { documents ->
                     if (documents.isEmpty) {

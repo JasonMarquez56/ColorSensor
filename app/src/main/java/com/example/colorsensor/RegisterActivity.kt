@@ -124,10 +124,12 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    // Function to implement a SHA-256 hashing
-    private fun hashPassword(password: String): String {
-        val digest = MessageDigest.getInstance("SHA-256")
-        val hashBytes = digest.digest(password.toByteArray())
-        return hashBytes.joinToString("") {"%02x".format(it)  }
+    // Function to implement a SHA-256 hashing stored as companion object for login class to call function
+    companion object{
+        fun hashPassword(password: String): String {
+            val digest = MessageDigest.getInstance("SHA-256")
+            val hashBytes = digest.digest(password.toByteArray())
+            return hashBytes.joinToString("") {"%02x".format(it)  }
+        }
     }
 }
