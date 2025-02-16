@@ -54,7 +54,7 @@
         android:backgroundTint="@android:color/black"
         android:text="Logout"
         android:textColor="@android:color/white" />
-
+    <!-- Scroll view for favorite colors -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="86dp"
