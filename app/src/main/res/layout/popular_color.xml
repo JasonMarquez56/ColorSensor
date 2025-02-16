@@ -6,7 +6,7 @@ favorite color and display on a wall-->
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-             android:layout_height="match_parent">
+    android:layout_height="match_parent">
 
     <!--one of 25 view to show popular color. Set the size of teh box by using a background
     drawable border and set the constraint for layout-->
