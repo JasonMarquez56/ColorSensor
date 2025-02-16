@@ -57,6 +57,7 @@ class FindColorActivity : AppCompatActivity() {
         val favoriteButton = findViewById<Button>(R.id.favorite)
         firestore = FirebaseFirestore.getInstance()
         //favorite button to store selected color user's favorite list
+
         favoriteButton.setOnClickListener {
             val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
             sharedPreferences.all

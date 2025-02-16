@@ -31,18 +31,19 @@
         android:textStyle="bold" />
 
     <!-- Coming Soon Message -->
+
+    <!-- Logout Button -->
     <TextView
         android:id="@+id/favoriteColorsText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/profileUsername"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
-        android:text="Favorite Colors coming soon!"
-        android:textSize="18sp"
-        android:textColor="@android:color/black" />
+        android:layout_marginLeft="34dp"
+        android:layout_marginTop="21dp"
+        android:text="Favorite Colors "
+        android:textColor="@android:color/black"
+        android:textSize="20sp" />
 
-    <!-- Logout Button -->
     <Button
         android:id="@+id/logoutButton"
         android:layout_width="wrap_content"
@@ -53,5 +54,20 @@
         android:backgroundTint="@android:color/black"
         android:text="Logout"
         android:textColor="@android:color/white" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="86dp"
+        android:layout_above="@+id/logoutButton"
+        android:layout_marginBottom="417dp">
+
+        <LinearLayout
+            android:id="@+id/colors"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>
