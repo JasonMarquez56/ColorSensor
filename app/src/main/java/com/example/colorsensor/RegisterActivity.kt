@@ -54,7 +54,8 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.makeText(this, "Passwords do not match.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$"
+            //validates password Complexity
+            val passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$"
             val regex = Regex(passwordRegex)
             if (!regex.matches(password)) {
                 Toast.makeText(

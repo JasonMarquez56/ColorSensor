@@ -56,31 +56,36 @@ class FindColorActivity : AppCompatActivity() {
 
         val favoriteButton = findViewById<Button>(R.id.favorite)
         firestore = FirebaseFirestore.getInstance()
-
+        //favorite button to store selected color user's favorite list
         favoriteButton.setOnClickListener {
             val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
             sharedPreferences.all
+            //gets the username of current session.
             val username = sharedPreferences.getString("username", "Guest")
+            //search through database with user name
             firestore.collection("users")
                 .whereEqualTo("username", username)
                 .get()
                 .addOnSuccessListener { documents ->
+                    //if user name is successfully found.
                     if (!documents.isEmpty) {
                         for (document in documents) {
+                            //finds user id
                             val userId = document.id
                             Toast.makeText(this, userId, Toast.LENGTH_SHORT).show()
                             val user = firestore.collection("users").document(userId)
-
+                            //add favorite color.
                             user.update("favoriteColors", FieldValue.arrayUnion(closestColorName))
                                 .addOnSuccessListener {
                                     Toast.makeText(this, "Succeeded to create", Toast.LENGTH_SHORT)
                                         .show()
-                                }
+                                }//in case failed to update
                                 .addOnFailureListener { e ->
                                     Toast.makeText(this, "Failed to create", Toast.LENGTH_SHORT)
                                         .show()
                                 }
                         }
+                        //if no user is found give warning
                     } else {
                         Log.d("Firestore", "No user found with username: $username")
                     }
