@@ -1,12 +1,14 @@
 package com.example.colorsensor
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -37,6 +39,7 @@ class FindColorActivity : AppCompatActivity() {
     private val textName: TextView by lazy { findViewById(R.id.textView8) }
     // find the closest Color
     private var closestColorName: String? = null
+    private var closestColorHex: String? = null
     // the size of the imageview and bitmap we need to 2 variables
     private var xRatioForBitmap = 1f
     private var yRatioForBitmap = 1f
@@ -45,6 +48,8 @@ class FindColorActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.color_sensor)
+
+        setupButtonClickListener()
 
         val byteArray = intent.getByteArrayExtra("image_bitmap")
         val imageUri = intent.getStringExtra("image_uri")
@@ -133,7 +138,7 @@ class FindColorActivity : AppCompatActivity() {
                         val green = Color.green(pixel)
                         val blue = Color.blue(pixel)
                         val alpha = Color.alpha(pixel)
-                        // update teh viewColor background color
+                        // update the viewColor background color
                         viewColor.setBackgroundColor(Color.argb(alpha, red, green, blue))
 
                         // Additional color processing
@@ -226,12 +231,69 @@ class FindColorActivity : AppCompatActivity() {
                         }
                     }
                     // Update the text to show closestColorName
-                    textName.text = closestColorName?.let {
-                        "Closest color: $it \n$closestColorHex"
-                    } ?: "Color not found"
+                    this.closestColorName = closestColorName
+                    this.closestColorHex = closestColorHex
+                    closestColorName?.let {
+                        textName.text = "Closest color: $it \n$closestColorHex"
+                    } ?: run {
+                        textName.text = "Color not found"
+                    }
                 }
             }
     }
+
+    private fun setupButtonClickListener() {
+        val viewColor = findViewById<View>(R.id.viewColor)
+        viewColor.setOnClickListener {
+            val currentClosestColorHex = closestColorHex // Make a local copy to avoid smart cast issue
+            Log.d("DEBUG", "setupButtonClickListener - closestColorHex: $currentClosestColorHex, closestColorName: $closestColorName")
+
+            // Check if closestColorHex is null or empty
+            if (currentClosestColorHex.isNullOrEmpty()) {
+                Log.e("ERROR", "setupButtonClickListener - closestColorHex is null or empty!")
+                Toast.makeText(this, "Color data is not loaded yet", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // If closestColorHex is in RGB format, convert it to Hex
+            val hexColor = if (currentClosestColorHex.startsWith("rgb")) {
+                // Extract RGB values from the string using regex
+                val regex = Regex("rgb\\((\\d+), (\\d+), (\\d+)\\)")
+                val matchResult = regex.find(currentClosestColorHex)
+
+                if (matchResult != null) {
+                    // Convert RGB to hex
+                    val red = matchResult.groupValues[1].toInt()
+                    val green = matchResult.groupValues[2].toInt()
+                    val blue = matchResult.groupValues[3].toInt()
+
+                    // Format the hex string
+                    String.format("#%02X%02X%02X", red, green, blue)
+                } else {
+                    currentClosestColorHex // If it's not valid RGB, use as is
+                }
+            } else {
+                currentClosestColorHex // If it's already a valid hex, use it
+            }
+
+            try {
+                val color = Color.parseColor(hexColor)
+                val intent = Intent(this, PaintInfoActivity::class.java)
+
+                intent.putExtra("selected_color", color)
+                intent.putExtra("color_name", closestColorName)
+                intent.putExtra("color_hex", hexColor)
+
+                Log.d("DEBUG", "Starting PaintInfoActivity with colorHex: $hexColor, colorName: $closestColorName")
+                startActivity(intent)
+            } catch (e: IllegalArgumentException) {
+                Log.e("ERROR", "Invalid hex color format: $hexColor")
+                Toast.makeText(this, "Invalid color format", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
 
     private fun loadBitmapFromUri(uri: Uri): Bitmap? {
         return try {

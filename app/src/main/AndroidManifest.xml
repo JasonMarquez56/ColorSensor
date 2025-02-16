@@ -69,5 +69,9 @@
             android:exported="true"
             android:theme="@style/Theme.ColorSensor" />
 
+        <!-- Paint Info -->
+        <activity android:name=".PaintInfoActivity" />
+
+
     </application>
 </manifest>
