@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--App home screen to access options-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--bottom navigation template-->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView3"
         android:layout_width="match_parent"
@@ -18,6 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav" />
 
+    <!--Home screen wallpaper-->
     <ImageView
         android:id="@+id/HomeBanner"
         android:layout_width="wrap_content"
@@ -30,6 +34,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/colorsensor_home_banner" />
 
+    <!--This the scroll function used in the homescreen to add scroll feature-->
     <ScrollView
         android:layout_width="423dp"
         android:layout_height="483dp"
@@ -38,11 +43,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/HomeBanner">
 
+        <!--Constraints in the layout to avoid errors with width and height-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="600dp">
-
+            <!--popular color button-->
             <Button
                 android:id="@+id/popularColor"
                 android:layout_width="128dp"
@@ -65,7 +71,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.694"
                 app:layout_constraintWidth_percent="0.85" />
-
+            <!--search colors menu currently set to nothing-->
             <EditText
                 android:id="@+id/SearchColors"
                 android:layout_width="320dp"
@@ -85,7 +91,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0" />
-
+            <!--live color button current set to find color but will be changed later-->
             <Button
                 android:id="@+id/videoButton"
                 android:layout_width="128dp"
@@ -108,7 +114,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.136"
                 app:layout_constraintWidth_percent="0.85" />
-
+            <!--Find Color button used to open camera or upload photo-->
             <Button
                 android:id="@+id/photoButton"
                 android:layout_width="128dp"
@@ -130,7 +136,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.136"
                 app:layout_constraintWidth_percent="0.85" />
-
+            <!--Profile button, currently set to profile_screen-->
             <Button
                 android:id="@+id/profileButton"
                 android:layout_width="128dp"
@@ -154,6 +160,7 @@
                 app:layout_constraintVertical_bias="0.423"
                 app:layout_constraintWidth_percent="0.85" />
 
+            <!--Shop button, currently set to nothing-->
             <Button
                 android:id="@+id/shopButton"
                 android:layout_width="128dp"
