@@ -47,6 +47,22 @@ class ProfileActivity : AppCompatActivity() {
                         for (color in favColors){
                             val textView = TextView(this)
                             textView.text = color
+                            firestore.collection("paints")
+                                .whereEqualTo("name", color)  // Query by username
+                                .get()
+                                .addOnSuccessListener { paints ->
+                                    if (!paints.isEmpty) {
+                                        for(paint in paints){
+                                            val hex = paint.get("hex") as String
+                                            val rgbInfo = hex.removePrefix("rgb(").removeSuffix(")").split(",")
+                                            val red = rgbInfo[0].trim().toInt()
+                                            val green = rgbInfo[1].trim().toInt()
+                                            val blue = rgbInfo[2].trim().toInt()
+
+                                            textView.setBackgroundColor(Color.rgb(red,green,blue))
+                                        }
+                                    }
+                                }
                             textView.textSize = 20f
                             textView.setTextColor(Color.BLACK)
                             textView.setPadding(16, 8, 16, 8)
