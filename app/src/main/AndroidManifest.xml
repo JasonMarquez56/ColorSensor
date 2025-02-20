@@ -10,6 +10,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ColorSensor">
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <!-- Main Activity with SplashScreen theme -->
         <activity
             android:name=".MainActivity"

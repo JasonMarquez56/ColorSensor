@@ -13,10 +13,13 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import java.io.ByteArrayOutputStream
+import java.io.File
 
 class PhotoActivity : AppCompatActivity() {
 
+    private lateinit var photoFile: File
     private lateinit var takePhotoLauncher: ActivityResultLauncher<Intent>
     private lateinit var pickImageLauncher: ActivityResultLauncher<PickVisualMediaRequest>
 
@@ -29,9 +32,9 @@ class PhotoActivity : AppCompatActivity() {
 
         // Register the camera activity result
         takePhotoLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK && result.data != null) {
-                val bitmap = result.data?.extras?.get("data") as Bitmap
-                sendImageToFindColor(bitmap)
+            if (result.resultCode == RESULT_OK) {
+                val photoUri = FileProvider.getUriForFile(this, "${packageName}.provider", photoFile)
+                sendUriToFindColor(photoUri)
             } else {
                 Toast.makeText(this, "Camera capture failed", Toast.LENGTH_SHORT).show()
             }
@@ -50,7 +53,15 @@ class PhotoActivity : AppCompatActivity() {
 
         // Handle camera button click
         takePhoto.setOnClickListener {
-            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            // Always use the same file path
+            photoFile = File(cacheDir, "temp_image.jpg")
+
+            val photoUri = FileProvider.getUriForFile(this, "${packageName}.provider", photoFile)
+
+            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+                putExtra(MediaStore.EXTRA_OUTPUT, photoUri) // Save high-res image to file
+            }
+
             takePhotoLauncher.launch(cameraIntent)
         }
 
@@ -61,15 +72,15 @@ class PhotoActivity : AppCompatActivity() {
     }
 
     // Convert Bitmap to ByteArray and send to FindColorActivity
-    private fun sendImageToFindColor(bitmap: Bitmap) {
-        val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-        val byteArray = stream.toByteArray()
-
-        val intent = Intent(this, FindColorActivity::class.java)
-        intent.putExtra("image_bitmap", byteArray)
-        startActivity(intent)
-    }
+//    private fun sendImageToFindColor(bitmap: Bitmap) {
+//        val stream = ByteArrayOutputStream()
+//        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+//        val byteArray = stream.toByteArray()
+//
+//        val intent = Intent(this, FindColorActivity::class.java)
+//        intent.putExtra("image_bitmap", byteArray)
+//        startActivity(intent)
+//    }
 
     // Send URI to FindColorActivity
     private fun sendUriToFindColor(uri: Uri) {
