@@ -4,11 +4,11 @@
 
     <item android:title="Profile"
         android:id="@+id/profile"
-        android:icon="@drawable/account"/>
+        android:icon="@drawable/account_outline"/>
     <item android:title="Home"
         android:id="@+id/home"
         android:icon="@drawable/home_outline"/>
     <item android:title="Settings"
         android:id="@+id/settings"
-        android:icon="@drawable/camera_outline"/>
+        android:icon="@drawable/cog_outline"/>
 </menu>

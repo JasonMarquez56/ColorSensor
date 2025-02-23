@@ -13,10 +13,10 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import android.widget.LinearLayout
 import android.widget.Toast
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.api.Distribution.BucketOptions.Linear
 
 class ProfileActivity : AppCompatActivity() {
-
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
     var favColors : MutableList<String> = mutableListOf()
@@ -24,6 +24,7 @@ class ProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.profile_screen)
+        navigationBar()
 
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance()
@@ -177,6 +178,50 @@ class ProfileActivity : AppCompatActivity() {
 
             // Add to LinearLayout
             favColorContainer.addView(textView)
+        }
+    }
+
+    private fun navigationBar() {
+        // Navigation bar
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView3)
+
+        // Map default and selected icons
+        val iconMap = mapOf(
+            R.id.profile to Pair(R.drawable.account_outline, R.drawable.account),
+            R.id.home to Pair(R.drawable.home_outline, R.drawable.home),
+            R.id.settings to Pair(R.drawable.cog_outline, R.drawable.cog)
+        )
+
+        // Track currently selected item
+        var selectedItemId: Int? = null
+
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+
+            // Reset previous selection
+            selectedItemId?.let { prevId ->
+                bottomNavigationView.menu.findItem(prevId).setIcon(iconMap[prevId]?.first ?: R.drawable.home)
+            }
+
+            // Change selected icon
+            item.setIcon(iconMap[item.itemId]?.second ?: R.drawable.home)
+            selectedItemId = item.itemId
+
+            when (item.itemId) {
+                R.id.profile -> {
+                    // Handle Profile button click
+                    true
+                }
+                R.id.home -> {
+                    val intent = Intent(this, HomeActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.settings -> {
+                    // Handle Settings button click
+                    true
+                }
+                else -> false
+            }
         }
     }
 }
