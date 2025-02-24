@@ -8,7 +8,6 @@ import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -22,8 +21,6 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import java.io.IOException
 import java.lang.ref.WeakReference
-import kotlin.math.pow
-import kotlin.math.sqrt
 import com.example.colorsensor.utils.PaintFinder
 
 
@@ -42,7 +39,6 @@ class FindColorActivity : AppCompatActivity() {
     private val textViewRGB: TextView by lazy { findViewById(R.id.textViewRGB) }
     // find the closest Color
     private var closestColorName: String? = null
-    private var closestColorHex: String? = null
     // the size of the imageview and bitmap we need to 2 variables
     private var xRatioForBitmap = 1f
     private var yRatioForBitmap = 1f
@@ -200,7 +196,7 @@ class FindColorActivity : AppCompatActivity() {
     private fun searchClosestColor(targetRed: Int, targetGreen: Int, targetBlue: Int) {
         val targetColor = PaintFinder.PaintColor("", "", targetRed, targetGreen, targetBlue)
         val closestPaint = PaintFinder.findClosestPaint(targetColor, this)
-
+        // Setting XML values to correct paint and RGB when found
         if (closestPaint != null) {
             val closestRGB = "(${closestPaint.r}, ${closestPaint.g}, ${closestPaint.b})"
             textName.text = "Closest Paint: ${closestPaint.name}"
@@ -214,54 +210,51 @@ class FindColorActivity : AppCompatActivity() {
 
     private fun setupButtonClickListener() {
         val viewColor = findViewById<View>(R.id.viewColor)
-        viewColor.setOnClickListener {
-            val currentClosestColorHex = closestColorHex // Make a local copy to avoid smart cast issue
-            Log.d("DEBUG", "setupButtonClickListener - closestColorHex: $currentClosestColorHex, closestColorName: $closestColorName")
 
-            // Check if closestColorHex is null or empty
-            if (currentClosestColorHex.isNullOrEmpty()) {
-                Log.e("ERROR", "setupButtonClickListener - closestColorHex is null or empty!")
-                Toast.makeText(this, "Color data is not loaded yet", Toast.LENGTH_SHORT).show()
+        viewColor.setOnClickListener {
+            val colorName = textName.text.toString()
+            val rgbText = textViewRGB.text.toString()
+
+            Log.d("DEBUG", "setupButtonClickListener - textName: $colorName, textViewRGB: $rgbText")
+
+            // Ensure a valid color is selected before proceeding
+            if (colorName.contains("No matching paint found") || rgbText.isEmpty()) {
+                Log.e("ERROR", "setupButtonClickListener - No color loaded!")
+                Toast.makeText(this, "No color loaded", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // If closestColorHex is in RGB format, convert it to Hex
-            val hexColor = if (currentClosestColorHex.startsWith("rgb")) {
-                // Extract RGB values from the string using regex
-                val regex = Regex("rgb\\((\\d+), (\\d+), (\\d+)\\)")
-                val matchResult = regex.find(currentClosestColorHex)
+            // Extract RGB values from the text "(R, G, B)"
+            val regex = Regex("\\((\\d+), (\\d+), (\\d+)\\)")
+            val matchResult = regex.find(rgbText)
 
-                if (matchResult != null) {
-                    // Convert RGB to hex
-                    val red = matchResult.groupValues[1].toInt()
-                    val green = matchResult.groupValues[2].toInt()
-                    val blue = matchResult.groupValues[3].toInt()
+            if (matchResult != null) {
+                val red = matchResult.groupValues[1].toInt()
+                val green = matchResult.groupValues[2].toInt()
+                val blue = matchResult.groupValues[3].toInt()
+                val hexColor = String.format("#%02X%02X%02X", red, green, blue)
 
-                    // Format the hex string
-                    String.format("#%02X%02X%02X", red, green, blue)
-                } else {
-                    currentClosestColorHex // If it's not valid RGB, use as is
+                try {
+                    val color = Color.parseColor(hexColor)
+                    val intent = Intent(this, PaintInfoActivity::class.java).apply {
+                        putExtra("selected_color", color)
+                        putExtra("color_name", colorName.replace("Closest Paint: ", ""))
+                        putExtra("color_hex", hexColor)
+                    }
+
+                    Log.d("DEBUG", "Starting PaintInfoActivity with colorHex: $hexColor, colorName: ${colorName.replace("Closest Paint: ", "")}")
+                    startActivity(intent)
+                } catch (e: IllegalArgumentException) {
+                    Log.e("ERROR", "Invalid hex color format: $hexColor")
+                    Toast.makeText(this, "Invalid color format", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                currentClosestColorHex // If it's already a valid hex, use it
-            }
-
-            try {
-                val color = Color.parseColor(hexColor)
-                val intent = Intent(this, PaintInfoActivity::class.java)
-
-                intent.putExtra("selected_color", color)
-                intent.putExtra("color_name", closestColorName)
-                intent.putExtra("color_hex", hexColor)
-
-                Log.d("DEBUG", "Starting PaintInfoActivity with colorHex: $hexColor, colorName: $closestColorName")
-                startActivity(intent)
-            } catch (e: IllegalArgumentException) {
-                Log.e("ERROR", "Invalid hex color format: $hexColor")
-                Toast.makeText(this, "Invalid color format", Toast.LENGTH_SHORT).show()
+                Log.e("ERROR", "RGB format is incorrect: $rgbText")
+                Toast.makeText(this, "Error processing color", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
 
 
 

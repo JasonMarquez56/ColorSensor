@@ -7,6 +7,7 @@ import android.widget.TextView
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.ColorUtils
+import com.example.colorsensor.utils.PaintFinder
 
 class PaintInfoActivity : AppCompatActivity() {
 
@@ -15,25 +16,42 @@ class PaintInfoActivity : AppCompatActivity() {
         setContentView(R.layout.paint_info)
 
         // Retrieve the passed color information from the Intent
-        val selectedColor = intent.getIntExtra("selected_color", Color.WHITE)  // Default to white if no color is passed
+        val selectedColor = intent.getIntExtra("selected_color", Color.WHITE)
         val colorName = intent.getStringExtra("color_name") ?: "No name available"
 
         // Set the background color of the top box (where you want to show the closest color)
-        val colorBox = findViewById<View>(R.id.colorBox)  // Replace with actual ID of the box
+        val colorBox = findViewById<View>(R.id.colorBox)
         colorBox.setBackgroundColor(selectedColor)
 
-        // Optionally display the color's name and hex
-        val colorNameTextView = findViewById<TextView>(R.id.colorNameTextView)  // Replace with actual ID
+        // Display the color's name
+        val colorNameTextView = findViewById<TextView>(R.id.colorNameTextView)
         colorNameTextView.text = "Closest Color: $colorName"
+
+        // Textview and box for complementary
+        val complementaryTextView: TextView = findViewById(R.id.complementaryTextView)
+        val complementaryColorBox = findViewById<View>(R.id.complementaryColorBox)
 
         // Find the complementary color
         val complementaryColor = getComplementaryColor(selectedColor)
 
-        // Set the complementary color background in another view (you can customize this part)
-        val complementaryColorBox = findViewById<View>(R.id.complementaryColorBox)  // Replace with actual ID
-        complementaryColorBox.setBackgroundColor(complementaryColor)
+        // Finding the RGB Values of the complementary color
+        val red = Color.red(complementaryColor)
+        val green = Color.green(complementaryColor)
+        val blue = Color.blue(complementaryColor)
 
-        // Optionally display a back button
+        // Using the above values to search the database
+        val targetColor = PaintFinder.PaintColor("", "", red, green, blue)
+        val closestPaint = PaintFinder.findClosestPaint(targetColor, this)
+        // Setting XML values to correct paint and RGB when found
+        if (closestPaint != null) {
+            complementaryTextView.text = "Complementary Paint: ${closestPaint.name}"
+            val closestPaintColor = Color.rgb(closestPaint.r, closestPaint.g, closestPaint.b)
+            complementaryColorBox.setBackgroundColor(closestPaintColor)
+        } else {
+            complementaryTextView.text = "No matching paint found"
+        }
+
+        // Display a back button
         val backButton = findViewById<ImageView>(R.id.backButton) // Assuming you have a back button
         backButton.setOnClickListener {
             onBackPressed()
@@ -42,11 +60,6 @@ class PaintInfoActivity : AppCompatActivity() {
 
     // Function to find the complementary color
     private fun getComplementaryColor(color: Int): Int {
-        // Convert RGB to HSL
-        val red = Color.red(color)
-        val green = Color.green(color)
-        val blue = Color.blue(color)
-
         // Convert to HSL
         val hsl = FloatArray(3)
         ColorUtils.colorToHSL(color, hsl)
