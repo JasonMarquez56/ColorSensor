@@ -45,6 +45,7 @@ android {
 }
 
 dependencies {
+    implementation("com.google.code.gson:gson:2.8.8")
     implementation(platform("com.google.firebase:firebase-bom:32.0.0")) // Firebase BOM for consistent versions
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")

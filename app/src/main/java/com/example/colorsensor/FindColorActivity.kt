@@ -24,6 +24,8 @@ import java.io.IOException
 import java.lang.ref.WeakReference
 import kotlin.math.pow
 import kotlin.math.sqrt
+import com.example.colorsensor.utils.PaintFinder
+
 
 class FindColorActivity : AppCompatActivity() {
 
@@ -37,6 +39,7 @@ class FindColorActivity : AppCompatActivity() {
     private val textHex: TextView by lazy { findViewById(R.id.textView) }
     private val textRGB: TextView by lazy { findViewById(R.id.textView2) }
     private val textName: TextView by lazy { findViewById(R.id.textView8) }
+    private val textViewRGB: TextView by lazy { findViewById(R.id.textViewRGB) }
     // find the closest Color
     private var closestColorName: String? = null
     private var closestColorHex: String? = null
@@ -195,58 +198,19 @@ class FindColorActivity : AppCompatActivity() {
     // example: searchClosestColor(red, green, blue)
     @SuppressLint("SetTextI18n")
     private fun searchClosestColor(targetRed: Int, targetGreen: Int, targetBlue: Int) {
-        // Our firebase database with the collection label paints store rgb and name.
-        firestore.collection("paints")
-            .get()
-            .addOnSuccessListener { documents ->
-                // variables name and rgb
-                var closestColorDistance = Double.MAX_VALUE
-                var closestColorName: String? = null
-                var closestColorHex: String? = null
+        val targetColor = PaintFinder.PaintColor("", "", targetRed, targetGreen, targetBlue)
+        val closestPaint = PaintFinder.findClosestPaint(targetColor, this)
 
-                if (documents.isEmpty) { // if empty exit
-                    textName.text = "Color not found"
-                } else {
-                    // for loop through the document to find color
-                    for (document in documents) {
-                        // variables for name and rgb
-                        val colorName = document.getString("name")
-                        val colorHex = document.getString("hex")
-                        // Regular expression to extract RGB values from the hex string
-                        val regex = Regex("rgb\\((\\d+), (\\d+), (\\d+)\\)")
-                        val matchResult = regex.find(colorHex ?: "")
-                        // get the red, green, and blue of the rgb
-                        if (matchResult != null) {
-                            val dbRed = matchResult.groupValues[1].toInt()
-                            val dbGreen = matchResult.groupValues[2].toInt()
-                            val dbBlue = matchResult.groupValues[3].toInt()
-
-                            // find the distance between the target and database by subtracting the distance
-                            // searchClosestColor(red, green, blue) - matchResult
-                            val distance = sqrt(
-                                (targetRed - dbRed).toDouble().pow(2.0) +
-                                        (targetGreen - dbGreen).toDouble().pow(2.0) +
-                                        (targetBlue - dbBlue).toDouble().pow(2.0)
-                            )
-                            // if distance < closestColorDistance then update the closestColorDistance
-                            if (distance < closestColorDistance) {
-                                closestColorDistance = distance
-                                closestColorName = colorName
-                                closestColorHex = colorHex
-                            }
-                        }
-                    }
-                    // Update the text to show closestColorName
-                    this.closestColorName = closestColorName
-                    this.closestColorHex = closestColorHex
-                    closestColorName?.let {
-                        textName.text = "Closest color: $it \n$closestColorHex"
-                    } ?: run {
-                        textName.text = "Color not found"
-                    }
-                }
-            }
+        if (closestPaint != null) {
+            val closestRGB = "(${closestPaint.r}, ${closestPaint.g}, ${closestPaint.b})"
+            textName.text = "Closest Paint: ${closestPaint.name}"
+            textViewRGB.text = "RGB: $closestRGB"
+        } else {
+            textName.text = "No matching paint found"
+            textViewRGB.text = ""
+        }
     }
+
 
     private fun setupButtonClickListener() {
         val viewColor = findViewById<View>(R.id.viewColor)

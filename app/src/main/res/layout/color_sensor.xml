@@ -127,7 +127,22 @@ on the imageview and the app will display information-->
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.296" />
+    <!--show Paint RGB-->
     <!--show RGB-->
+
+    <TextView
+        android:id="@+id/textViewRGB"
+        android:layout_width="181dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="16dp"
+        android:text="RGB: "
+        app:layout_constraintBottom_toBottomOf="@+id/viewColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.052"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.297" />
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="181dp"
@@ -141,6 +156,7 @@ on the imageview and the app will display information-->
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.808" />
     <!--show Hex-->
+    <!--template for future button to store favorite color for users-->
     <TextView
         android:id="@+id/textView"
         android:layout_width="202dp"
@@ -151,8 +167,8 @@ on the imageview and the app will display information-->
         app:layout_constraintHorizontal_bias="0.057"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.677" />
-    <!--template for future button to store favorite color for users-->
+        app:layout_constraintVertical_bias="0.806" />
+
     <Button
         android:id="@+id/favorite"
         android:layout_width="210dp"

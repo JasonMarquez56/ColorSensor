@@ -1,54 +1,42 @@
 package com.example.colorsensor.utils
 
-import com.google.firebase.firestore.FirebaseFirestore
+import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.InputStreamReader
 
-object PaintFinder{
-    private val db = FirebaseFirestore.getInstance()
+object PaintFinder {
 
-    data class PaintColor(val name: String, val r: Int, val g: Int, val b: Int)
+    // Data class representing a paint color
+    data class PaintColor(val brand: String, val name: String, val r: Int, val g: Int, val b: Int)
 
-    // Finding closest paint match
+    // Function to load the local JSON file and parse it into a list of PaintColor objects
+    fun loadPaintColors(context: Context): List<PaintColor> {
+        // Open the formatted_paint_info.json file from assets/lookup
+        val inputStream = context.assets.open("lookup/formatted_paint_info.json")  // Access from assets folder
+        val reader = InputStreamReader(inputStream)
+
+        // Parse the JSON using Gson into a list of PaintColor objects
+        val gson = Gson()
+        val listType = object : TypeToken<List<PaintColor>>() {}.type
+        return gson.fromJson(reader, listType)
+    }
+
+    // Function to find the closest paint color based on RGB values
     fun findClosestPaint(
         targetColor: PaintColor,
-        // Adjustable range, modify as fit
-        range: Int = 30,
-        onResult: (PaintColor?) -> Unit,
-        onError: (Exception) -> Unit
-    ){
-        // Querying the database, filtering out paints outside of the range
-        db.collection("paints")
-            .whereGreaterThanOrEqualTo("r", targetColor.r - range)
-            .whereLessThanOrEqualTo("r", targetColor.r + range)
-            .whereGreaterThanOrEqualTo("g", targetColor.g - range)
-            .whereLessThanOrEqualTo("g", targetColor.g + range)
-            .whereGreaterThanOrEqualTo("b", targetColor.b - range)
-            .whereLessThanOrEqualTo("b", targetColor.b + range)
-            .get()
-            .addOnSuccessListener { documents ->
-                val colors = mutableListOf<PaintColor>()
+        context: Context,
+        range: Int = 30 // Optional range to tweak distance tolerance
+    ): PaintColor? {
+        val allColors = loadPaintColors(context)
 
-                for(document in documents){
-                    val name = document.getString("name") ?:"Unknown"
-                    val r = document.getLong("r")?.toInt() ?: 0
-                    val g = document.getLong("g")?.toInt() ?: 0
-                    val b = document.getLong("b")?.toInt() ?: 0
-                    colors.add(PaintColor(name, r, g, b))
-                }
-
-                // Finding closest color using Euclidean distance
-                val closestColor = colors.minByOrNull{ color ->
-                    val dr = color.r - targetColor.r
-                    val dg = color.g - targetColor.g
-                    val db = color.b - targetColor.b
-                    // Square Euclidean distance
-                    dr * dr + dg * dg + db * db
-                }
-
-                onResult(closestColor)
-            }
-            // Throwing exception if caught
-            .addOnFailureListener{exception ->
-                onError(exception)
-            }
+        // Find the paint color with the minimum distance to the target color (Euclidean distance)
+        return allColors.minByOrNull { color ->
+            val dr = color.r - targetColor.r
+            val dg = color.g - targetColor.g
+            val db = color.b - targetColor.b
+            // Calculate the square Euclidean distance
+            dr * dr + dg * dg + db * db
+        }
     }
 }
