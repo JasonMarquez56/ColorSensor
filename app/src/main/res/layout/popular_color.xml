@@ -10,228 +10,244 @@ favorite color and display on a wall-->
 
     <!--one of 25 view to show popular color. Set the size of teh box by using a background
     drawable border and set the constraint for layout-->
-    <View
-        android:id="@+id/boxcolor5"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.349" />
 
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor3"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
+
+    <!--Picture of a blank wall background to change color later-->
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="153dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="420dp"
+        android:text="RGB: "
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.283"
+        app:layout_constraintHorizontal_bias="0.914"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.349" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor12"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.808" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="150dp"
+        android:layout_height="29dp"
+        android:layout_marginTop="388dp"
+        android:text="Hex:"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.904"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.518" />
-    <!--one of 25 view to show popular color-->
+        app:layout_constraintVertical_bias="0.677" />
+
     <View
-        android:id="@+id/boxcolor11"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
+        android:id="@+id/viewColor11"
+        android:layout_width="173dp"
+        android:layout_height="119dp"
+        android:layout_marginTop="260dp"
+        android:background="#8DC6A2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.991"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <GridLayout
+        android:id="@+id/gridLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="16dp"
+        android:columnCount="5"
+        android:padding="10dp"
+        android:rowCount="5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.462" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor24"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.39"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.575" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor22"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.575" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor15"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.175"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.462" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor17"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.175"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.518" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor4"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.39"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.349" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor13"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.283"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.518" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor25"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.067"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.575" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor10"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.406" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor7"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.175"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.406" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor6"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.067"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.406" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor8"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.283"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.406" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor9"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.39"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.406" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor19"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.067"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.518" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor23"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.175"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.575" />
-    <!--one of 25 view to show popular color-->
+        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+        app:layout_constraintVertical_bias="0.0">
+
+        <!-- Creating 25 Views inside the Grid -->
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button5"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button6"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button7"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button8"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+        <Button
+            android:id="@+id/button9"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button10"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button11"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button12"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button13"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button14"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button15"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button16"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button17"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button18"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button19"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button20"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button21"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button22"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+        <Button
+            android:id="@+id/button23"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button24"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <Button
+            android:id="@+id/button25"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/square_button"
+            />
+
+        <!-- Repeat 25 times for a full 5x5 grid -->
+    </GridLayout>
+
     <TextView
         android:id="@+id/textView10"
         android:layout_width="296dp"
         android:layout_height="63dp"
         android:text="Popular Color"
+        android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -240,91 +256,7 @@ favorite color and display on a wall-->
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.685" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor1"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.067"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.349" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor18"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.067"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.462" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor21"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.283"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.575" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor20"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.39"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.462" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor2"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.175"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.349" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor14"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.39"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.518" />
-    <!--one of 25 view to show popular color-->
-    <View
-        android:id="@+id/boxcolor16"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:background="@drawable/border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.283"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.462" />
-    <!--Picture of a blank wall background to change color later-->
+
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="424dp"
@@ -342,10 +274,11 @@ favorite color and display on a wall-->
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Button"
+        android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.767"
+        app:layout_constraintHorizontal_bias="0.993"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.569" />
+        app:layout_constraintVertical_bias="0.686" />
 </androidx.constraintlayout.widget.ConstraintLayout>
