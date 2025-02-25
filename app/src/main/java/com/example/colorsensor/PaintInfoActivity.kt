@@ -82,8 +82,11 @@ class PaintInfoActivity : AppCompatActivity() {
 
         // Display a back button
         val backButton = findViewById<ImageView>(R.id.backButton)
-        backButton.setOnClickListener {
-            onBackPressed()
+        backButton.setOnClickListener{
+            val intent = Intent(this, FindColorActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+            startActivity(intent)
+            finish()
         }
     }
 
