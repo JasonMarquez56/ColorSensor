@@ -21,8 +21,7 @@
         android:id="@+id/colorBox"
         android:layout_width="380dp"
         android:layout_height="50dp"
-        android:layout_below="@id/backButton"
-        android:layout_marginTop="20dp"
+        android:layout_below="@id/colorNameTextView"
         android:background="#FFFFFF"
         android:gravity="center"
         android:orientation="vertical">
@@ -33,12 +32,12 @@
         android:id="@+id/colorNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/colorBox"
+        android:layout_below="@id/backButton"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="-115dp"
         android:text="Color Name"
         android:textColor="#000000"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:textStyle="bold"/>
 
     <!-- Complementary Color Name Title -->
     <TextView
