@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
@@ -86,15 +87,17 @@
     <!-- First Split Complementary Color Name Text -->
     <TextView
         android:id="@+id/splitComplementaryTextView1"
-        android:layout_width="wrap_content"
+        android:layout_width="185dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/splitComplementaryTitle"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="0dp"
         android:layout_marginStart="0dp"
         android:text="Split Complimentary:"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="#000000"
-        android:textSize="20sp" />
+        android:textSize="16sp" />
     <!-- Box to show the first split complementary color -->
     <View
         android:id="@+id/splitComplementaryColorBox1"
@@ -111,10 +114,12 @@
         android:layout_below="@id/splitComplementaryTitle"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="0dp"
-        android:layout_marginStart="180dp"
+        android:layout_marginStart="185dp"
         android:text="Split Complimentary:"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="#000000"
-        android:textSize="20sp" />
+        android:textSize="16sp" />
     <!-- Box to show the Second split complementary color -->
     <View
         android:id="@+id/splitComplementaryColorBox2"
@@ -139,15 +144,17 @@
     <!-- First Analogous Color Name Text -->
     <TextView
         android:id="@+id/analogousTextView1"
-        android:layout_width="wrap_content"
+        android:layout_width="185dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/analogousTitle"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="0dp"
         android:layout_marginStart="0dp"
         android:text="Analogous:"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="#000000"
-        android:textSize="20sp" />
+        android:textSize="16sp" />
     <!-- Box to show the first analogous color -->
     <View
         android:id="@+id/analogousColorBox1"
@@ -159,15 +166,17 @@
     <!-- Second Analogous Color Name Text -->
     <TextView
         android:id="@+id/analogousTextView2"
-        android:layout_width="wrap_content"
+        android:layout_width="185dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/analogousTitle"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="0dp"
-        android:layout_marginStart="180dp"
+        android:layout_marginStart="185dp"
         android:text="Analogous:"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="#000000"
-        android:textSize="20sp" />
+        android:textSize="16sp" />
     <!-- Box to show the second analogous color -->
     <View
         android:id="@+id/analogousColorBox2"
@@ -191,17 +200,19 @@
         android:textSize="20sp"
         android:textStyle="bold"/>
     <!-- First Triadic Color Name Text -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/triadicTextView1"
-        android:layout_width="wrap_content"
+        android:layout_width="185dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/triadicTitle"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="0dp"
         android:layout_marginStart="0dp"
         android:text="Triadic:"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="#000000"
-        android:textSize="20sp" />
+        android:textSize="16sp" />
     <!-- Box to show the first triadic color -->
     <View
         android:id="@+id/triadicColorBox1"
@@ -213,15 +224,17 @@
     <!-- Second Triadic Color Name Text -->
     <TextView
         android:id="@+id/triadicTextView2"
-        android:layout_width="wrap_content"
+        android:layout_width="185dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/triadicTitle"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="0dp"
-        android:layout_marginStart="180dp"
+        android:layout_marginStart="185dp"
         android:text="Triadic:"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="#000000"
-        android:textSize="20sp" />
+        android:textSize="16sp" />
     <!-- Box to show the second triadic color -->
     <View
         android:id="@+id/triadicColorBox2"
