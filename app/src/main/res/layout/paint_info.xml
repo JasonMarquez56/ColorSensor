@@ -43,8 +43,6 @@
         android:textColor="#000000"
         android:textSize="20sp" />
 
-    <!-- Complementary Color Name Title -->
-
     <!-- Complementary Color Name Text -->
     <TextView
         android:id="@+id/complementaryTitleView"
@@ -52,18 +50,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/colorBox"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="0dp"
         android:text="Complementary Color:"
         android:textColor="#000000"
         android:textSize="20sp" />
-
+    <!-- Complementary Color Name Title -->
     <TextView
         android:id="@+id/complementaryTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/colorBox"
+        android:layout_below="@id/complementaryTitleView"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="0dp"
         android:text="Complementary Color:"
         android:textColor="#000000"
         android:textSize="20sp" />
@@ -73,7 +71,7 @@
         android:layout_width="380dp"
         android:layout_height="87dp"
         android:layout_below="@id/complementaryTextView"
-        android:layout_marginTop="1dp" />
+        android:layout_marginTop="0dp" />
     <!-- Split Complementary Title Text -->
     <TextView
         android:id="@+id/splitComplementaryTitle"
@@ -105,7 +103,7 @@
         android:layout_width="190dp"
         android:layout_height="87dp"
         android:layout_below="@id/splitComplementaryTextView1"
-        android:layout_marginTop="1dp" />
+        android:layout_marginTop="0dp" />
 
     <!-- Second Split Complementary Color Name Text -->
     <TextView
@@ -124,8 +122,113 @@
         android:id="@+id/splitComplementaryColorBox2"
         android:layout_width="190dp"
         android:layout_height="87dp"
-        android:layout_marginStart="180dp"
         android:layout_below="@id/splitComplementaryTextView1"
+        android:layout_marginStart="180dp"
+        android:layout_marginTop="0dp" />
+    <!-- Analogous Title Text -->
+    <TextView
+        android:id="@+id/analogousTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/splitComplementaryColorBox1"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="0dp"
+        android:text="Analogous Colors:"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+    <!-- First Analogous Color Name Text -->
+    <TextView
+        android:id="@+id/analogousTextView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/analogousTitle"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="0dp"
+        android:text="Analogous:"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+    <!-- Box to show the first analogous color -->
+    <View
+        android:id="@+id/analogousColorBox1"
+        android:layout_width="190dp"
+        android:layout_height="87dp"
+        android:layout_below="@id/analogousTextView1"
+        android:layout_marginTop="1dp" />
+
+    <!-- Second Analogous Color Name Text -->
+    <TextView
+        android:id="@+id/analogousTextView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/analogousTitle"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="180dp"
+        android:text="Analogous:"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+    <!-- Box to show the second analogous color -->
+    <View
+        android:id="@+id/analogousColorBox2"
+        android:layout_width="190dp"
+        android:layout_height="87dp"
+        android:layout_marginStart="180dp"
+        android:layout_below="@id/analogousTextView2"
+        android:layout_marginTop="1dp" />
+
+    <!-- Triadic Title Text -->
+    <TextView
+        android:id="@+id/triadicTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/analogousColorBox2"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="0dp"
+        android:text="Triadic Colors:"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+    <!-- First Triadic Color Name Text -->
+    <TextView
+        android:id="@+id/triadicTextView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/triadicTitle"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="0dp"
+        android:text="Triadic:"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+    <!-- Box to show the first triadic color -->
+    <View
+        android:id="@+id/triadicColorBox1"
+        android:layout_width="190dp"
+        android:layout_height="87dp"
+        android:layout_below="@id/triadicTextView1"
+        android:layout_marginTop="1dp" />
+
+    <!-- Second Triadic Color Name Text -->
+    <TextView
+        android:id="@+id/triadicTextView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/triadicTitle"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="180dp"
+        android:text="Triadic:"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+    <!-- Box to show the second triadic color -->
+    <View
+        android:id="@+id/triadicColorBox2"
+        android:layout_width="190dp"
+        android:layout_height="87dp"
+        android:layout_marginStart="180dp"
+        android:layout_below="@id/triadicTextView2"
         android:layout_marginTop="1dp" />
 
 </RelativeLayout>

@@ -52,6 +52,33 @@ class PaintInfoActivity : AppCompatActivity() {
         updateColorInfo(splitComp1, splitComplementaryTextView1, splitComplementaryColorBox1)
         updateColorInfo(splitComp2, splitComplementaryTextView2, splitComplementaryColorBox2)
 
+        // Finding analogous complimentary colors
+        val (analogousColor1, analogousColor2) = getAnalogousColors(selectedColor)
+
+        // Analogous text and color boxes
+        val analogousTextView1: TextView = findViewById(R.id.analogousTextView1)
+        val analogousColorBox1 = findViewById<View>(R.id.analogousColorBox1)
+
+        val analogousTextView2: TextView = findViewById(R.id.analogousTextView2)
+        val analogousColorBox2 = findViewById<View>(R.id.analogousColorBox2)
+
+        // Updating text and color boxes for analogous
+        updateColorInfo(analogousColor1, analogousTextView1, analogousColorBox1)
+        updateColorInfo(analogousColor2, analogousTextView2, analogousColorBox2)
+
+        // Finding analogous complimentary colors
+        val (triadicColor1, triadicColor2) = getTriadicColors(selectedColor)
+
+        // Triadic text and color boxes
+        val triadicTextView1: TextView = findViewById(R.id.triadicTextView1)
+        val triadicColorBox1 = findViewById<View>(R.id.triadicColorBox1)
+
+        val triadicTextView2: TextView = findViewById(R.id.triadicTextView2)
+        val triadicColorBox2 = findViewById<View>(R.id.triadicColorBox2)
+
+        // Updating text and color boxes for triadic
+        updateColorInfo(triadicColor1, triadicTextView1, triadicColorBox1)
+        updateColorInfo(triadicColor2, triadicTextView2, triadicColorBox2)
 
         // Display a back button
         val backButton = findViewById<ImageView>(R.id.backButton)
@@ -83,10 +110,12 @@ class PaintInfoActivity : AppCompatActivity() {
         val splitComp2 = FloatArray(3)
 
         splitComp1[0] = (hsl[0] + 150) % 360
-        splitComp2[0] = (hsl[0] - 150 + 360) % 360  // Ensure it's positive
+        // Ensure it's positive
+        splitComp2[0] = (hsl[0] - 150 + 360) % 360
 
-        splitComp1[1] = hsl[1] // Keep saturation
-        splitComp1[2] = hsl[2] // Keep lightness
+        // Keep saturation and lightness
+        splitComp1[1] = hsl[1]
+        splitComp1[2] = hsl[2]
 
         splitComp2[1] = hsl[1]
         splitComp2[2] = hsl[2]
@@ -97,6 +126,42 @@ class PaintInfoActivity : AppCompatActivity() {
 
         return Pair(color1, color2)
     }
+
+    private fun getAnalogousColors(color: Int): Pair<Int, Int> {
+        // Convert to HSL
+        val hsl = FloatArray(3)
+        ColorUtils.colorToHSL(color, hsl)
+
+        // Compute the two analogous colors by shifting hue ±30°
+        val leftHSL = hsl.clone()
+        val rightHSL = hsl.clone()
+
+        // Shift left, ensuring positive, and shift right
+        leftHSL[0] = (hsl[0] - 30 + 360) % 360
+        rightHSL[0] = (hsl[0] + 30) % 360
+
+        // Convert back to RGB
+        val leftColor = ColorUtils.HSLToColor(leftHSL)
+        val rightColor = ColorUtils.HSLToColor(rightHSL)
+
+        return Pair(leftColor, rightColor)
+    }
+
+    private fun getTriadicColors(color: Int): Pair<Int, Int> {
+        val hsl = FloatArray(3)
+        ColorUtils.colorToHSL(color, hsl)
+
+        // Compute the two triadic colors (hue rotated by ±120 degrees)
+        val triadicHSL1 = hsl.clone()
+        triadicHSL1[0] = (triadicHSL1[0] + 120) % 360
+
+        val triadicHSL2 = hsl.clone()
+        triadicHSL2[0] = (triadicHSL2[0] + 240) % 360
+
+        return Pair(ColorUtils.HSLToColor(triadicHSL1), ColorUtils.HSLToColor(triadicHSL2))
+    }
+
+
 
     private fun updateColorInfo(
         color: Int,
@@ -121,16 +186,15 @@ class PaintInfoActivity : AppCompatActivity() {
             // Make the box clickable and route to PaintInfoActivity
             colorBox.setOnClickListener {
                 val intent = Intent(this, PaintInfoActivity::class.java)
-                intent.putExtra("selected_color", closestPaintColor) // Pass the paint color
-                intent.putExtra("color_name", closestPaint.name) // Pass the paint color name
+                // Pass the paint color and name
+                intent.putExtra("selected_color", closestPaintColor)
+                intent.putExtra("color_name", closestPaint.name)
                 startActivity(intent)
             }
         } else {
             textView.text = "No matching paint found"
         }
     }
-
-
 }
 
 
