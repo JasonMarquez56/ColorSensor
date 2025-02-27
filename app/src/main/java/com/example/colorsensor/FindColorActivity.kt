@@ -169,9 +169,20 @@ class FindColorActivity : AppCompatActivity() {
 
             // check the bitmap if it is isInitialized
             if (this::bitmap.isInitialized) {
+                // New code 172 - 185
+                // Get the actual image drawable bounds inside the ImageView
+                val imageMatrixValues = FloatArray(9)
+                imageView.imageMatrix.getValues(imageMatrixValues)
+
+                // Extract scaling factors and translations
+                val scaleX = imageMatrixValues[0]
+                val scaleY = imageMatrixValues[4]
+                val translateX = imageMatrixValues[2]
+                val translateY = imageMatrixValues[5]
+
                 // Convert touch coordinates to match the size of the imageview and bitmap
-                val touchXtoBitmap = motionEvent.x * xRatioForBitmap
-                val touchYtoBitmap = motionEvent.y * yRatioForBitmap
+                val touchXtoBitmap = (motionEvent.x - translateX) / scaleX
+                val touchYtoBitmap = (motionEvent.y - translateY) / scaleY
 
                 // Ensure the touch coordinates are within the bitmap bounds
                 if (touchXtoBitmap in 0f..bitmap.width.toFloat() &&
