@@ -16,6 +16,9 @@ class PaintInfoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.paint_info)
 
+        // Initialize shade compare button
+        val shadeCompareButton = findViewById<View>(R.id.compareButton2)
+
         // Retrieve the passed color information from the Intent
         val selectedColor = intent.getIntExtra("selected_color", Color.WHITE)
         val colorName = intent.getStringExtra("color_name") ?: "No name available"
@@ -79,6 +82,15 @@ class PaintInfoActivity : AppCompatActivity() {
         // Updating text and color boxes for triadic
         updateColorInfo(triadicColor1, triadicTextView1, triadicColorBox1)
         updateColorInfo(triadicColor2, triadicTextView2, triadicColorBox2)
+
+        // On click listener for the shade compare button
+        shadeCompareButton.setOnClickListener {
+            val intent = Intent(this, ShadeCompareActivity::class.java)
+            // Pass the paint color and name
+            intent.putExtra("selected_color", selectedColor)
+            intent.putExtra("color_name", colorName)
+            startActivity(intent)
+        }
 
         // Display a back button
         val backButton = findViewById<ImageView>(R.id.backButton)

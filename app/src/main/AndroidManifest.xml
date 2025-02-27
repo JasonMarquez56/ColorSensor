@@ -84,6 +84,9 @@
         <!-- Paint Info -->
         <activity android:name=".PaintInfoActivity" />
 
+        <!-- Shade Comparison -->
+        <activity android:name=".ShadeCompareActivity" />
+
 
     </application>
 </manifest>
