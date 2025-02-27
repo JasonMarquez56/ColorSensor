@@ -130,12 +130,12 @@ class FindColorActivity : AppCompatActivity() {
             }
         }
 
-
+        // magnifier 133 - 153 line
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             magnifier = Magnifier.Builder(imageView)
                 .setInitialZoom(2.3f)
                 .setElevation(10.0f)
-                .setCornerRadius(20.0f)
+                .setCornerRadius(50.0f) // circle
                 .setSize(100, 100)
                 .build()
         }
@@ -155,7 +155,7 @@ class FindColorActivity : AppCompatActivity() {
         // Set touch listener for color detection
         // This is for color strip and find color using built-in android studio tools
         imageView.setOnTouchListener { _, motionEvent ->
-
+            // magnifier 158 - 168
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && isMagnifierActive) {
                 when (motionEvent.action) {
                     MotionEvent.ACTION_MOVE, MotionEvent.ACTION_DOWN -> {
