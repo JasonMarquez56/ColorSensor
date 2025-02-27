@@ -8,6 +8,21 @@ on the imageview and the app will display information-->
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!--The view used to show find color based on  color background-->
+
+    <Button
+        android:id="@+id/button26"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
+        android:text="Magnifier"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.04"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        app:layout_constraintVertical_bias="0.023" />
+
     <View
         android:id="@+id/viewColor"
         android:layout_width="0dp"

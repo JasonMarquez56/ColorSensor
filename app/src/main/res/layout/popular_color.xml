@@ -10,10 +10,6 @@ favorite color and display on a wall-->
 
     <!--one of 25 view to show popular color. Set the size of teh box by using a background
     drawable border and set the constraint for layout-->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id= "@+id/boundary"/>
 
     <!--Picture of a blank wall background to change color later-->
     <TextView

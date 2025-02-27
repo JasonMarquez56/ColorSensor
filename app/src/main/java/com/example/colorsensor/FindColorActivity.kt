@@ -14,8 +14,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Magnifier
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,6 +30,10 @@ class FindColorActivity : AppCompatActivity() {
 
     private lateinit var bitmap: Bitmap
     private lateinit var firestore: FirebaseFirestore // reference to the database for color and username
+    //Magnifer
+    private var magnifier: Magnifier? = null
+    private var isMagnifierActive = false // Track magnifier state
+
 
     // reference to the layout of an imageview to find color
     private val imageView: ImageView by lazy { findViewById(R.id.imageView) }
@@ -43,6 +49,7 @@ class FindColorActivity : AppCompatActivity() {
     private var xRatioForBitmap = 1f
     private var yRatioForBitmap = 1f
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("ClickableViewAccessibility", "SetTextI18n", "DiscouragedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +59,7 @@ class FindColorActivity : AppCompatActivity() {
 
         val byteArray = intent.getByteArrayExtra("image_bitmap")
         val imageUri = intent.getStringExtra("image_uri")
+        val zoomButton: Button = findViewById(R.id.button26)
 
         val favoriteButton = findViewById<Button>(R.id.favorite)
         firestore = FirebaseFirestore.getInstance()
@@ -122,9 +130,43 @@ class FindColorActivity : AppCompatActivity() {
             }
         }
 
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            magnifier = Magnifier.Builder(imageView)
+                .setInitialZoom(2.3f)
+                .setElevation(10.0f)
+                .setCornerRadius(20.0f)
+                .setSize(100, 100)
+                .build()
+        }
+
+        // Toggle magnifier on button press
+        zoomButton.setOnClickListener {
+            isMagnifierActive = !isMagnifierActive // Toggle state
+
+            if (isMagnifierActive) {
+                zoomButton.text = "Disable Magnifier"
+            } else {
+                zoomButton.text = "Enable Magnifier"
+                magnifier?.dismiss()
+            }
+        }
+
         // Set touch listener for color detection
         // This is for color strip and find color using built-in android studio tools
         imageView.setOnTouchListener { _, motionEvent ->
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && isMagnifierActive) {
+                when (motionEvent.action) {
+                    MotionEvent.ACTION_MOVE, MotionEvent.ACTION_DOWN -> {
+                        magnifier?.show(motionEvent.rawX, motionEvent.y)
+                    }
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                        magnifier?.dismiss()
+                    }
+                }
+            }
+
             // check the bitmap if it is isInitialized
             if (this::bitmap.isInitialized) {
                 // Convert touch coordinates to match the size of the imageview and bitmap

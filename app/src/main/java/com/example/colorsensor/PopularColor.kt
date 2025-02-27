@@ -61,9 +61,7 @@ class PopularColor : AppCompatActivity() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && isMagnifierActive) {
                     when (event.action) {
                         MotionEvent.ACTION_MOVE, MotionEvent.ACTION_DOWN -> {
-                            val viewPosition = IntArray(2)
-                            imageView.getLocationOnScreen(viewPosition)
-                            magnifier?.show(event.rawX - viewPosition[0], event.y - viewPosition[1])
+                            magnifier?.show(event.rawX, event.y)
                         }
                         MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                             magnifier?.dismiss()
