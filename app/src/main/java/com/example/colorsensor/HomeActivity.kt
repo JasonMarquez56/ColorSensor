@@ -102,7 +102,8 @@ class HomeActivity : AppCompatActivity() {
                     true
                 }
                 R.id.home -> {
-                    // Handle Home button click
+                    val intent = Intent(this, HomeActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.settings -> {

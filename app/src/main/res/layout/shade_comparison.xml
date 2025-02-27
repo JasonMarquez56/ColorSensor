@@ -5,17 +5,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        app:itemIconTint="@color/white"
+        app:itemRippleColor="@color/white"
+        app:itemTextColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav" />
+
     <View
         android:id="@+id/viewColor"
         android:layout_width="116dp"
         android:layout_height="116dp"
         android:background="@drawable/rounded_edittext"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.057"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gradientLayout"
-        app:layout_constraintVertical_bias="0.174" />
+        app:layout_constraintTop_toBottomOf="@+id/gradientLayout" />
 
     <TextView
         android:id="@+id/colorNameText"
@@ -23,12 +35,12 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.086"
+        app:layout_constraintHorizontal_bias="0.098"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewColor"
-        app:layout_constraintVertical_bias="0.039" />
+        app:layout_constraintVertical_bias="0.173" />
 
     <LinearLayout
         android:id="@+id/gradientLayout"

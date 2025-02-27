@@ -100,6 +100,11 @@ class PaintInfoActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
+        // Handle Back button click
+        backButton.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     // Function to find the complementary color
