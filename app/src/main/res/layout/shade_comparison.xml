@@ -22,7 +22,7 @@
         android:id="@+id/viewColor"
         android:layout_width="116dp"
         android:layout_height="116dp"
-        android:background="@drawable/rounded_edittext"
+        android:background="@drawable/rounded_block"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.057"
