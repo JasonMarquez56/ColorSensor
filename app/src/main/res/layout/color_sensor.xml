@@ -130,19 +130,20 @@ on the imageview and the app will display information-->
             android:background="@drawable/border" />
     </LinearLayout>
     <!--show the name of color from the database -->
+    <!--show Paint RGB-->
+    <!--show RGB-->
+
     <TextView
         android:id="@+id/textView8"
-        android:layout_width="204dp"
+        android:layout_width="350dp"
         android:layout_height="72dp"
         android:text=""
         app:layout_constraintBottom_toBottomOf="@+id/viewColor"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.057"
+        app:layout_constraintHorizontal_bias="0.196"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.296" />
-    <!--show Paint RGB-->
-    <!--show RGB-->
+        app:layout_constraintVertical_bias="0.289" />
 
     <TextView
         android:id="@+id/textViewRGB"

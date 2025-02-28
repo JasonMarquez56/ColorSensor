@@ -228,6 +228,16 @@ class FindColorActivity : AppCompatActivity() {
                         textHex.text = "Hex: #${Integer.toHexString(pixel).uppercase().substring(2)}"
                         textRGB.text = "RGB: ($red, $green, $blue)"
 
+                        // Calculating luminance with standard weighted formula
+                        val luminance = (0.299 * red + 0.587 * green + 0.114 * blue) / 255
+                        // Changing text color based off luminance, making it more visible
+                        val textColor = if (luminance > 0.5) Color.BLACK else Color.WHITE
+                        // Changing color of text fields
+                        textRGB.setTextColor(textColor)
+                        textHex.setTextColor(textColor)
+                        textName.setTextColor(textColor)
+                        textViewRGB.setTextColor(textColor)
+
                         // Search the closest color when user lifts their finger
                         if (motionEvent.action == MotionEvent.ACTION_UP) {
                             // call the function to update the textView -> textName
