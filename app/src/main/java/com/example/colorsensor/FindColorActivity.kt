@@ -25,6 +25,12 @@ import java.io.IOException
 import java.lang.ref.WeakReference
 import com.example.colorsensor.utils.PaintFinder
 
+// import for popupWindow
+import android.content.Context
+import android.graphics.drawable.ColorDrawable
+import android.widget.LinearLayout
+import android.widget.PopupWindow
+
 
 class FindColorActivity : AppCompatActivity() {
 
@@ -210,6 +216,14 @@ class FindColorActivity : AppCompatActivity() {
                             // this avoid manually getting each viewColor by viewColor2 - 10
                             val resID = resources.getIdentifier("viewColor$i", "id", packageName)
                             findViewById<View>(resID)?.setBackgroundColor(color)
+                            findViewById<View>(resID)?.setOnClickListener {
+                                val colorStrip = (findViewById<View>(resID)?.background as ColorDrawable).color
+                                val colorHex = String.format("#%06X", 0xFFFFFF and colorStrip)
+                                val red = Color.red(colorStrip)
+                                val green = Color.green(colorStrip)
+                                val blue = Color.blue(colorStrip)
+                                showPopup(it.context, it,"Hex: $colorHex\nRGB: ($red, $green, $blue)")
+                            }
                         }
 
                         step = 5 // Color strip get the next lighter color use steps to update next rgb
@@ -223,6 +237,14 @@ class FindColorActivity : AppCompatActivity() {
                             // this avoid manually getting each viewColor by viewColor2 - 10
                             val resID = resources.getIdentifier("viewColor$i", "id", packageName)
                             findViewById<View>(resID)?.setBackgroundColor(color) //set the background color
+                            findViewById<View>(resID)?.setOnClickListener {
+                                val colorStrip = (findViewById<View>(resID)?.background as ColorDrawable).color
+                                val colorHex = String.format("#%06X", 0xFFFFFF and colorStrip)
+                                val red = Color.red(colorStrip)
+                                val green = Color.green(colorStrip)
+                                val blue = Color.blue(colorStrip)
+                                showPopup(it.context, it,"Hex: $colorHex\nRGB: ($red, $green, $blue)")
+                            }
                         }
                         // update the text for Hex and RGB to the target color
                         textHex.text = "Hex: #${Integer.toHexString(pixel).uppercase().substring(2)}"
@@ -343,5 +365,27 @@ class FindColorActivity : AppCompatActivity() {
 
     private fun getDefaultBitmap(): Bitmap {
         return BitmapFactory.decodeResource(resources, R.drawable.colorsensor_home_banner)
+    }
+
+    fun showPopup(context: Context, anchorView: View, message: String) {
+        // create a LinearLayout to serve as the popup content
+        val popupView = LinearLayout(context)
+        popupView.orientation = LinearLayout.VERTICAL
+        popupView.setPadding(20, 20, 20, 20)
+
+        // display the message
+        val textView = TextView(context)
+        textView.text = message
+        textView.textSize = 18f
+        textView.setTextColor(Color.BLACK)
+
+        // add textView to the layout
+        popupView.addView(textView)
+
+        // create a popupWindow using the dynamic layout
+        val popupWindow = PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true)
+
+        // show the popupWindow
+        popupWindow.showAsDropDown(anchorView, 0, 0)
     }
 }
