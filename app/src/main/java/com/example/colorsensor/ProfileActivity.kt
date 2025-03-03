@@ -52,7 +52,7 @@ class ProfileActivity : AppCompatActivity() {
                 if (!documents.isEmpty) {
                     for (document in documents) {
 //                        Retrieve the user's favorite colors
-//                        favColors = document.get("favoriteColors") as? MutableList<favColor> ?: mutableListOf<favColor>()
+
                         val colors = document.get("favoriteColors") as? List<Map<String, Any>> ?: emptyList()
                         favColors = colors.mapNotNull { colorMap ->
                             try {
