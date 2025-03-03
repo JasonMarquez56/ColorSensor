@@ -15,11 +15,13 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.api.Distribution.BucketOptions.Linear
+import com.example.colorsensor.RegisterActivity.favColor
+import com.example.colorsensor.RegisterActivity.RGB
 
 class ProfileActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
-    var favColors : MutableList<String> = mutableListOf()
+    var favColors : MutableList<favColor> = mutableListOf<favColor>()
     var selectedFav = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +52,21 @@ class ProfileActivity : AppCompatActivity() {
                 if (!documents.isEmpty) {
                     for (document in documents) {
 //                        Retrieve the user's favorite colors
-                        favColors = document.get("favoriteColors") as? MutableList<String> ?: mutableListOf()
+//                        favColors = document.get("favoriteColors") as? MutableList<favColor> ?: mutableListOf<favColor>()
+                        val colors = document.get("favoriteColors") as? List<Map<String, Any>> ?: emptyList()
+                        favColors = colors.mapNotNull { colorMap ->
+                            try {
+                                val name = colorMap["name"] as? String
+                                val rgbMap = colorMap["rgb"] as? Map<String, Long>
+                                val r = rgbMap?.get("r")?.toInt() ?: 0
+                                val g = rgbMap?.get("g")?.toInt() ?: 0
+                                val b = rgbMap?.get("b")?.toInt() ?: 0
+                                favColor(name, RGB(r, g, b))
+                            } catch (e: Exception) {
+                                Log.e("Firestore", "Error parsing favorite color", e)
+                                null // Skip this entry if there’s any problem
+                            }
+                        }.toMutableList()
                         displayColors(favColorContainer)
                     }
                 } else {
@@ -65,12 +81,13 @@ class ProfileActivity : AppCompatActivity() {
         // Set the username
         profileUsername.text = username
         upButton.setOnClickListener(){
-            val index = favColors.indexOf(selectedFav)
+            val index = favColors.indexOfFirst{it.name ==selectedFav}
             if(index >0){
                 Toast.makeText(this, "Succeeded to change Order of $selectedFav", Toast.LENGTH_SHORT)
                     .show()
                 val swap = favColors.get(index-1)
-                favColors.set(index-1, selectedFav)
+                val current = favColors.get(index)
+                favColors.set(index-1, current)
                 favColors.set(index,swap)
                 //CHANGE Text view of SELECTED COLOR WITH ABOVE
                 displayColors(favColorContainer)
@@ -85,12 +102,13 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
         downButton.setOnClickListener(){
-            val index = favColors.indexOf(selectedFav)
+            val index = favColors.indexOfFirst{it.name ==selectedFav}
             if(index <favColors.size-1 ){
                 Toast.makeText(this, "Succeeded to change Order of $selectedFav", Toast.LENGTH_SHORT)
                     .show()
                 val swap = favColors.get(index+1)
-                favColors.set(index+1, selectedFav)
+                val current = favColors.get(index)
+                favColors.set(index+1, current)
                 favColors.set(index,swap)
                 //CHANGE Text view of SELECTED COLOR WITH ABOVE
                 displayColors(favColorContainer)
@@ -152,23 +170,15 @@ class ProfileActivity : AppCompatActivity() {
         favColorContainer.removeAllViews()
         for (color in favColors){
             val textView = TextView(this)
-            textView.text = color
-            firestore.collection("paints")
-                .whereEqualTo("name", color)  // Query by username
-                .get()
-                .addOnSuccessListener { paints ->
-                    if (!paints.isEmpty) {
-                        for(paint in paints){
-                            val hex = paint.get("hex") as String
-                            val rgbInfo = hex.removePrefix("rgb(").removeSuffix(")").split(",")
-                            val red = rgbInfo[0].trim().toInt()
-                            val green = rgbInfo[1].trim().toInt()
-                            val blue = rgbInfo[2].trim().toInt()
+            textView.text = color.name
 
-                            textView.setBackgroundColor(Color.rgb(red,green,blue))
-                        }
-                    }
-                }
+            val red = color.rgb.r
+            val green = color.rgb.g
+            val blue = color.rgb.b
+
+            textView.setBackgroundColor(Color.rgb(red,green,blue))
+
+
             textView.setOnClickListener {
                 selectedFav = textView.text.toString()
             }

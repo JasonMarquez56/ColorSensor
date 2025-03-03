@@ -24,7 +24,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.io.IOException
 import java.lang.ref.WeakReference
 import com.example.colorsensor.utils.PaintFinder
-
+import com.example.colorsensor.RegisterActivity.RGB
+import com.example.colorsensor.RegisterActivity.favColor
 // import for popupWindow
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
@@ -51,7 +52,7 @@ class FindColorActivity : AppCompatActivity() {
     private val textName: TextView by lazy { findViewById(R.id.textView8) }
     private val textViewRGB: TextView by lazy { findViewById(R.id.textViewRGB) }
     // find the closest Color
-    private var closestColorName: String? = null
+    private var selectedColor = RGB(0,0,0)
     // the size of the imageview and bitmap we need to 2 variables
     private var xRatioForBitmap = 1f
     private var yRatioForBitmap = 1f
@@ -90,8 +91,9 @@ class FindColorActivity : AppCompatActivity() {
                             val userId = document.id
                             Toast.makeText(this, userId, Toast.LENGTH_SHORT).show()
                             val user = firestore.collection("users").document(userId)
+                            val colorAdd = favColor(textName.text.toString(),selectedColor)
                             //add favorite color.
-                            user.update("favoriteColors", FieldValue.arrayUnion(closestColorName))
+                            user.update("favoriteColors", FieldValue.arrayUnion(colorAdd))
                                 .addOnSuccessListener {
                                     Toast.makeText(this, "Succeeded to create", Toast.LENGTH_SHORT)
                                         .show()
@@ -265,6 +267,8 @@ class FindColorActivity : AppCompatActivity() {
                         // update the text for Hex and RGB to the target color
                         textHex.text = "Hex: #${Integer.toHexString(pixel).uppercase().substring(2)}"
                         textRGB.text = "RGB: ($red, $green, $blue)"
+                        selectedColor = RGB(red,green,blue)
+
 
                         // Calculating luminance with standard weighted formula
                         val luminance = (0.299 * red + 0.587 * green + 0.114 * blue) / 255

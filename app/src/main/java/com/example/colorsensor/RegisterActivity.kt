@@ -84,7 +84,7 @@ class RegisterActivity : AppCompatActivity() {
                             "username" to username,
                             "email" to email,
                             "password" to hashedPassword,
-                            "favoriteColors" to emptyList<String>()
+                            "favoriteColors" to mutableListOf<favColor>()
                         )
 
                         firestore.collection("users")
@@ -123,7 +123,8 @@ class RegisterActivity : AppCompatActivity() {
             onBackPressed()
         }
     }
-
+    data class RGB(val r: Int, val g: Int, val b: Int)
+    data class favColor(val name: String?, val rgb: RGB)
     // Function to implement a SHA-256 hashing stored as companion object for login class to call function
     companion object{
         fun hashPassword(password: String): String {
