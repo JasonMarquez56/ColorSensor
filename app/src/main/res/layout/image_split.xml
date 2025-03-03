@@ -97,16 +97,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.806" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="13dp"
-        android:layout_height="722dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewColor" />
-
     <TextView
         android:id="@+id/textView8_2"
         android:layout_width="196dp"

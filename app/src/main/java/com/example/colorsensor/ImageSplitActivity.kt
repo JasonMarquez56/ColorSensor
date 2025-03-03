@@ -33,7 +33,7 @@ class ImageSplitActivity : AppCompatActivity() {
     private val textName_2: TextView by lazy { findViewById(R.id.textView8_2) }
     private val textViewRGB_2: TextView by lazy { findViewById(R.id.textViewRGB_2) }
 
-    private var tap = 0
+    private var tap = 0 // switch viewColor between 0 and 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
