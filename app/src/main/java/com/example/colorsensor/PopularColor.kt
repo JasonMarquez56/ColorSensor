@@ -4,14 +4,17 @@ import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Magnifier
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.random.Random
 
 //testing
@@ -76,6 +79,36 @@ class PopularColor : AppCompatActivity() {
             val newRed = Random.nextInt(0, 256)
             val newGreen = Random.nextInt(0, 256)
             val newBlue = Random.nextInt(0, 256)
+
+
+            val firestore = FirebaseFirestore.getInstance()
+
+            // get all favorite color
+//            firestore.collection("users")
+//                .get()
+//                .addOnSuccessListener { documents ->
+//                    // store favorite color in a list
+//                    val allFavoriteColors = mutableListOf<String>()
+//
+//                    for (document in documents) {
+//                        val favoriteColors = document.get("favoriteColors") as? List<String>
+//                        if (favoriteColors != null) {
+//                            allFavoriteColors.addAll(favoriteColors)
+//                        }
+//                    }
+//
+//                    if (allFavoriteColors.isNotEmpty()) {
+//                        // Remove duplicates and join into a string to display
+//                        val uniqueColors = allFavoriteColors.toSet().joinToString(", ")
+//                        Toast.makeText(this, "All Favorite Colors: $uniqueColors", Toast.LENGTH_LONG).show()
+//                    } else {
+//                        Toast.makeText(this, "No favorite colors found", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//                .addOnFailureListener { exception ->
+//                    Log.e("Firestore", "Error getting favorite colors: ", exception)
+//                    Toast.makeText(this, "Failed to fetch favorite colors", Toast.LENGTH_SHORT).show()
+//                }
 
             // Create a random color
             val color = Color.argb(255, newRed, newGreen, newBlue)

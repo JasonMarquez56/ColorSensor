@@ -87,6 +87,12 @@
         <!-- Shade Comparison -->
         <activity android:name=".ShadeCompareActivity" />
 
+        <!-- Image Split -->
+        <activity
+            android:name=".ImageSplitActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ColorSensor" />
+
 
     </application>
 </manifest>

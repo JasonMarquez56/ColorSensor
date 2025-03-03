@@ -30,6 +30,7 @@ import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import java.io.ByteArrayOutputStream
 
 
 class FindColorActivity : AppCompatActivity() {
@@ -66,6 +67,7 @@ class FindColorActivity : AppCompatActivity() {
         val byteArray = intent.getByteArrayExtra("image_bitmap")
         val imageUri = intent.getStringExtra("image_uri")
         val zoomButton: Button = findViewById(R.id.button26)
+        val testButton = findViewById<Button>(R.id.button27)
 
         val favoriteButton = findViewById<Button>(R.id.favorite)
         firestore = FirebaseFirestore.getInstance()
@@ -126,6 +128,20 @@ class FindColorActivity : AppCompatActivity() {
         } else {
             Log.e("FindColorActivity", "Error: Bitmap is not initialized properly.")
             imageView.setImageBitmap(getDefaultBitmap())
+        }
+
+        // split image
+        testButton.setOnClickListener {
+            val intent = Intent(this, ImageSplitActivity::class.java)
+
+            // Convert Bitmap to ByteArray
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            val byteArray = stream.toByteArray()
+
+            // Pass byte array through intent
+            intent.putExtra("bitmap", byteArray)
+            startActivity(intent)
         }
 
         imageView.post {
