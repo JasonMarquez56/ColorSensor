@@ -44,7 +44,7 @@ class HomeActivity : AppCompatActivity() {
 
         // Set a click listener for the Video button
         colorButtonTest.setOnClickListener {
-            val intent = Intent(this, FindColorActivity::class.java)
+            val intent = Intent(this, LiveFeedActivity::class.java)
             startActivity(intent)
         }
 
