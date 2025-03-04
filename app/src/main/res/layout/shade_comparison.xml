@@ -29,6 +29,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gradientLayout" />
 
+    <View
+        android:id="@+id/viewColor12"
+        android:layout_width="116dp"
+        android:layout_height="116dp"
+        android:background="@drawable/rounded_block"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.851"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gradientLayout"
+        app:layout_constraintVertical_bias="0.501" />
+
     <TextView
         android:id="@+id/colorNameText"
         android:layout_width="wrap_content"
@@ -37,19 +49,32 @@
         android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.098"
+        app:layout_constraintHorizontal_bias="0.08"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewColor"
-        app:layout_constraintVertical_bias="0.173" />
+        app:layout_constraintVertical_bias="0.079" />
+
+    <TextView
+        android:id="@+id/colorNameText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.728"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewColor"
+        app:layout_constraintVertical_bias="0.079" />
 
     <LinearLayout
         android:id="@+id/gradientLayout"
         android:layout_width="0dp"
-        android:layout_height="400dp"
+        android:layout_height="374dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.533"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />

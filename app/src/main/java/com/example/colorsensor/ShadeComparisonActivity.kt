@@ -26,12 +26,15 @@ class ShadeCompareActivity : AppCompatActivity() {
         colorNameText.text = colorName
 
         val colorBlock = findViewById<View>(R.id.viewColor)
+        val targetColorBlock = findViewById<View>(R.id.viewColor12)
 
         // Get the LayerDrawable from the ImageView's background
-        val layerDrawable = colorBlock.background as LayerDrawable
+        val colorBlockLayerDrawable = colorBlock.background as LayerDrawable
+        val targetColorBlockLayerDrawable = targetColorBlock.background as LayerDrawable
 
         // Get the GradientDrawable for the colorOverlay item
-        val colorOverlay = layerDrawable.findDrawableByLayerId(R.id.colorOverlay) as GradientDrawable
+        val colorOverlay = colorBlockLayerDrawable.findDrawableByLayerId(R.id.colorOverlay) as GradientDrawable
+        val targetColorOverlay = targetColorBlockLayerDrawable.findDrawableByLayerId(R.id.colorOverlay) as GradientDrawable
 
         // Set the color of the GradientDrawable
         colorOverlay.setColor(selectedColor)
@@ -58,6 +61,10 @@ class ShadeCompareActivity : AppCompatActivity() {
                     1f
                 )
                 setBackgroundColor(color)
+                setOnClickListener {
+                    // Update the targetColorBlock with the selected color
+                    targetColorOverlay.setColor(color)
+                }
             }
             gradientLayout.addView(imageView)
         }
