@@ -80,6 +80,7 @@
                 app:rowCount="3">
 
                 <!-- Button 1 -->
+
                 <Button
                     android:id="@+id/photoButton"
                     android:layout_width="wrap_content"
@@ -162,6 +163,22 @@
                     app:layout_columnWeight="1"
                     app:layout_rowWeight="1"
                     app:layout_gravity="fill" />
+
+                <Button
+                    android:id="@+id/colorBlending"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:backgroundTint="#E49FDF"
+                    android:drawableTop="@drawable/palette_outline"
+                    android:text="Color\nBlending"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:iconPadding="8dp"
+                    app:layout_columnWeight="1"
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1" />
 
                 <!-- Button 6 -->
 

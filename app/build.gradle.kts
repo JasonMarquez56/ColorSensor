@@ -70,6 +70,8 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx:24.4.3")
     implementation(libs.androidx.gridlayout)
 
+    // ColorPicker
+    implementation("com.github.skydoves:colorpickerview:2.3.0")
 
     // Debugging and Testing
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.0")

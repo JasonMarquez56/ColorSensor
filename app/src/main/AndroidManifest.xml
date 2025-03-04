@@ -93,6 +93,12 @@
             android:exported="true"
             android:theme="@style/Theme.ColorSensor" />
 
+        <!-- Color Blending -->
+        <activity
+            android:name=".ColorBlendingActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ColorSensor" />
+
 
     </application>
 </manifest>

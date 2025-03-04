@@ -2,6 +2,7 @@ package com.example.colorsensor
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -27,6 +28,7 @@ class HomeActivity : AppCompatActivity() {
         val photoButton = findViewById<Button>(R.id.photoButton) // find color
         val colorButtonTest = findViewById<Button>(R.id.videoButton) // live color
         val popularColorButton = findViewById<Button>(R.id.popularColor) // popular color
+        val colorBlendingButton = findViewById<Button>(R.id.colorBlending) // color blending
 
         // Set a click listener for the Photo button
         photoButton.setOnClickListener {
@@ -42,12 +44,17 @@ class HomeActivity : AppCompatActivity() {
 
         // Set a click listener for the Video button
         colorButtonTest.setOnClickListener {
-            val intent = Intent(this, FindColorActivity::class.java) // Renamed CameraActivity
+            val intent = Intent(this, FindColorActivity::class.java)
             startActivity(intent)
         }
 
         popularColorButton.setOnClickListener {
-            val intent = Intent(this, PopularColor::class.java) // Renamed CameraActivity
+            val intent = Intent(this, PopularColor::class.java)
+            startActivity(intent)
+        }
+
+        colorBlendingButton.setOnClickListener {
+            val intent = Intent(this, ColorBlendingActivity::class.java)
             startActivity(intent)
         }
     }
