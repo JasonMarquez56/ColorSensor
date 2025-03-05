@@ -68,7 +68,11 @@
             android:name=".ProfileActivity"
             android:exported="true"
             android:theme="@style/Theme.ColorSensor" />
-
+        <!-- Shop Activity -->
+        <activity
+            android:name=".ShopActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ColorSensor" />
         <!-- Photo Activity -->
         <activity
             android:name=".PhotoActivity"
