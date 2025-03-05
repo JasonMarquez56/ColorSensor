@@ -91,7 +91,7 @@ class FindColorActivity : AppCompatActivity() {
                             val userId = document.id
                             Toast.makeText(this, userId, Toast.LENGTH_SHORT).show()
                             val user = firestore.collection("users").document(userId)
-                            val colorAdd = favColor(textName.text.toString(),selectedColor)
+                            val colorAdd = favColor(textName.text.toString().replace("Closest Paint: ",""),selectedColor)
                             //add favorite color.
                             user.update("favoriteColors", FieldValue.arrayUnion(colorAdd))
                                 .addOnSuccessListener {
