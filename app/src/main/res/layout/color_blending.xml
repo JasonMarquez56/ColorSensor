@@ -49,7 +49,7 @@
         android:background="@drawable/rounded_block"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.108"
+        app:layout_constraintHorizontal_bias="0.107"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.736" />
@@ -60,10 +60,10 @@
         android:layout_height="40dp"
         app:layout_constraintBottom_toTopOf="@+id/blendColor2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.192"
+        app:layout_constraintHorizontal_bias="0.175"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/blendColor1"
-        app:layout_constraintVertical_bias="0.555"
+        app:layout_constraintVertical_bias="0.521"
         app:srcCompat="@drawable/plus" />
 
     <ImageView
@@ -72,10 +72,10 @@
         android:layout_height="40dp"
         app:layout_constraintBottom_toTopOf="@+id/blendResult"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.192"
+        app:layout_constraintHorizontal_bias="0.175"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/blendColor2"
-        app:layout_constraintVertical_bias="0.436"
+        app:layout_constraintVertical_bias="0.424"
         app:srcCompat="@drawable/equal" />
 
     <TextView
@@ -86,10 +86,10 @@
         android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.111"
+        app:layout_constraintHorizontal_bias="0.105"
         app:layout_constraintStart_toEndOf="@+id/blendColor1"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.112" />
+        app:layout_constraintVertical_bias="0.109" />
 
     <TextView
         android:id="@+id/closetColor2"
@@ -99,10 +99,10 @@
         android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.112"
+        app:layout_constraintHorizontal_bias="0.105"
         app:layout_constraintStart_toEndOf="@+id/blendColor2"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.403" />
+        app:layout_constraintVertical_bias="0.401" />
 
     <TextView
         android:id="@+id/closetColor3"
@@ -112,7 +112,7 @@
         android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.112"
+        app:layout_constraintHorizontal_bias="0.105"
         app:layout_constraintStart_toEndOf="@+id/blendResult"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.73" />
@@ -131,7 +131,7 @@
         app:layout_constraintVertical_bias="0.138" />
 
     <TextView
-        android:id="@+id/hex2"
+        android:id="@+id/Hex2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hex:"
@@ -144,7 +144,7 @@
         app:layout_constraintVertical_bias="0.431" />
 
     <TextView
-        android:id="@+id/hex3"
+        android:id="@+id/Hex3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hex:"

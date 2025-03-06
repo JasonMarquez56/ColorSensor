@@ -30,10 +30,13 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
 
         val textName1 = findViewById<View>(R.id.closetColor1)
         val textRGB1 = findViewById<View>(R.id.RGB1)
+        val textHex1 = findViewById<View>(R.id.Hex1)
         val textName2 = findViewById<View>(R.id.closetColor2)
         val textRGB2 = findViewById<View>(R.id.RGB2)
+        val textHex2 = findViewById<View>(R.id.Hex2)
         val textName3 = findViewById<View>(R.id.closetColor3)
         val textRGB3 = findViewById<View>(R.id.RGB3)
+        val textHex3 = findViewById<View>(R.id.Hex3)
 
         val clickListener = View.OnClickListener { view ->
             selectedBlock = view  // Store which block was clicked
@@ -44,9 +47,9 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
         color1.setOnClickListener(clickListener)
         color2.setOnClickListener(clickListener)
 
-        searchClosestColor(255, 0, 0, textName1 as TextView, textRGB1 as TextView)
-        searchClosestColor(0, 255, 0, textName2 as TextView, textRGB2 as TextView)
-        searchClosestColor(0, 0, 255, textName3 as TextView, textRGB3 as TextView)
+//        searchClosestColor(255, 0, 0, textName1 as TextView, textRGB1 as TextView, textHex1 as TextView)
+//        searchClosestColor(0, 255, 0, textName2 as TextView, textRGB2 as TextView, textHex2 as TextView)
+//        searchClosestColor(0, 0, 255, textName3 as TextView, textRGB3 as TextView, textHex3 as TextView)
 
     }
 
@@ -61,11 +64,11 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
             when (block.id) {
                 R.id.blendColor1 -> {
                     color1Value = color
-                    searchClosestColor(red, green, blue, findViewById(R.id.closetColor1), findViewById(R.id.RGB1))
+                    searchClosestColor(red, green, blue, findViewById(R.id.closetColor1), findViewById(R.id.RGB1), findViewById(R.id.Hex1))
                 }
                 R.id.blendColor2 -> {
                     color2Value = color
-                    searchClosestColor(red, green, blue, findViewById(R.id.closetColor2), findViewById(R.id.RGB2))
+                    searchClosestColor(red, green, blue, findViewById(R.id.closetColor2), findViewById(R.id.RGB2), findViewById(R.id.Hex2))
                 }
             }
 
@@ -84,7 +87,7 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
             val green = Color.green(blendedColor)
             val blue = Color.blue(blendedColor)
 
-            searchClosestColor(red, green, blue, findViewById(R.id.closetColor3), findViewById(R.id.RGB3))
+            searchClosestColor(red, green, blue, findViewById(R.id.closetColor3), findViewById(R.id.RGB3), findViewById(R.id.Hex3))
         }
     }
 
@@ -102,18 +105,25 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
     }
 
     @SuppressLint("SetTextI18n")
-    private fun searchClosestColor(targetRed: Int, targetGreen: Int, targetBlue: Int, textName: TextView, textViewRGB: TextView) {
+    private fun searchClosestColor(targetRed: Int, targetGreen: Int, targetBlue: Int, textName: TextView, textViewRGB: TextView, textViewHex: TextView) {
         val targetColor = PaintFinder.PaintColor("", "", targetRed, targetGreen, targetBlue)
         val closestPaint = PaintFinder.findClosestPaint(targetColor, this)
         // Setting XML values to correct paint and RGB when found
         if (closestPaint != null) {
             val closestRGB = "(${closestPaint.r}, ${closestPaint.g}, ${closestPaint.b})"
+            val closestHex = rgbToHex(closestPaint.r, closestPaint.g, closestPaint.b)
             textName.text = "Closest Paint: ${closestPaint.name}"
             textViewRGB.text = "RGB: $closestRGB"
+            textViewHex.text = "Hex: $closestHex"
         } else {
             textName.text = "No matching paint found"
             textViewRGB.text = ""
+            textViewHex.text = ""
         }
+    }
+
+    private fun rgbToHex(red: Int, green: Int, blue: Int): String {
+        return String.format("#%02X%02X%02X", red, green, blue)
     }
 
     private fun navigationBar() {
