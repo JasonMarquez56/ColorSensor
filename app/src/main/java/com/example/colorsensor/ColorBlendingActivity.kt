@@ -1,13 +1,16 @@
 package com.example.colorsensor
 
 import ColorPickerDialogFragment
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.colorsensor.utils.PaintFinder
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColorSelectedListener {
@@ -23,6 +26,14 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
 
         val color1 = findViewById<View>(R.id.blendColor1)
         val color2 = findViewById<View>(R.id.blendColor2)
+        val color3 = findViewById<View>(R.id.blendResult)
+
+        val textName1 = findViewById<View>(R.id.closetColor1)
+        val textRGB1 = findViewById<View>(R.id.RGB1)
+        val textName2 = findViewById<View>(R.id.closetColor2)
+        val textRGB2 = findViewById<View>(R.id.RGB2)
+        val textName3 = findViewById<View>(R.id.closetColor3)
+        val textRGB3 = findViewById<View>(R.id.RGB3)
 
         val clickListener = View.OnClickListener { view ->
             selectedBlock = view  // Store which block was clicked
@@ -32,16 +43,30 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
 
         color1.setOnClickListener(clickListener)
         color2.setOnClickListener(clickListener)
+
+        searchClosestColor(255, 0, 0, textName1 as TextView, textRGB1 as TextView)
+        searchClosestColor(0, 255, 0, textName2 as TextView, textRGB2 as TextView)
+        searchClosestColor(0, 0, 255, textName3 as TextView, textRGB3 as TextView)
+
     }
 
     override fun onColorSelected(color: Int) {
         selectedBlock?.let { block ->
             updateDrawableColor(block, color) // Apply color using drawable layers
 
-            if (block.id == R.id.blendColor1) {
-                color1Value = color
-            } else if (block.id == R.id.blendColor2) {
-                color2Value = color
+            val red = Color.red(color)
+            val green = Color.green(color)
+            val blue = Color.blue(color)
+
+            when (block.id) {
+                R.id.blendColor1 -> {
+                    color1Value = color
+                    searchClosestColor(red, green, blue, findViewById(R.id.closetColor1), findViewById(R.id.RGB1))
+                }
+                R.id.blendColor2 -> {
+                    color2Value = color
+                    searchClosestColor(red, green, blue, findViewById(R.id.closetColor2), findViewById(R.id.RGB2))
+                }
             }
 
             updateBlendedColor()
@@ -54,6 +79,12 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
         if (color1Value != null && color2Value != null) {
             val blendedColor = blendColors(color1Value!!, color2Value!!)
             updateDrawableColor(color3, blendedColor)
+
+            val red = Color.red(blendedColor)
+            val green = Color.green(blendedColor)
+            val blue = Color.blue(blendedColor)
+
+            searchClosestColor(red, green, blue, findViewById(R.id.closetColor3), findViewById(R.id.RGB3))
         }
     }
 
@@ -68,6 +99,21 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
         val g = (Color.green(color1) + Color.green(color2)) / 2
         val b = (Color.blue(color1) + Color.blue(color2)) / 2
         return Color.rgb(r, g, b)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun searchClosestColor(targetRed: Int, targetGreen: Int, targetBlue: Int, textName: TextView, textViewRGB: TextView) {
+        val targetColor = PaintFinder.PaintColor("", "", targetRed, targetGreen, targetBlue)
+        val closestPaint = PaintFinder.findClosestPaint(targetColor, this)
+        // Setting XML values to correct paint and RGB when found
+        if (closestPaint != null) {
+            val closestRGB = "(${closestPaint.r}, ${closestPaint.g}, ${closestPaint.b})"
+            textName.text = "Closest Paint: ${closestPaint.name}"
+            textViewRGB.text = "RGB: $closestRGB"
+        } else {
+            textName.text = "No matching paint found"
+            textViewRGB.text = ""
+        }
     }
 
     private fun navigationBar() {

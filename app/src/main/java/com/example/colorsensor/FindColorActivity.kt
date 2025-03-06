@@ -67,7 +67,6 @@ class FindColorActivity : AppCompatActivity() {
 
         val byteArray = intent.getByteArrayExtra("image_bitmap")
         val imageUri = intent.getStringExtra("image_uri")
-        val zoomButton: Button = findViewById(R.id.button26)
         val testButton = findViewById<Button>(R.id.button27)
 
         val favoriteButton = findViewById<Button>(R.id.favorite)
@@ -164,23 +163,10 @@ class FindColorActivity : AppCompatActivity() {
                 .build()
         }
 
-        // Toggle magnifier on button press
-        zoomButton.setOnClickListener {
-            isMagnifierActive = !isMagnifierActive // Toggle state
-
-            if (isMagnifierActive) {
-                zoomButton.text = "Disable Magnifier"
-            } else {
-                zoomButton.text = "Enable Magnifier"
-                magnifier?.dismiss()
-            }
-        }
-
         // Set touch listener for color detection
         // This is for color strip and find color using built-in android studio tools
         imageView.setOnTouchListener { _, motionEvent ->
-            // magnifier 158 - 168
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && isMagnifierActive) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 when (motionEvent.action) {
                     MotionEvent.ACTION_MOVE, MotionEvent.ACTION_DOWN -> {
                         magnifier?.show(motionEvent.rawX, motionEvent.y)
