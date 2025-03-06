@@ -78,6 +78,17 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
+            android:id="@+id/friendrequestButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Friend Request"
+            app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
+            app:layout_constraintEnd_toStartOf="@+id/logoutButton"
+            app:layout_constraintHorizontal_bias="0.826"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
             android:id="@+id/logoutButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -130,6 +141,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"></LinearLayout>
+        </ScrollView>
+
+        <ScrollView
+            android:id="@+id/friendsScroll"
+            android:layout_width="410dp"
+            android:layout_height="178dp"
+            app:layout_constraintTop_toBottomOf="@+id/scrollView2">
+
+            <LinearLayout
+                android:id="@+id/friends"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
         </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

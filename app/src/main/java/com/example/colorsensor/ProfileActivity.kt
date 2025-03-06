@@ -9,9 +9,14 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import android.graphics.Color
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.EditText
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import android.widget.LinearLayout
+import android.widget.PopupWindow
 import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.api.Distribution.BucketOptions.Linear
@@ -22,7 +27,9 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
     var favColors : MutableList<favColor> = mutableListOf<favColor>()
+    var friends : MutableList<String> = mutableListOf<String>()
     var selectedFav = ""
+    var selectedFriend = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.profile_screen)
@@ -40,10 +47,11 @@ class ProfileActivity : AppCompatActivity() {
         val logoutButton = findViewById<Button>(R.id.logoutButton)
         val backButton = findViewById<ImageButton>(R.id.backButton)
         val favColorContainer: LinearLayout = findViewById(R.id.colors)
+        val friendsContainer: LinearLayout = findViewById(R.id.friends)
         val upButton = findViewById<Button>(R.id.upButton)
         val downButton = findViewById<Button>(R.id.downButton)
         val saveButton = findViewById<Button>(R.id.saveButton)
-
+        val friendrequestButton = findViewById<Button>(R.id.friendrequestButton)
 
         firestore.collection("users")
             .whereEqualTo("username", username)  // Query by username
@@ -67,7 +75,7 @@ class ProfileActivity : AppCompatActivity() {
                                 null // Skip this entry if there’s any problem
                             }
                         }.toMutableList()
-                        displayColors(favColorContainer)
+                        displayColors(favColorContainer,favColors)
                     }
                 } else {
                     Log.d("Firestore", "No user found with username: $username")
@@ -90,7 +98,7 @@ class ProfileActivity : AppCompatActivity() {
                 favColors.set(index-1, current)
                 favColors.set(index,swap)
                 //CHANGE Text view of SELECTED COLOR WITH ABOVE
-                displayColors(favColorContainer)
+                displayColors(favColorContainer,favColors)
             }
             else if (index ==0){
                 Toast.makeText(this, "Already Your Top favorite.", Toast.LENGTH_SHORT)
@@ -111,7 +119,7 @@ class ProfileActivity : AppCompatActivity() {
                 favColors.set(index+1, current)
                 favColors.set(index,swap)
                 //CHANGE Text view of SELECTED COLOR WITH ABOVE
-                displayColors(favColorContainer)
+                displayColors(favColorContainer,favColors)
             }
             else if (index ==favColors.size-1){
                 Toast.makeText(this, "Already Your Least favorite.", Toast.LENGTH_SHORT)
@@ -147,6 +155,27 @@ class ProfileActivity : AppCompatActivity() {
                         .show()
                 }
         }
+        friendrequestButton.setOnClickListener {
+            askInput()
+//            firestore.collection("users")
+//                .whereEqualTo("username", username)  // Query by username
+//                .get()
+//                .addOnSuccessListener { documents ->
+//                    if (!documents.isEmpty) {
+//                        for (document in documents) {
+////                        Retrieve the user's favorite colors
+//                            friends = document.get("friends")as MutableList<String>
+//                            displayFriends(friendsContainer,friends)
+//                        }
+//                    } else {
+//                        Log.d("Firestore", "No user found with username: $username")
+//                    }
+//                }
+//                .addOnFailureListener { exception ->
+//                    Log.e("Firestore", "Error getting documents: ", exception)
+//                }
+
+        }
         // Handle Logout button click
         logoutButton.setOnClickListener {
             // Log out from Firebase Auth
@@ -166,7 +195,31 @@ class ProfileActivity : AppCompatActivity() {
             finish() // Go back to the previous activity
         }
     }
-    private fun displayColors(favColorContainer : LinearLayout){
+    private fun askInput() {
+        // Inflate the popup layout
+        val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view = inflater.inflate(R.layout.popup_input, null)
+
+        // Create the PopupWindow
+        val popupWindow = PopupWindow(
+            view,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            true // Focusable
+        )
+
+        // Show the popup window
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
+        // Set up the close button
+        val editText = view.findViewById<EditText>(R.id.popup_input)
+        val button = view.findViewById<Button>(R.id.popup_button)
+        button.setOnClickListener {
+            val input = editText.text.toString()
+            Toast.makeText(this, "You entered: $input", Toast.LENGTH_SHORT).show()
+            popupWindow.dismiss()
+        }
+    }
+    private fun displayColors(favColorContainer : LinearLayout,favColors:MutableList<favColor>){
         favColorContainer.removeAllViews()
         for (color in favColors){
             val textView = TextView(this)
@@ -188,6 +241,24 @@ class ProfileActivity : AppCompatActivity() {
 
             // Add to LinearLayout
             favColorContainer.addView(textView)
+        }
+    }
+    private fun displayFriends(friendsContainer : LinearLayout, friends:MutableList<String>){
+        friendsContainer.removeAllViews()
+        for (friend in friends){
+            val textView = TextView(this)
+            textView.text = friend
+
+
+            textView.setOnClickListener {
+                selectedFriend = textView.text.toString()
+            }
+            textView.textSize = 20f
+            textView.setTextColor(Color.BLACK)
+            textView.setPadding(16, 8, 16, 8)
+
+            // Add to LinearLayout
+            friendsContainer.addView(textView)
         }
     }
 
