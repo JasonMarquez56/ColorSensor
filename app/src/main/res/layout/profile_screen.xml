@@ -71,21 +71,44 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="150dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="8dp"
             android:text="Save"
             app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
             app:layout_constraintEnd_toStartOf="@+id/logoutButton"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
+            android:id="@+id/friendcolorButton"
+            android:layout_width="115dp"
+            android:layout_height="45dp"
+            android:layout_marginEnd="150dp"
+            android:layout_marginBottom="8dp"
+            android:text="Friends Colorlist"
+            app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
             android:id="@+id/friendrequestButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="56dp"
             android:text="Friend Request"
             app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
             app:layout_constraintEnd_toStartOf="@+id/logoutButton"
-            app:layout_constraintHorizontal_bias="0.826"
+            app:layout_constraintHorizontal_bias="0.262"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/acceptButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="60dp"
+            android:text="Accept"
+            app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
+            app:layout_constraintEnd_toStartOf="@+id/logoutButton"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
@@ -145,8 +168,8 @@
 
         <ScrollView
             android:id="@+id/friendsScroll"
-            android:layout_width="410dp"
-            android:layout_height="178dp"
+            android:layout_width="412dp"
+            android:layout_height="143dp"
             app:layout_constraintTop_toBottomOf="@+id/scrollView2">
 
             <LinearLayout

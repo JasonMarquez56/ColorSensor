@@ -85,7 +85,8 @@ class RegisterActivity : AppCompatActivity() {
                             "email" to email,
                             "password" to hashedPassword,
                             "favoriteColors" to mutableListOf<favColor>(),
-                            "friends" to mutableListOf<String>()
+                            "friends" to mutableListOf<String>(),
+                            "requests" to mutableListOf<String>()
                         )
 
                         firestore.collection("users")
