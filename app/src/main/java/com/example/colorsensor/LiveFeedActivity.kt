@@ -16,7 +16,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import android.view.View
 import android.widget.Button
 import com.example.colorsensor.utils.PaintFinder
 
@@ -25,7 +24,8 @@ class LiveFeedActivity : AppCompatActivity() {
     private lateinit var cameraPreview: PreviewView
     private lateinit var colorDisplay: TextView
     private lateinit var colorPreviewBox: Button
-    private val CAMERA_REQUEST_CODE = 101  // Unique request code for permissions
+    // Unique request code for permissions
+    private val CAMERA_REQUEST_CODE = 101
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +50,8 @@ class LiveFeedActivity : AppCompatActivity() {
         // Handle touch event to extract color
         cameraPreview.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                val bitmap = cameraPreview.bitmap  // Capture current camera frame
+                // Capture current camera frame
+                val bitmap = cameraPreview.bitmap
                 if (bitmap != null) {
                     val x = event.x.toInt()
                     val y = event.y.toInt()
@@ -59,8 +60,8 @@ class LiveFeedActivity : AppCompatActivity() {
 
                         // Create PaintColor object with RGB values
                         val selectedPaintColor = PaintFinder.PaintColor(
-                            brand = "SampleBrand",  // Placeholder, customize as needed
-                            name = "SamplePaint",   // Placeholder name, customize as needed
+                            brand = "",
+                            name = "",
                             r = Color.red(pixel),
                             g = Color.green(pixel),
                             b = Color.blue(pixel)
@@ -133,7 +134,8 @@ class LiveFeedActivity : AppCompatActivity() {
 
                 val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
-                cameraProvider.unbindAll()  // Ensure no duplicate bindings
+                // Ensure no duplicate bindings
+                cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview)
 
                 Log.d("LiveFeedActivity", "Camera started successfully")
