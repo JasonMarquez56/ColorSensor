@@ -12,17 +12,21 @@ import androidx.camera.core.Preview
 import androidx.core.content.ContextCompat
 import android.util.Log
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import android.view.View
+import android.widget.Button
+import com.example.colorsensor.utils.PaintFinder
 
 
 class LiveFeedActivity : AppCompatActivity() {
     private lateinit var cameraPreview: PreviewView
     private lateinit var colorDisplay: TextView
-    private lateinit var colorPreviewBox: View
+    private lateinit var colorPreviewBox: Button
     private val CAMERA_REQUEST_CODE = 101  // Unique request code for permissions
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +46,7 @@ class LiveFeedActivity : AppCompatActivity() {
             startCamera()
         }
 
+
         // Handle touch event to extract color
         cameraPreview.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
@@ -51,12 +56,59 @@ class LiveFeedActivity : AppCompatActivity() {
                     val y = event.y.toInt()
                     if (x in 0 until bitmap.width && y in 0 until bitmap.height) {
                         val pixel = bitmap.getPixel(x, y)
-                        val hexColor = String.format("#%02X%02X%02X",
-                            Color.red(pixel), Color.green(pixel), Color.blue(pixel))
 
-                        colorDisplay.text = "Selected Color: $hexColor"
+                        // Create PaintColor object with RGB values
+                        val selectedPaintColor = PaintFinder.PaintColor(
+                            brand = "SampleBrand",  // Placeholder, customize as needed
+                            name = "SamplePaint",   // Placeholder name, customize as needed
+                            r = Color.red(pixel),
+                            g = Color.green(pixel),
+                            b = Color.blue(pixel)
+                        )
 
-                        colorPreviewBox.setBackgroundColor(pixel)
+                        // Find the closest matching paint color
+                        val closestPaint = PaintFinder.findClosestPaint(selectedPaintColor, this)
+
+                        // Set the click listener for the color preview button
+                        colorPreviewBox.setOnClickListener {
+                            // Assuming closestPaint is already defined and contains the selected color
+                            val colorName = closestPaint?.name
+                            val r = closestPaint?.r
+                            val g = closestPaint?.g
+                            val b = closestPaint?.b
+
+                            // Convert RGB to Hex
+                            val hexValue = String.format("#%02X%02X%02X", r, g, b)
+
+                            // Try to create a valid color from the RGB values
+                            try {
+                                // Create a Color object using the hex value
+                                val color = Color.parseColor(hexValue)
+
+                                // Create an Intent to start the PaintInfoActivity
+                                val intent = Intent(this, PaintInfoActivity::class.java).apply {
+                                    // Pass the RGB color (as hex), color name, and hex value using putExtra
+                                    putExtra("selected_color", color)
+                                    putExtra("color_name", colorName)
+                                    putExtra("color_hex", hexValue)
+                                }
+
+                                // Log the information being passed for debugging
+                                Log.d("DEBUG", "Starting PaintInfoActivity with colorHex: $hexValue, colorName: $colorName")
+
+                                // Start the PaintInfoActivity
+                                startActivity(intent)
+                            } catch (e: IllegalArgumentException) {
+                                // Handle the case where the hex value is invalid
+                                Log.e("ERROR", "Invalid hex color format: $hexValue")
+                                Toast.makeText(this, "Invalid color format", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        // Display the closest paint color's name
+                        runOnUiThread {
+                            colorDisplay.text = "Selected Color: ${closestPaint?.name ?: "No Match"}"
+                            colorPreviewBox.setBackgroundColor(pixel)
+                        }
                     }
                 } else {
                     Log.e("LiveFeedActivity", "Bitmap is null, cannot extract color")
@@ -64,7 +116,9 @@ class LiveFeedActivity : AppCompatActivity() {
             }
             true
         }
+
     }
+
 
     // Start camera after permission is granted
     private fun startCamera() {
