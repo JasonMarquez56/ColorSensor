@@ -184,19 +184,17 @@ on the imageview and the app will display information-->
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.806" />
 
-    <Button
-        android:id="@+id/favorite"
-        android:layout_width="210dp"
-        android:layout_height="42dp"
-        android:background="@color/white"
-        android:backgroundTint="#FDFBFB"
-        android:text="Favorite"
-        app:iconTint="#C7AFAF"
+    <ImageButton
+        android:id="@+id/favoriteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/favorite_button_selector"
+        android:backgroundTint="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/viewColor"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.94"
+        app:layout_constraintHorizontal_bias="0.955"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.818" />
+        app:layout_constraintVertical_bias="0.146" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
