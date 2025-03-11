@@ -1,5 +1,6 @@
 package com.example.colorsensor
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -9,6 +10,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.colorsensor.utils.PaintFinder
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class ShadeCompareActivity : AppCompatActivity() {
@@ -23,6 +25,7 @@ class ShadeCompareActivity : AppCompatActivity() {
         val colorName = intent.getStringExtra("color_name") ?: "No name available"
 
         val colorNameText = findViewById<TextView>(R.id.colorNameText)
+        val colorNameText2 = findViewById<TextView>(R.id.colorNameText2)
         colorNameText.text = colorName
 
         val colorBlock = findViewById<View>(R.id.viewColor)
@@ -53,6 +56,7 @@ class ShadeCompareActivity : AppCompatActivity() {
             val newGreen = (green + factor * (255 - green)).toInt().coerceIn(0, 255)
             val newBlue = (blue + factor * (255 - blue)).toInt().coerceIn(0, 255)
             val color = Color.argb(alpha, newRed, newGreen, newBlue)
+            val colorName2 = searchClosestColor(newRed, newGreen, newBlue, colorNameText2)
 
             val imageView = View(this).apply {
                 layoutParams = LinearLayout.LayoutParams(
@@ -64,10 +68,29 @@ class ShadeCompareActivity : AppCompatActivity() {
                 setOnClickListener {
                     // Update the targetColorBlock with the selected color
                     targetColorOverlay.setColor(color)
+                    colorNameText2.text = colorName2
                 }
             }
             gradientLayout.addView(imageView)
         }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun searchClosestColor(targetRed: Int, targetGreen: Int, targetBlue: Int, textName: TextView): String {
+        val targetColor = PaintFinder.PaintColor("", "", targetRed, targetGreen, targetBlue)
+        val closestPaint = PaintFinder.findClosestPaint(targetColor, this)
+        // Setting XML values to correct paint and RGB when found
+        if (closestPaint != null) {
+            val closestRGB = "(${closestPaint.r}, ${closestPaint.g}, ${closestPaint.b})"
+            val closestHex = rgbToHex(closestPaint.r, closestPaint.g, closestPaint.b)
+            return closestPaint.name
+        } else {
+            return "No matching paint found"
+        }
+    }
+
+    private fun rgbToHex(red: Int, green: Int, blue: Int): String {
+        return String.format("#%02X%02X%02X", red, green, blue)
     }
 
     private fun navigationBar() {

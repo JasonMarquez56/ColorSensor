@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Magnifier
 import android.widget.TextView
@@ -32,6 +33,7 @@ import android.graphics.drawable.ColorDrawable
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import java.io.ByteArrayOutputStream
+import android.content.res.ColorStateList
 
 
 class FindColorActivity : AppCompatActivity() {
@@ -69,8 +71,9 @@ class FindColorActivity : AppCompatActivity() {
         val imageUri = intent.getStringExtra("image_uri")
         val testButton = findViewById<Button>(R.id.button27)
 
-        val favoriteButton = findViewById<Button>(R.id.favorite)
+        val favoriteButton = findViewById<ImageButton>(R.id.favoriteButton)
         firestore = FirebaseFirestore.getInstance()
+        //checkIfFavorited()
         //favorite button to store selected color user's favorite list
 
         favoriteButton.setOnClickListener {
@@ -96,6 +99,7 @@ class FindColorActivity : AppCompatActivity() {
                                 .addOnSuccessListener {
                                     Toast.makeText(this, "Succeeded to create", Toast.LENGTH_SHORT)
                                         .show()
+                                    favoriteButton.isSelected = true // Change the star icon to filled
                                 }//in case failed to update
                                 .addOnFailureListener { e ->
                                     Toast.makeText(this, "Failed to create", Toast.LENGTH_SHORT)
@@ -170,6 +174,7 @@ class FindColorActivity : AppCompatActivity() {
                 when (motionEvent.action) {
                     MotionEvent.ACTION_MOVE, MotionEvent.ACTION_DOWN -> {
                         magnifier?.show(motionEvent.rawX, motionEvent.y)
+                        favoriteButton.isSelected = false // Change the star icon to outline
                     }
                     MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                         magnifier?.dismiss()
@@ -265,6 +270,7 @@ class FindColorActivity : AppCompatActivity() {
                         textHex.setTextColor(textColor)
                         textName.setTextColor(textColor)
                         textViewRGB.setTextColor(textColor)
+                        favoriteButton.backgroundTintList = ColorStateList.valueOf(textColor)
 
                         // Search the closest color when user lifts their finger
                         if (motionEvent.action == MotionEvent.ACTION_UP) {
@@ -296,6 +302,26 @@ class FindColorActivity : AppCompatActivity() {
             textName.text = "No matching paint found"
             textViewRGB.text = ""
         }
+    }
+
+    private fun checkIfFavorited() {
+        val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
+        val username = sharedPreferences.getString("username", "Guest")
+        val favoriteButton = findViewById<ImageButton>(R.id.favoriteButton)
+
+        firestore.collection("users")
+            .whereEqualTo("username", username)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    for (document in documents) {
+                        val favoriteColors = document.get("favoriteColors") as? List<Map<String, Any>> ?: listOf()
+                        val isFavorite = favoriteColors.any { it["colorName"] == textName.text.toString() }
+
+                        favoriteButton.isSelected = isFavorite
+                    }
+                }
+            }
     }
 
 

@@ -46,11 +46,6 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
 
         color1.setOnClickListener(clickListener)
         color2.setOnClickListener(clickListener)
-
-//        searchClosestColor(255, 0, 0, textName1 as TextView, textRGB1 as TextView, textHex1 as TextView)
-//        searchClosestColor(0, 255, 0, textName2 as TextView, textRGB2 as TextView, textHex2 as TextView)
-//        searchClosestColor(0, 0, 255, textName3 as TextView, textRGB3 as TextView, textHex3 as TextView)
-
     }
 
     override fun onColorSelected(color: Int) {
