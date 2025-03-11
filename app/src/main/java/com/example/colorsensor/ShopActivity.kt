@@ -21,6 +21,8 @@ import com.google.api.Distribution.BucketOptions.Linear
 import com.example.colorsensor.RegisterActivity.favColor
 import com.example.colorsensor.RegisterActivity.RGB
 import android.view.Gravity
+import android.widget.EditText
+import kotlinx.coroutines.selects.select
 
 class ShopActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -66,14 +68,15 @@ class ShopActivity : AppCompatActivity() {
         // Find views
         val back = findViewById<ImageButton>(R.id.previous)
         val favorite = findViewById<Button>(R.id.favoriteButton)
+        val searchColors = findViewById<EditText>(R.id.searchColors)
         favorite.setOnClickListener{
-            showPopup()
+            showPopup(searchColors)
         }
         back.setOnClickListener {
             finish() // Go back to the previous activity
         }
     }
-    private fun showPopup() {
+    private fun showPopup(searchColors: EditText) {
         // Inflate the popup layout
         val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val popupView: View = inflater.inflate(R.layout.popup_choose, null)
@@ -89,7 +92,7 @@ class ShopActivity : AppCompatActivity() {
         // Show the popup window
         popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0)
         val favColorContainer = popupView.findViewById<LinearLayout>(R.id.colors)
-        displayColors(favColorContainer)
+        displayColors(favColorContainer, searchColors)
         // Set up the close button
         val closeButton = popupView.findViewById<Button>(R.id.closePopupButton)
         closeButton.setOnClickListener {
@@ -98,7 +101,7 @@ class ShopActivity : AppCompatActivity() {
                 .show()
         }
     }
-    private fun displayColors(favColorContainer : LinearLayout){
+    private fun displayColors(favColorContainer : LinearLayout,searchColors : EditText){
         favColorContainer.removeAllViews()
         for (color in favColors){
             val textView = TextView(this)
@@ -113,6 +116,7 @@ class ShopActivity : AppCompatActivity() {
 
             textView.setOnClickListener {
                 selectedFav = textView.text.toString()
+                searchColors.setText(selectedFav)
             }
             textView.textSize = 20f
             textView.setTextColor(Color.BLACK)

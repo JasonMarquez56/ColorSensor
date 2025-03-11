@@ -31,6 +31,7 @@ class ProfileActivity : AppCompatActivity() {
     var requests : MutableList<String> = mutableListOf()
     var selectedFav = ""
     var selectedFriend = ""
+    var selectedTextView: TextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.profile_screen)
@@ -93,6 +94,7 @@ class ProfileActivity : AppCompatActivity() {
 
         // Set the username
         profileUsername.text = username
+        //upvote a color to change order
         upButton.setOnClickListener(){
             val index = favColors.indexOfFirst{it.name ==selectedFav}
             if(index >0){
@@ -143,7 +145,12 @@ class ProfileActivity : AppCompatActivity() {
                     if (!documents.isEmpty) {
                         for (document in documents) {
                             val userDocRef = firestore.collection("users").document(document.id)
-                            userDocRef.update("favoriteColors", favColors)
+                            val updates =mapOf(
+                                "favoriteColors" to favColors,
+                                "friends" to friends,
+                                "requests" to requests
+                            )
+                            userDocRef.update(updates)
                                 .addOnSuccessListener {
                                     Toast.makeText(this, "Succeeded to update favorite Colors", Toast.LENGTH_SHORT)
                                         .show()
@@ -164,10 +171,7 @@ class ProfileActivity : AppCompatActivity() {
             var input = ""
             askInput{input->
                 addFriend(input,username)
-
             }
-
-
         }
         friendcolorButton.setOnClickListener{
             // Inflate the popup layout
@@ -376,6 +380,9 @@ class ProfileActivity : AppCompatActivity() {
 
             textView.setOnClickListener {
                 selectedFriend = friend
+                selectedTextView?.setBackgroundColor(Color.TRANSPARENT)
+                textView.setBackgroundColor(Color.rgb(255,221,87))
+                selectedTextView = textView
             }
             textView.textSize = 20f
             textView.setTextColor(Color.BLACK)
@@ -391,6 +398,9 @@ class ProfileActivity : AppCompatActivity() {
 
             textView.setOnClickListener {
                 selectedFriend = request
+                selectedTextView?.setBackgroundColor(Color.TRANSPARENT)
+                textView.setBackgroundColor(Color.rgb(255,221,87))
+                selectedTextView = textView
             }
             textView.textSize = 20f
             textView.setTextColor(Color.RED)
