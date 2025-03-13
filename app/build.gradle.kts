@@ -45,6 +45,10 @@ android {
 }
 
 dependencies {
+    // search APi
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.moshi:moshi:1.15.0")
+
     implementation("com.google.code.gson:gson:2.8.8")
     implementation(platform("com.google.firebase:firebase-bom:32.0.0")) // Firebase BOM for consistent versions
     implementation("com.google.firebase:firebase-auth-ktx")
@@ -71,10 +75,12 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.7.2")
     implementation(libs.androidx.core.splashscreen)
 
+
     // Google Play
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("com.google.firebase:firebase-firestore-ktx:24.4.3")
     implementation(libs.androidx.gridlayout)
+
 
     // ColorPicker
     implementation("com.github.skydoves:colorpickerview:2.3.0")

@@ -23,6 +23,13 @@ import com.example.colorsensor.RegisterActivity.RGB
 import android.view.Gravity
 import android.widget.EditText
 import kotlinx.coroutines.selects.select
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.json.JSONObject
+import android.view.KeyEvent
+
+//Testing result for search result
+import java.io.File
 
 class ShopActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -72,9 +79,65 @@ class ShopActivity : AppCompatActivity() {
         favorite.setOnClickListener{
             showPopup(searchColors)
         }
+        searchColors.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {
+                searchGoogle(searchColors.text.toString())
+                true 
+            } else {
+                false // Let the system handle other key events
+            }
+        }
         back.setOnClickListener {
             finish() // Go back to the previous activity
         }
+    }
+    private fun searchGoogle(query: String){
+        val apiKey = "AIzaSyBFCNcSION-b11NXfyz5ZR2jU_oXUjcgrE"
+        val cx = "9302c865f0ecb43fe"
+        val searchUrl = "https://www.googleapis.com/customsearch/v1?q=$query&key=$apiKey&cx=$cx"
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url(searchUrl)
+            .get()
+            .build()
+
+        Thread {
+            try {
+                client.newCall(request).execute().use { response ->
+                    if (!response.isSuccessful) throw Exception("Unexpected code $response")
+
+                    val jsonData = response.body?.string()
+                    val jsonObject = JSONObject(jsonData)
+                    val items = jsonObject.getJSONArray("items")
+
+                    val resultBuilder = StringBuilder()
+
+                    for (i in 0 until items.length()) {
+                        val item = items.getJSONObject(i)
+                        val title = item.getString("title")
+                        val link = item.getString("link")
+
+                        val result = "Title: $title\nLink: $link\n\n"
+                        resultBuilder.append(result)
+                        val fileName = "search_results_test.txt"
+                        val file = File(filesDir, fileName)
+//                        file.writeText(resultBuilder.toString())
+                        file.writeText("Searched: $query\n\n${resultBuilder.toString()}")
+//                        println("$title - $link")
+                        runOnUiThread {
+                            Toast.makeText(
+                                this,
+                                "Title  $selectedFav Link : $link",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }.start()
     }
     private fun showPopup(searchColors: EditText) {
         // Inflate the popup layout
