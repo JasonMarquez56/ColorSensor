@@ -12,8 +12,21 @@ import android.content.Intent
 
 class PaintInfoActivity : AppCompatActivity() {
 
+    // List to store instances of PaintInfoActivity
+    companion object {
+        val instances = mutableListOf<PaintInfoActivity>()
+    }
+
+    // Function for deleting instances, created to route user back to previous activity
+    override fun onDestroy() {
+        super.onDestroy()
+        instances.remove(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Adding to instance list
+        instances.add(this)
         setContentView(R.layout.paint_info)
 
         // Initialize shade compare button
@@ -94,16 +107,10 @@ class PaintInfoActivity : AppCompatActivity() {
 
         // Display a back button
         val backButton = findViewById<ImageView>(R.id.backButton)
-        backButton.setOnClickListener{
-            val intent = Intent(this, FindColorActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-            startActivity(intent)
-            finish()
-        }
-
-        // Handle Back button click
         backButton.setOnClickListener {
-            onBackPressed()
+            for (instance in PaintInfoActivity.instances) {
+                instance.finish() // Close each instance
+            }
         }
     }
 
