@@ -15,6 +15,8 @@ import android.widget.Magnifier
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.example.colorsensor.RegisterActivity.RGB
+import com.example.colorsensor.RegisterActivity.favColor
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.random.Random
 
@@ -25,6 +27,9 @@ class PopularColor : AppCompatActivity() {
     var favColors : MutableList<String> = mutableListOf()
     private lateinit var firestore: FirebaseFirestore
     var selectedFav = ""
+
+    // empty list for RGB
+    var rgbList = mutableListOf<Int>()
 
     // Create a magnifier tutorial
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -78,49 +83,57 @@ class PopularColor : AppCompatActivity() {
             true
         }
 
-        // Set random colors for 25 buttons
-        for (i in 1..25) {
-            val newRed = Random.nextInt(0, 256)
-            val newGreen = Random.nextInt(0, 256)
-            val newBlue = Random.nextInt(0, 256)
+        // Retrieve favorite color from firebase.
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("users")
+            .get()
+            .addOnSuccessListener { documents ->
+                // Jeff code from profile activity
+                for (document in documents) {
+                    // Extract the favoriteColors list from the document
+                    val colors = document.get("favoriteColors") as? List<Map<String, Any>> ?: emptyList()
 
+                    // Process each color map
+                    colors.mapNotNull { colorMap ->
+                        val rgbMap = colorMap["rgb"] as? Map<String, Long>
 
-            val firestore = FirebaseFirestore.getInstance()
+                        // Safely get the RGB values, default to 0 if null
+                        val r = rgbMap?.get("r")?.toInt() ?: 0
+                        val g = rgbMap?.get("g")?.toInt() ?: 0
+                        val b = rgbMap?.get("b")?.toInt() ?: 0
 
-            // get all favorite color
-            firestore.collection("users")
-                .get()
-                .addOnSuccessListener { documents ->
-                    // store favorite color in a list
-                    val allFavoriteColors = mutableListOf<String>()
-
-                    for (document in documents) {
-                        val favoriteColors = document.get("favoriteColors") as? List<String>
-                        if (favoriteColors != null) {
-                            allFavoriteColors.addAll(favoriteColors)
-                        }
-                    }
-
-                    if (allFavoriteColors.isNotEmpty()) {
-                        // Remove duplicates and join into a string to display
-                        val uniqueColors = allFavoriteColors.toSet().joinToString(", ")
-                        Toast.makeText(this, "All Favorite Colors: $uniqueColors", Toast.LENGTH_LONG).show()
-                    } else {
-                        Toast.makeText(this, "No favorite colors found", Toast.LENGTH_SHORT).show()
+                        // Add the ARGB color value to rgbList
+                        rgbList.add(Color.argb(255, r, g, b))
+                        // You can return any value here if necessary (not required to return in mapNotNull)
+                        null
                     }
                 }
-                .addOnFailureListener { exception ->
-                    Log.e("Firestore", "Error getting favorite colors: ", exception)
-                    Toast.makeText(this, "Failed to fetch favorite colors", Toast.LENGTH_SHORT).show()
+
+                // shuffle the array of favoriteColor
+                rgbList.shuffle()
+                // Remove duplicate colors after shuffle (popular colors are likely first)
+                rgbList = rgbList.toMutableSet().toMutableList()
+                // Set the colors from the rgbList
+                for (i in 0 until minOf(rgbList.size, 25)) {
+                    val resID = resources.getIdentifier("button${i + 1}", "id", packageName)
+                    findViewById<Button>(resID)?.setBackgroundColor(rgbList[i])
                 }
 
-            // Create a random color
-            val color = Color.argb(255, newRed, newGreen, newBlue)
+                // Set random colors for the remaining buttons starting from button 2
+                for (i in rgbList.size until 25) {
+                    val newRed = Random.nextInt(0, 256)
+                    val newGreen = Random.nextInt(0, 256)
+                    val newBlue = Random.nextInt(0, 256)
 
-            // Find the view by its ID and set the background color
-            val resID = resources.getIdentifier("button$i", "id", packageName)
-            findViewById<Button>(resID)?.setBackgroundColor(color)
-        }
+                    // Create a random color
+                    val color = Color.argb(255, newRed, newGreen, newBlue)
+
+                    // Find the view by its ID and set the background color
+                    val resID = resources.getIdentifier("button${i + 1}", "id", packageName)
+                    findViewById<Button>(resID)?.setBackgroundColor(color)
+                }
+            }
+        //rgbList.add(Color.argb(255, 255, 0, 0)) // Red
 
         // Handle color selection from buttons
         for (i in 1..25) {
@@ -187,6 +200,22 @@ class PopularColor : AppCompatActivity() {
                         }
                     }
                 }
+        }
+    }
+
+    fun parseColorString(colorString: String): Triple<Int, Int, Int> {
+        // Remove the curly braces and trim the string
+        val cleanedString = colorString.removePrefix("{").removeSuffix("}")
+
+        // Use regex to extract the numbers after "r=", "g=", and "b="
+        val regex = Regex("""r=(\d+),\s*b=(\d+),\s*g=(\d+)""")
+        val matchResult = regex.find(cleanedString)
+
+        return if (matchResult != null) {
+            val (r, b, g) = matchResult.destructured
+            Triple(r.toInt(), g.toInt(), b.toInt()) // Reorder to correct RGB order
+        } else {
+            throw IllegalArgumentException("Invalid color string format")
         }
     }
 }
