@@ -227,11 +227,14 @@ class FindColorActivity : AppCompatActivity() {
                             findViewById<View>(resID)?.setBackgroundColor(color)
                             findViewById<View>(resID)?.setOnClickListener {
                                 val colorStrip = (findViewById<View>(resID)?.background as ColorDrawable).color
+                                val stripTextHex: TextView by lazy { findViewById(R.id.textView14) }
                                 val colorHex = String.format("#%06X", 0xFFFFFF and colorStrip)
-                                val red = Color.red(colorStrip)
-                                val green = Color.green(colorStrip)
-                                val blue = Color.blue(colorStrip)
-                                showPopup(it.context, it,"Hex: $colorHex\nRGB: ($red, $green, $blue)")
+                                stripTextHex.text = "Hex: $colorHex"
+                            // for the popup for color strip
+                                //val red = Color.red(colorStrip)
+                                //val green = Color.green(colorStrip)
+                                //val blue = Color.blue(colorStrip)
+                                //showPopup(it.context, it,"Hex: $colorHex\nRGB: ($red, $green, $blue)")
                             }
                         }
 
@@ -248,11 +251,14 @@ class FindColorActivity : AppCompatActivity() {
                             findViewById<View>(resID)?.setBackgroundColor(color) //set the background color
                             findViewById<View>(resID)?.setOnClickListener {
                                 val colorStrip = (findViewById<View>(resID)?.background as ColorDrawable).color
+                                val stripTextHex: TextView by lazy { findViewById(R.id.textView14) }
                                 val colorHex = String.format("#%06X", 0xFFFFFF and colorStrip)
-                                val red = Color.red(colorStrip)
-                                val green = Color.green(colorStrip)
-                                val blue = Color.blue(colorStrip)
-                                showPopup(it.context, it,"Hex: $colorHex\nRGB: ($red, $green, $blue)")
+                                stripTextHex.text = "Hex: $colorHex"
+                            // for the popup for color strip
+                                //val red = Color.red(colorStrip)
+                                //val green = Color.green(colorStrip)
+                                //val blue = Color.blue(colorStrip)
+                                //showPopup(it.context, it,"Hex: $colorHex\nRGB: ($red, $green, $blue)")
                             }
                         }
                         // update the text for Hex and RGB to the target color

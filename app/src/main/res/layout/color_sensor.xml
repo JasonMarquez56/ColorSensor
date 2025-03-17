@@ -17,10 +17,10 @@ on the imageview and the app will display information-->
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.687"
+        app:layout_constraintHorizontal_bias="0.924"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.156" />
+        app:layout_constraintVertical_bias="0.163" />
 
     <View
         android:id="@+id/viewColor"
@@ -45,21 +45,24 @@ on the imageview and the app will display information-->
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/colorsensor_home_banner" />
     <!--Label for Color Strip-->
+
+    <!--container to store color strip view-->
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="126dp"
         android:layout_height="38dp"
         android:text="Color Strip"
         android:textColor="@color/black"
+        android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.045"
+        app:layout_constraintHorizontal_bias="0.041"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.15" />
+        app:layout_constraintVertical_bias="0.148" />
 
-    <!--container to store color strip view-->
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="363dp"
@@ -183,6 +186,20 @@ on the imageview and the app will display information-->
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.806" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="202dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="41dp"
+        android:text="Hex:"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.547"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.052" />
 
     <ImageButton
         android:id="@+id/favoriteButton"
