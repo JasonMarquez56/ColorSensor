@@ -91,6 +91,12 @@
             android:exported="true"
             android:theme="@style/Theme.ColorSensor" />
 
+        <!-- Accessbility mode setting -->
+        <activity
+            android:name=".SettingActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ColorSensor" />
+
         <!-- Paint Info -->
         <activity android:name=".PaintInfoActivity" />
 

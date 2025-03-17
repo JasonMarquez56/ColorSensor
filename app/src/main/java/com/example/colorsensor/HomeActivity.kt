@@ -118,6 +118,8 @@ class HomeActivity : AppCompatActivity() {
                 }
                 R.id.settings -> {
                     // Handle Settings button click
+                    val intent = Intent(this, SettingActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 else -> false
