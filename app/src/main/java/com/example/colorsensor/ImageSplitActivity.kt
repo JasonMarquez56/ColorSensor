@@ -40,10 +40,10 @@ class ImageSplitActivity : AppCompatActivity() {
         setContentView(R.layout.image_split)
 
         val imageView: ImageView by lazy { findViewById(R.id.imageView) }
-        // Retrieve byte array from intent
-        val byteArray = intent.getByteArrayExtra("bitmap")
-        // Convert byte array back to Bitmap
-        bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray!!.size)
+        // Get image from the intent during the pass file path through intent
+        val imagePath = intent.getStringExtra("image") //changed
+        // Get the bitmap from the image
+        bitmap = BitmapFactory.decodeFile(imagePath) //changed
         val weakBitmap = WeakReference(bitmap)
         imageView.setImageBitmap(weakBitmap.get())
 

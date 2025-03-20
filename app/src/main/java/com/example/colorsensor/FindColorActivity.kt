@@ -34,6 +34,7 @@ import android.widget.LinearLayout
 import android.widget.PopupWindow
 import java.io.ByteArrayOutputStream
 import android.content.res.ColorStateList
+import java.io.File
 
 
 class FindColorActivity : AppCompatActivity() {
@@ -135,17 +136,21 @@ class FindColorActivity : AppCompatActivity() {
             imageView.setImageBitmap(getDefaultBitmap())
         }
 
-        // split image
+        // image split
+        // Avoid crashing dur to high-resolution images. Pass the image along a temporary png file
         testButton.setOnClickListener {
+            //intent is created to navigate from the current activity to ImageSplitActivity
             val intent = Intent(this, ImageSplitActivity::class.java)
 
-            // Convert Bitmap to ByteArray
-            val stream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-            val byteArray = stream.toByteArray()
+            // Save Bitmap to a temporary file inside the cacheDir on Android
+            val file = File(cacheDir, "image.png")
+            file.outputStream().use { outputStream ->
+                //Bitmap is compressed into a PNG format and written to the file using the output stream.
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            }
 
-            // Pass byte array through intent
-            intent.putExtra("bitmap", byteArray)
+            // Pass file path through intent
+            intent.putExtra("image", file.absolutePath)
             startActivity(intent)
         }
 
