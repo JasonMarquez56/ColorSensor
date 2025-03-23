@@ -20,6 +20,8 @@ import com.example.colorsensor.RegisterActivity.favColor
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.random.Random
 
+import com.example.colorsensor.SettingsUtil
+
 //testing
 class PopularColor : AppCompatActivity() {
     private var magnifier: Magnifier? = null
@@ -36,6 +38,10 @@ class PopularColor : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.popular_color) // Ensure correct layout file
+
+        // These 2 lines of code test the settingActivity
+        val textView = findViewById<TextView>(R.id.textView17)
+        SettingsUtil.updateTextViewBasedOnSettings(this, textView)
 
         val imageView: ImageView = findViewById(R.id.imageView2)
         val hexMessage = findViewById<TextView>(R.id.textView9)
