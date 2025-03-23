@@ -3,6 +3,7 @@ package com.example.colorsensor
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.ImageButton
 import android.widget.Switch
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +24,13 @@ class SettingActivity : AppCompatActivity() {
         switch.setOnCheckedChangeListener { _, isChecked ->
             editor.putBoolean("setting_enabled", isChecked)
             editor.apply()
+        }
+
+        val backButton = findViewById<ImageButton>(R.id.backButton)
+
+        // Handle Back button click
+        backButton.setOnClickListener {
+            onBackPressed() // This will take the user back to the previous activity
         }
     }
 }
