@@ -28,6 +28,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import android.view.KeyEvent
+import kotlinx.coroutines.tasks.await
 
 //Testing result for search result
 import java.io.File
@@ -95,6 +96,7 @@ class ShopActivity : AppCompatActivity() {
         }
     }
     private fun searchGoogle(query: String, results: LinearLayout){
+        results.removeAllViews()
         val apiKey = "AIzaSyBFCNcSION-b11NXfyz5ZR2jU_oXUjcgrE"
         val cx = "9302c865f0ecb43fe"
         val searchUrl = "https://www.googleapis.com/customsearch/v1?q=$query&key=$apiKey&cx=$cx"
@@ -103,7 +105,6 @@ class ShopActivity : AppCompatActivity() {
             .url(searchUrl)
             .get()
             .build()
-
         Thread {
             try {
                 client.newCall(request).execute().use { response ->
@@ -153,6 +154,18 @@ class ShopActivity : AppCompatActivity() {
             }
         }.start()
     }
+//    private fun sherwin(name: String, callback: (Boolean) -> Unit) {
+//        firestore.collection("finalizedPaints")
+//            .whereEqualTo("brand", "Sherwin Williams")
+//            .whereEqualTo("name", name)
+//            .get()
+//            .addOnSuccessListener { documents ->
+//                callback(!documents.isEmpty)
+//            }
+//            .addOnFailureListener {
+//                callback(false)
+//            }
+//    }
     private fun showPopup(searchColors: EditText) {
         // Inflate the popup layout
         val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
