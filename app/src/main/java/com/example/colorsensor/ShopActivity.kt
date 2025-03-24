@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import android.view.LayoutInflater
 import android.graphics.Color
+import android.net.Uri
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import android.widget.LinearLayout
@@ -30,6 +31,7 @@ import android.view.KeyEvent
 
 //Testing result for search result
 import java.io.File
+import java.net.URL
 
 class ShopActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -79,9 +81,10 @@ class ShopActivity : AppCompatActivity() {
         favorite.setOnClickListener{
             showPopup(searchColors)
         }
+        val results = findViewById<LinearLayout>(R.id.Results)
         searchColors.setOnKeyListener { _, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {
-                searchGoogle(searchColors.text.toString())
+                searchGoogle(searchColors.text.toString(),results)
                 true 
             } else {
                 false // Let the system handle other key events
@@ -91,7 +94,7 @@ class ShopActivity : AppCompatActivity() {
             finish() // Go back to the previous activity
         }
     }
-    private fun searchGoogle(query: String){
+    private fun searchGoogle(query: String, results: LinearLayout){
         val apiKey = "AIzaSyBFCNcSION-b11NXfyz5ZR2jU_oXUjcgrE"
         val cx = "9302c865f0ecb43fe"
         val searchUrl = "https://www.googleapis.com/customsearch/v1?q=$query&key=$apiKey&cx=$cx"
@@ -109,28 +112,39 @@ class ShopActivity : AppCompatActivity() {
                     val jsonData = response.body?.string()
                     val jsonObject = JSONObject(jsonData)
                     val items = jsonObject.getJSONArray("items")
-
+                    val domains = mutableSetOf<String>()
                     val resultBuilder = StringBuilder()
 
                     for (i in 0 until items.length()) {
                         val item = items.getJSONObject(i)
                         val title = item.getString("title")
                         val link = item.getString("link")
-
-                        val result = "Title: $title\nLink: $link\n\n"
-                        resultBuilder.append(result)
-                        val fileName = "search_results_test.txt"
-                        val file = File(filesDir, fileName)
-//                        file.writeText(resultBuilder.toString())
-                        file.writeText("Searched: $query\n\n${resultBuilder.toString()}")
-//                        println("$title - $link")
+                        val domain = URL(link).host
+                        if (domains.contains(domain)) {
+                            continue
+                        }
+                        domains.add(domain)
+                        // Create TextView dynamically
                         runOnUiThread {
-                            Toast.makeText(
-                                this,
-                                "Title  $selectedFav Link : $link",
-                                Toast.LENGTH_SHORT
-                            )
+                            val textView = TextView(this).apply {
+                                text = title
+                                textSize = 16f
+                                setTextColor(Color.BLUE)
+                                isClickable = true
+                                setPadding(10, 10, 10, 10)
+
+                                // Make it clickable
+                                setOnClickListener {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+                                    startActivity(intent)
+                                }
+
+                            }
+                            Toast.makeText(this, "Title:  $title", Toast.LENGTH_SHORT)
                                 .show()
+
+                            // Add TextView to LinearLayout
+                            results.addView(textView)
                         }
                     }
                 }
