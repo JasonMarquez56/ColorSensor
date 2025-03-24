@@ -192,7 +192,7 @@ on the imageview and the app will display information-->
         android:layout_width="202dp"
         android:layout_height="48dp"
         android:layout_marginTop="41dp"
-        android:text="Hex:"
+        android:text=""
         android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"

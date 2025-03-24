@@ -77,7 +77,8 @@ class ImageSplitActivity : AppCompatActivity() {
                         val alpha = Color.alpha(pixel)
                         // update the viewColor background color
                         if(tap == 0){
-                            viewColor.setBackgroundColor(Color.argb(alpha, red, green, blue))
+                            val protanopiaColor = SettingsUtil.hexToTritanomalyHex(red, green, blue)
+                            viewColor.setBackgroundColor(Color.parseColor(protanopiaColor))
                         }
                         else
                             viewColor_2.setBackgroundColor(Color.argb(alpha, red, green, blue))
