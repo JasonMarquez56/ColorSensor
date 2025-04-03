@@ -121,6 +121,11 @@
             android:exported="true"
             android:theme="@style/Theme.ColorSensor"/>
 
+        <!-- ColorChangerActivity -->
+        <activity
+            android:name=".ColorChangerActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ColorSensor"/>
 
     </application>
 </manifest>

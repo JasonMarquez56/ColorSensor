@@ -59,6 +59,8 @@ class FindColorActivity : AppCompatActivity() {
     // the size of the imageview and bitmap we need to 2 variables
     private var xRatioForBitmap = 1f
     private var yRatioForBitmap = 1f
+    // button to map to color changer activity
+    private lateinit var changeColorButton: Button
 
     @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("ClickableViewAccessibility", "SetTextI18n", "DiscouragedApi")
@@ -68,11 +70,25 @@ class FindColorActivity : AppCompatActivity() {
 
         setupButtonClickListener()
 
+        changeColorButton = findViewById(R.id.changeColorButton)
+
+        changeColorButton.setOnClickListener {
+            // Convert existing bitmap to byte array
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            val byteArray = stream.toByteArray()
+
+            // Start ColorChangerActivity and pass the image
+            val intent = Intent(this, ColorChangerActivity::class.java)
+            intent.putExtra("image", byteArray)
+            startActivity(intent)
+        }
+
         val byteArray = intent.getByteArrayExtra("image_bitmap")
         val imageUri = intent.getStringExtra("image_uri")
         val testButton = findViewById<Button>(R.id.button27)
-
         val favoriteButton = findViewById<ImageButton>(R.id.favoriteButton)
+        changeColorButton = findViewById(R.id.changeColorButton)
         firestore = FirebaseFirestore.getInstance()
         //checkIfFavorited()
         //favorite button to store selected color user's favorite list

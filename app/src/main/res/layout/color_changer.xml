@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- TextView to display the selected RGB value -->
+    <TextView
+        android:id="@+id/rgbValueText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RGB: "
+        android:textSize="18sp"
+        android:paddingBottom="8dp"/>
+
+    <!-- ImageView to display the passed image -->
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scaleType="fitCenter"
+        android:contentDescription="Image to change color"/>
+
+    <!-- Color Picker View to allow the user to choose a color -->
+    <com.skydoves.colorpickerview.ColorPickerView
+        android:id="@+id/colorPickerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+    <!-- Button to show RGB picker and test color changes -->
+    <Button
+        android:id="@+id/colorsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Colors"
+        android:layout_gravity="center"/>
+
+</LinearLayout>
