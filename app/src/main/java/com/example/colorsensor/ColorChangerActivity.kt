@@ -10,15 +10,19 @@ import androidx.appcompat.app.AppCompatActivity
 import ColorPickerDialogFragment
 import android.graphics.BitmapFactory
 import android.util.Log
-import com.example.colorsensor.R
+import android.view.View
+import com.example.colorsensor.utils.PaintFinder
+import android.view.MotionEvent
 
 class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColorSelectedListener {
 
     private lateinit var rgbValueText: TextView
     private lateinit var imageView: ImageView
     private lateinit var colorsButton: Button
-    private lateinit var originalBitmap: Bitmap  // The original bitmap image
-    private lateinit var modifiedBitmap: Bitmap // The modified bitmap image
+    private lateinit var originalBitmap: Bitmap
+    private lateinit var modifiedBitmap: Bitmap
+    private lateinit var colorBox: View
+    private var selectedColor: Int = Color.WHITE // Default selected color
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,8 +32,9 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         rgbValueText = findViewById(R.id.rgbValueText)
         imageView = findViewById(R.id.imageView)
         colorsButton = findViewById(R.id.colorsButton)
+        colorBox = findViewById(R.id.colorBox)
 
-        // Retrieve the byte array passed in the Intent and decode to Bitmap
+        // Retrieve and decode the bitmap from intent
         val byteArray = intent.getByteArrayExtra("image")
         if (byteArray != null) {
             originalBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
@@ -38,54 +43,86 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
             return
         }
 
-        // Ensure the bitmap has a valid config
+        // Ensure bitmap config is valid
         val config = originalBitmap.config ?: Bitmap.Config.ARGB_8888
         modifiedBitmap = originalBitmap.copy(config, true)
-
         imageView.setImageBitmap(modifiedBitmap)
 
-        // Set the color picker dialog on button click
+        // Open color picker when button is clicked
         colorsButton.setOnClickListener {
             val dialog = ColorPickerDialogFragment()
             dialog.show(supportFragmentManager, "ColorPickerDialog")
         }
+
+        // Detect taps on the image
+        imageView.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                val x = event.x.toInt()
+                val y = event.y.toInt()
+
+                if (x in 0 until modifiedBitmap.width && y in 0 until modifiedBitmap.height) {
+                    val tappedColor = modifiedBitmap.getPixel(x, y)
+                    Log.d("ColorChangerActivity", "Tapped Color: $tappedColor at ($x, $y)")
+
+                    // Replace tapped color in bitmap
+                    modifiedBitmap = replaceColorInBitmap(modifiedBitmap, tappedColor, selectedColor)
+                    imageView.setImageBitmap(modifiedBitmap)
+                }
+            }
+            true
+        }
     }
 
-    // This method is called when the user selects a color in the dialog
     override fun onColorSelected(color: Int) {
-        // Replace the target color in the bitmap with the selected color
-        modifiedBitmap = replaceColorInBitmap(modifiedBitmap, color)
+        selectedColor = color // Store selected color
+        colorBox.setBackgroundColor(color)
 
-        // Set the modified bitmap to the ImageView
-        imageView.setImageBitmap(modifiedBitmap)
-
-        // Display the RGB values in the TextView
         val r = Color.red(color)
         val g = Color.green(color)
         val b = Color.blue(color)
-        rgbValueText.text = "RGB: ($r, $g, $b)"
+
+        val targetColor = PaintFinder.PaintColor("Selected", "Current", r, g, b)
+        val closestPaint = PaintFinder.findClosestPaint(targetColor, this)
+
+        rgbValueText.text = if (closestPaint != null) {
+            "Closest Paint: ${closestPaint.name}"
+        } else {
+            "No close match found"
+        }
     }
 
-    // This function replaces a specific color in the bitmap with the selected color
-    private fun replaceColorInBitmap(bitmap: Bitmap, newColor: Int): Bitmap {
+    // Replaces pixels similar to targetColor with newColor
+    private fun replaceColorInBitmap(bitmap: Bitmap, targetColor: Int, newColor: Int, tolerance: Int = 30): Bitmap {
         val width = bitmap.width
         val height = bitmap.height
-
-        // Create a new bitmap to store the modified image
         val newBitmap = Bitmap.createBitmap(width, height, bitmap.config ?: Bitmap.Config.ARGB_8888)
 
         for (x in 0 until width) {
             for (y in 0 until height) {
                 val pixelColor = bitmap.getPixel(x, y)
 
-                // If the pixel is the target color (e.g., white), replace it with the new color
-                if (pixelColor == Color.WHITE) { // Change this condition to match your target color
+                if (isColorSimilar(pixelColor, targetColor, tolerance)) {
                     newBitmap.setPixel(x, y, newColor)
                 } else {
-                    newBitmap.setPixel(x, y, pixelColor) // Otherwise, keep the original color
+                    newBitmap.setPixel(x, y, pixelColor)
                 }
             }
         }
         return newBitmap
+    }
+
+    // Determines if two colors are similar within a given tolerance
+    private fun isColorSimilar(color1: Int, color2: Int, tolerance: Int): Boolean {
+        val r1 = Color.red(color1)
+        val g1 = Color.green(color1)
+        val b1 = Color.blue(color1)
+
+        val r2 = Color.red(color2)
+        val g2 = Color.green(color2)
+        val b2 = Color.blue(color2)
+
+        return (Math.abs(r1 - r2) < tolerance &&
+                Math.abs(g1 - g2) < tolerance &&
+                Math.abs(b1 - b2) < tolerance)
     }
 }

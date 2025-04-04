@@ -11,9 +11,19 @@
         android:id="@+id/rgbValueText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="RGB: "
+        android:text=" "
         android:textSize="18sp"
+        android:layout_marginStart="8dp"
         android:paddingBottom="8dp"/>
+
+    <!-- Color box to display the selected color -->
+    <View
+        android:id="@+id/colorBox"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:background="#FFFFFF"
+        android:layout_gravity="center_vertical"/>
 
     <!-- ImageView to display the passed image -->
     <ImageView
