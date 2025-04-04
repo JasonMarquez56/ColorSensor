@@ -55,22 +55,32 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         }
 
         // Detect taps on the image
-        imageView.setOnTouchListener { _, event ->
+        imageView.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                val x = event.x.toInt()
-                val y = event.y.toInt()
+                val imageMatrix = imageView.imageMatrix
+                val drawable = imageView.drawable ?: return@setOnTouchListener true
+
+                val inverse = android.graphics.Matrix()
+                imageMatrix.invert(inverse)
+
+                val touchPoint = floatArrayOf(event.x, event.y)
+                inverse.mapPoints(touchPoint)
+
+                val x = touchPoint[0].toInt()
+                val y = touchPoint[1].toInt()
 
                 if (x in 0 until modifiedBitmap.width && y in 0 until modifiedBitmap.height) {
                     val tappedColor = modifiedBitmap.getPixel(x, y)
                     Log.d("ColorChangerActivity", "Tapped Color: $tappedColor at ($x, $y)")
 
-                    // Replace tapped color in bitmap
+                    // Replace similar pixels with selected color
                     modifiedBitmap = replaceColorInBitmap(modifiedBitmap, tappedColor, selectedColor)
                     imageView.setImageBitmap(modifiedBitmap)
                 }
             }
             true
         }
+
     }
 
     override fun onColorSelected(color: Int) {
