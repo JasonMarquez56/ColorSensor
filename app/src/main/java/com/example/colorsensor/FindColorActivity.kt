@@ -247,9 +247,9 @@ class FindColorActivity : AppCompatActivity() {
                             findViewById<View>(resID)?.setBackgroundColor(color)
                             findViewById<View>(resID)?.setOnClickListener {
                                 val colorStrip = (findViewById<View>(resID)?.background as ColorDrawable).color
-                                val stripTextHex: TextView by lazy { findViewById(R.id.textView14) }
+                                val stripTextHex: TextView by lazy { findViewById(R.id.textView3) }
                                 val colorHex = String.format("#%06X", 0xFFFFFF and colorStrip)
-                                stripTextHex.text = "Hex: $colorHex"
+                                stripTextHex.text = "Color Strip\nHex: $colorHex"
                             // for the popup for color strip
                                 //val red = Color.red(colorStrip)
                                 //val green = Color.green(colorStrip)
@@ -271,9 +271,9 @@ class FindColorActivity : AppCompatActivity() {
                             findViewById<View>(resID)?.setBackgroundColor(color) //set the background color
                             findViewById<View>(resID)?.setOnClickListener {
                                 val colorStrip = (findViewById<View>(resID)?.background as ColorDrawable).color
-                                val stripTextHex: TextView by lazy { findViewById(R.id.textView14) }
+                                val stripTextHex: TextView by lazy { findViewById(R.id.textView3) }
                                 val colorHex = String.format("#%06X", 0xFFFFFF and colorStrip)
-                                stripTextHex.text = "Hex: $colorHex"
+                                stripTextHex.text = "Color Strip\nHex: $colorHex"
                             // for the popup for color strip
                                 //val red = Color.red(colorStrip)
                                 //val green = Color.green(colorStrip)
