@@ -16,6 +16,7 @@ import android.view.View
 import com.example.colorsensor.utils.PaintFinder
 import android.view.MotionEvent
 import java.util.*
+import kotlinx.coroutines.*
 
 class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColorSelectedListener {
 
@@ -26,11 +27,13 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
     private lateinit var resetButton: Button
     private lateinit var originalBitmap: Bitmap
     private lateinit var modifiedBitmap: Bitmap
-    private var imageUri: Uri? = null
     private lateinit var colorBox: View
-    private var selectedColor: Int = Color.WHITE // Default selected color
 
-    private val bitmapHistory: Stack<Bitmap> = Stack() // Stack to store bitmap history for undo functionality
+    // Default selected color
+    private var selectedColor: Int = Color.WHITE
+
+    // Stack to store bitmap history for undo functionality
+    private val bitmapHistory: Stack<Bitmap> = Stack()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -163,24 +166,60 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
     }
 
     // Replaces pixels similar to targetColor with newColor
-    private fun replaceColorInBitmap(bitmap: Bitmap, targetColor: Int, newColor: Int, tolerance: Int = 30): Bitmap {
+    private fun replaceColorInBitmap(
+        bitmap: Bitmap,
+        targetColor: Int,
+        newColor: Int,
+        opacity: Int = 200,
+        tolerance: Int = 80
+    ): Bitmap {
         val width = bitmap.width
         val height = bitmap.height
         val newBitmap = Bitmap.createBitmap(width, height, bitmap.config ?: Bitmap.Config.ARGB_8888)
 
-        for (x in 0 until width) {
-            for (y in 0 until height) {
-                val pixelColor = bitmap.getPixel(x, y)
+        // We will process the pixels in blocks (rows) to speed up the operation
+        val pixels = IntArray(width)
+        for (y in 0 until height) {
+            // Get pixels for the current row (this is faster than getting one pixel at a time)
+            bitmap.getPixels(pixels, 0, width, 0, y, width, 1)
+
+            for (x in 0 until width) {
+                val pixelColor = pixels[x]
 
                 if (isColorSimilar(pixelColor, targetColor, tolerance)) {
-                    newBitmap.setPixel(x, y, newColor)
-                } else {
-                    newBitmap.setPixel(x, y, pixelColor)
+                    // Extract RGB values from the new color
+                    val newRed = Color.red(newColor)
+                    val newGreen = Color.green(newColor)
+                    val newBlue = Color.blue(newColor)
+
+                    // Modify the new color's alpha (opacity) value
+                    val newAlpha = opacity // Opacity is set between 0 and 255 (fully transparent to fully opaque)
+
+                    // Get the original pixel's alpha and blend with the new opacity
+                    val originalAlpha = Color.alpha(pixelColor)
+
+                    // Soft blending of the colors
+                    val blendedAlpha = ((originalAlpha * (255 - opacity)) + (newAlpha * opacity)) / 255
+
+                    // Gradual blending of colors (this is key to make it look realistic)
+                    val blendedRed = (Color.red(pixelColor) * (255 - opacity) + newRed * opacity) / 255
+                    val blendedGreen = (Color.green(pixelColor) * (255 - opacity) + newGreen * opacity) / 255
+                    val blendedBlue = (Color.blue(pixelColor) * (255 - opacity) + newBlue * opacity) / 255
+
+                    // Create the new blended color
+                    val blendedColor = Color.argb(blendedAlpha, blendedRed, blendedGreen, blendedBlue)
+
+                    // Set the blended color to the pixel
+                    pixels[x] = blendedColor
                 }
             }
+
+            // Set the modified row of pixels to the new bitmap
+            newBitmap.setPixels(pixels, 0, width, 0, y, width, 1)
         }
         return newBitmap
     }
+
 
     private fun updateColorInfo(
         color: Int,
