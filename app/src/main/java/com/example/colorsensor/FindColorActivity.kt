@@ -1,6 +1,7 @@
 package com.example.colorsensor
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -34,7 +35,13 @@ import android.widget.LinearLayout
 import android.widget.PopupWindow
 import java.io.ByteArrayOutputStream
 import android.content.res.ColorStateList
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Typeface
+import android.os.Environment
+import android.provider.MediaStore
 import java.io.File
+import java.io.FileOutputStream
 
 
 class FindColorActivity : AppCompatActivity() {
@@ -73,13 +80,17 @@ class FindColorActivity : AppCompatActivity() {
         val byteArray = intent.getByteArrayExtra("image_bitmap")
         val imageUri = intent.getStringExtra("image_uri")
         val testButton = findViewById<Button>(R.id.button27)
+        val saveButton = findViewById<Button>(R.id.saveColorButton)
         val favoriteButton = findViewById<ImageButton>(R.id.favoriteButton)
         changeColorButton = findViewById(R.id.changeColorButton)
         firestore = FirebaseFirestore.getInstance()
 
-
-        //checkIfFavorited()
-        //favorite button to store selected color user's favorite list
+        saveButton.setOnClickListener {
+            // Save the image with the banner
+            val originalBitmap = bitmap
+            saveImageWithBanner(this, originalBitmap, textName.text.toString(), textRGB.text.toString(), textHex.text.toString())
+            Toast.makeText(this, "Image saved with banner", Toast.LENGTH_SHORT).show()
+        }
 
         favoriteButton.setOnClickListener {
             val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
@@ -247,6 +258,7 @@ class FindColorActivity : AppCompatActivity() {
                             findViewById<View>(resID)?.setBackgroundColor(color)
                             findViewById<View>(resID)?.setOnClickListener {
                                 val colorStrip = (findViewById<View>(resID)?.background as ColorDrawable).color
+                                // Changed where the text will appear on the screen
                                 val stripTextHex: TextView by lazy { findViewById(R.id.textView3) }
                                 val colorHex = String.format("#%06X", 0xFFFFFF and colorStrip)
                                 stripTextHex.text = "Color Strip\nHex: $colorHex"
@@ -285,7 +297,6 @@ class FindColorActivity : AppCompatActivity() {
                         textHex.text = "Hex: #${Integer.toHexString(pixel).uppercase().substring(2)}"
                         textRGB.text = "RGB: ($red, $green, $blue)"
                         selectedColor = RGB(red,green,blue)
-
 
                         // Calculating luminance with standard weighted formula
                         val luminance = (0.299 * red + 0.587 * green + 0.114 * blue) / 255
@@ -329,6 +340,7 @@ class FindColorActivity : AppCompatActivity() {
             textViewRGB.text = ""
         }
     }
+
 
     private fun checkIfFavorited() {
         val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
@@ -446,4 +458,57 @@ class FindColorActivity : AppCompatActivity() {
         // show the popupWindow
         popupWindow.showAsDropDown(anchorView, 0, 0)
     }
+
+    private fun saveImageWithBanner(
+        context: Context,
+        originalBitmap: Bitmap,
+        paintName: String,
+        rgb: String,
+        hex: String
+    ){
+        // Step 1: Create the banner
+        val bannerHeight = 400
+        val bannerBitmap = Bitmap.createBitmap(originalBitmap.width, bannerHeight, Bitmap.Config.ARGB_8888)
+        val bannerCanvas = Canvas(bannerBitmap)
+        bannerCanvas.drawColor(Color.BLACK)
+
+        val paint = Paint().apply {
+            color = Color.WHITE
+            textSize = 80f
+            typeface = Typeface.DEFAULT_BOLD
+            isAntiAlias = true
+        }
+
+        bannerCanvas.drawText("Closest Paint: $paintName", 20f, 60f, paint)
+        bannerCanvas.drawText("RGB: $rgb", 20f, 160f, paint)
+        bannerCanvas.drawText("Hex: $hex", 20f, 260f, paint)
+
+        // Step 2: Combine the image
+        val combinedHeight = bannerHeight + originalBitmap.height
+        val combinedBitmap = Bitmap.createBitmap(originalBitmap.width, combinedHeight, Bitmap.Config.ARGB_8888)
+        val combinedCanvas = Canvas(combinedBitmap)
+        combinedCanvas.drawBitmap(bannerBitmap, 0f, 0f, null)
+        combinedCanvas.drawBitmap(originalBitmap, 0f, bannerHeight.toFloat(), null)
+
+        // Step 3: Save to DCIM/ColorSensor using MediaStore
+        val filename = "combined_image_${System.currentTimeMillis()}.png"
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DCIM + "/ColorSensor")
+        }
+
+        val imageUri = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+        imageUri?.let { uri ->
+            context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                combinedBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            }
+            Toast.makeText(context, "Image saved to DCIM/ColorSensor", Toast.LENGTH_LONG).show()
+        } ?: run {
+            Toast.makeText(context, "Failed to save image", Toast.LENGTH_LONG).show()
+        }
+    }
+
+
 }
