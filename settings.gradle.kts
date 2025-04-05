@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "ColorSensor"
 include(":app")
+

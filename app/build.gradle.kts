@@ -60,6 +60,10 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:1.4.1")
     implementation("androidx.camera:camera-view:1.4.1")
 
+    // OpenCV for edge detection
+    implementation("org.opencv:opencv:4.10.0")
+
+
     // Android Jetpack
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.7.0")

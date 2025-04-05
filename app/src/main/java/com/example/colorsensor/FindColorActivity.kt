@@ -70,26 +70,14 @@ class FindColorActivity : AppCompatActivity() {
 
         setupButtonClickListener()
 
-        changeColorButton = findViewById(R.id.changeColorButton)
-
-        changeColorButton.setOnClickListener {
-            // Convert existing bitmap to byte array
-            val stream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-            val byteArray = stream.toByteArray()
-
-            // Start ColorChangerActivity and pass the image
-            val intent = Intent(this, ColorChangerActivity::class.java)
-            intent.putExtra("image", byteArray)
-            startActivity(intent)
-        }
-
         val byteArray = intent.getByteArrayExtra("image_bitmap")
         val imageUri = intent.getStringExtra("image_uri")
         val testButton = findViewById<Button>(R.id.button27)
         val favoriteButton = findViewById<ImageButton>(R.id.favoriteButton)
         changeColorButton = findViewById(R.id.changeColorButton)
         firestore = FirebaseFirestore.getInstance()
+
+
         //checkIfFavorited()
         //favorite button to store selected color user's favorite list
 
@@ -150,6 +138,17 @@ class FindColorActivity : AppCompatActivity() {
         } else {
             Log.e("FindColorActivity", "Error: Bitmap is not initialized properly.")
             imageView.setImageBitmap(getDefaultBitmap())
+        }
+
+        changeColorButton.setOnClickListener {
+            if (imageUri != null) {
+                val intent = Intent(this, ColorChangerActivity::class.java)
+                intent.putExtra("image_uri", imageUri.toString()) // pass as string
+                startActivity(intent)
+            } else {
+                Log.e("FindColorActivity", "No image URI found to pass")
+                Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show()
+            }
         }
 
         // image split

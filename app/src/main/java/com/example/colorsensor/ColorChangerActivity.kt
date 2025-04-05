@@ -8,21 +8,29 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import ColorPickerDialogFragment
+import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Log
 import android.view.View
 import com.example.colorsensor.utils.PaintFinder
 import android.view.MotionEvent
+import java.util.*
 
 class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColorSelectedListener {
 
     private lateinit var rgbValueText: TextView
     private lateinit var imageView: ImageView
     private lateinit var colorsButton: Button
+    private lateinit var undoButton: Button
+    private lateinit var resetButton: Button
     private lateinit var originalBitmap: Bitmap
     private lateinit var modifiedBitmap: Bitmap
+    private var imageUri: Uri? = null
     private lateinit var colorBox: View
     private var selectedColor: Int = Color.WHITE // Default selected color
+
+    private val bitmapHistory: Stack<Bitmap> = Stack() // Stack to store bitmap history for undo functionality
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,21 +40,39 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         rgbValueText = findViewById(R.id.rgbValueText)
         imageView = findViewById(R.id.imageView)
         colorsButton = findViewById(R.id.colorsButton)
+        undoButton = findViewById(R.id.undoButton)
+        resetButton = findViewById(R.id.resetButton)
         colorBox = findViewById(R.id.colorBox)
 
-        // Retrieve and decode the bitmap from intent
-        val byteArray = intent.getByteArrayExtra("image")
-        if (byteArray != null) {
-            originalBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-        } else {
-            Log.e("ColorChangerActivity", "Bitmap is null")
+        // Retrieve the image URI from intent
+        val imageUriString = intent.getStringExtra("image_uri")
+        if (imageUriString == null) {
+            Log.e("ColorChangerActivity", "No imageUri provided")
+            finish()
             return
         }
 
-        // Ensure bitmap config is valid
-        val config = originalBitmap.config ?: Bitmap.Config.ARGB_8888
-        modifiedBitmap = originalBitmap.copy(config, true)
-        imageView.setImageBitmap(modifiedBitmap)
+        try {
+            val imageUri = Uri.parse(imageUriString)
+            val inputStream = contentResolver.openInputStream(imageUri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            inputStream?.close()
+
+            if (bitmap == null) {
+                Log.e("ColorChangerActivity", "Failed to decode bitmap from URI")
+                finish()
+                return
+            }
+
+            originalBitmap = bitmap
+            val config = originalBitmap.config ?: Bitmap.Config.ARGB_8888
+            modifiedBitmap = originalBitmap.copy(config, true)
+            imageView.setImageBitmap(modifiedBitmap)
+
+        } catch (e: Exception) {
+            Log.e("ColorChangerActivity", "Error loading image from URI", e)
+            finish()
+        }
 
         // Open color picker when button is clicked
         colorsButton.setOnClickListener {
@@ -73,6 +99,9 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
                     val tappedColor = modifiedBitmap.getPixel(x, y)
                     Log.d("ColorChangerActivity", "Tapped Color: $tappedColor at ($x, $y)")
 
+                    // Save the current bitmap before making changes for undo functionality
+                    bitmapHistory.push(modifiedBitmap.copy(modifiedBitmap.config ?: Bitmap.Config.ARGB_8888, true))
+
                     // Replace similar pixels with selected color
                     modifiedBitmap = replaceColorInBitmap(modifiedBitmap, tappedColor, selectedColor)
                     imageView.setImageBitmap(modifiedBitmap)
@@ -81,6 +110,21 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
             true
         }
 
+        // Undo button
+        undoButton.setOnClickListener {
+            if (bitmapHistory.isNotEmpty()) {
+                // Pop the last bitmap from history and set it back
+                modifiedBitmap = bitmapHistory.pop()
+                imageView.setImageBitmap(modifiedBitmap)
+            }
+        }
+
+        // Reset button
+        resetButton.setOnClickListener {
+            modifiedBitmap = originalBitmap.copy(originalBitmap.config ?: Bitmap.Config.ARGB_8888, true)
+            imageView.setImageBitmap(modifiedBitmap)
+            bitmapHistory.clear() // Clear history since we reset to original
+        }
     }
 
     override fun onColorSelected(color: Int) {
@@ -99,6 +143,23 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         } else {
             "No close match found"
         }
+
+        updateColorInfo(color, colorBox)
+    }
+
+    // Determines if two colors are similar within a given tolerance
+    private fun isColorSimilar(color1: Int, color2: Int, tolerance: Int): Boolean {
+        val r1 = Color.red(color1)
+        val g1 = Color.green(color1)
+        val b1 = Color.blue(color1)
+
+        val r2 = Color.red(color2)
+        val g2 = Color.green(color2)
+        val b2 = Color.blue(color2)
+
+        return (Math.abs(r1 - r2) < tolerance &&
+                Math.abs(g1 - g2) < tolerance &&
+                Math.abs(b1 - b2) < tolerance)
     }
 
     // Replaces pixels similar to targetColor with newColor
@@ -121,18 +182,32 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         return newBitmap
     }
 
-    // Determines if two colors are similar within a given tolerance
-    private fun isColorSimilar(color1: Int, color2: Int, tolerance: Int): Boolean {
-        val r1 = Color.red(color1)
-        val g1 = Color.green(color1)
-        val b1 = Color.blue(color1)
+    private fun updateColorInfo(
+        color: Int,
+        colorBox: View
+    ) {
+        // Extract RGB values from the color
+        val red = Color.red(color)
+        val green = Color.green(color)
+        val blue = Color.blue(color)
 
-        val r2 = Color.red(color2)
-        val g2 = Color.green(color2)
-        val b2 = Color.blue(color2)
+        // Using the RGB values to search the database
+        val targetColor = PaintFinder.PaintColor("", "", red, green, blue)
+        val closestPaint = PaintFinder.findClosestPaint(targetColor, this)
 
-        return (Math.abs(r1 - r2) < tolerance &&
-                Math.abs(g1 - g2) < tolerance &&
-                Math.abs(b1 - b2) < tolerance)
+        // Set the XML values to the correct paint and RGB when found
+        if (closestPaint != null) {
+            val closestPaintColor = Color.rgb(closestPaint.r, closestPaint.g, closestPaint.b)
+            colorBox.setBackgroundColor(closestPaintColor)
+
+            // Make the box clickable and route to PaintInfoActivity
+            colorBox.setOnClickListener {
+                val intent = Intent(this, PaintInfoActivity::class.java)
+                // Pass the paint color and name
+                intent.putExtra("selected_color", closestPaintColor)
+                intent.putExtra("color_name", closestPaint.name)
+                startActivity(intent)
+            }
+        }
     }
 }
