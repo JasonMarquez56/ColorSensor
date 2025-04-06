@@ -57,6 +57,9 @@ class FindColorActivity : AppCompatActivity() {
     private val imageView: ImageView by lazy { findViewById(R.id.imageView) }
     // show what color has been changed by a view
     private val viewColor: View by lazy { findViewById(R.id.viewColor) }
+
+    private val accessbility: View by lazy { findViewById(R.id.viewColor15) }
+    private val accessbilityText: TextView by lazy { findViewById(R.id.textView13) }
     private val textHex: TextView by lazy { findViewById(R.id.textView) }
     private val textRGB: TextView by lazy { findViewById(R.id.textView2) }
     private val textName: TextView by lazy { findViewById(R.id.textView8) }
@@ -244,6 +247,25 @@ class FindColorActivity : AppCompatActivity() {
                         val alpha = Color.alpha(pixel)
                         // update the viewColor background color
                         viewColor.setBackgroundColor(Color.argb(alpha, red, green, blue))
+                        // accessbility mode
+                        when {
+                            SettingsUtil.isProtanomalyEnabled(this) -> {
+                                val protanopiaColor = SettingsUtil.hexToProtanomalyHex(red, green, blue)
+                                accessbility.setBackgroundColor(Color.parseColor(protanopiaColor))
+                                accessbilityText.text = "Protanomaly (Red-Blind)"
+                            }
+                            SettingsUtil.isDeuteranomalyEnabled(this) -> {
+                                val deuteranomalyColor = SettingsUtil.hexToDeuteranomalyHex(red, green, blue)
+                                accessbility.setBackgroundColor(Color.parseColor(deuteranomalyColor))
+                                accessbilityText.text = "Deuteranomaly"
+                            }
+                            SettingsUtil.isTritanomalyEnabled(this) -> {
+                                val tritanomalyColor = SettingsUtil.hexToTritanomalyHex(red, green, blue)
+                                accessbility.setBackgroundColor(Color.parseColor(tritanomalyColor))
+                                accessbilityText.text = "Tritanomaly"
+                            }
+                        }
+
 
                         // Additional color processing
                         var step = 15 // Color strip get the darkest color use steps to update next rgb

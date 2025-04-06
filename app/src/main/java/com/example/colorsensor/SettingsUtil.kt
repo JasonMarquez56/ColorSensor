@@ -1,6 +1,8 @@
 package com.example.colorsensor
 
+import android.app.Activity
 import android.content.Context
+import android.widget.Switch
 import android.widget.TextView
 
 object SettingsUtil {
@@ -9,6 +11,11 @@ object SettingsUtil {
         val isSettingEnabled = sharedPreferences.getBoolean("setting_enabled", false)
 
         textView.text = if (isSettingEnabled) "Hello setting works!" else ""
+    }
+    // return trust if setting enable
+    fun isSettingEnabled(context: Context): Boolean {
+        val sharedPreferences = context.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("setting_enabled", false)
     }
 
     // Testing protanomaly
@@ -84,5 +91,21 @@ object SettingsUtil {
 
         // 3. Convert back to hex
         return String.format("#%02x%02x%02x", newRInt, newGInt, newBInt)
+    }
+
+
+    fun isProtanomalyEnabled(context: Context): Boolean {
+        val prefs = context.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        return prefs.getBoolean("protanomaly_enabled", false)
+    }
+
+    fun isDeuteranomalyEnabled(context: Context): Boolean {
+        val prefs = context.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        return prefs.getBoolean("deuteranomaly_enabled", false)
+    }
+
+    fun isTritanomalyEnabled(context: Context): Boolean {
+        val prefs = context.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        return prefs.getBoolean("tritanomaly_enabled", false)
     }
 }

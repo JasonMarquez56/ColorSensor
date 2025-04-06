@@ -44,6 +44,10 @@ on the imageview and the app will display information-->
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     <!--ImageView used for upload picture and camera-->
+    <!--Label for Color Strip-->
+
+    <!--container to store color strip view-->
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
@@ -57,9 +61,6 @@ on the imageview and the app will display information-->
         app:layout_constraintTop_toBottomOf="@+id/viewColor"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/colorsensor_home_banner" />
-    <!--Label for Color Strip-->
-
-    <!--container to store color strip view-->
 
     <TextView
         android:id="@+id/textView3"
@@ -225,5 +226,28 @@ on the imageview and the app will display information-->
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="@+id/viewColor"
         app:layout_constraintVertical_bias="0.881" />
+
+    <View
+        android:id="@+id/viewColor15"
+        android:layout_width="52dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="5dp"
+        android:background="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toStartOf="@+id/saveColorButton"
+        app:layout_constraintHorizontal_bias="0.978"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="168dp"
+        android:layout_height="19dp"
+        android:layout_marginBottom="45dp"
+        android:text=""
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/saveColorButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.563"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

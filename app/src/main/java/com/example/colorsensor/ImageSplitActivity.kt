@@ -77,8 +77,23 @@ class ImageSplitActivity : AppCompatActivity() {
                         val alpha = Color.alpha(pixel)
                         // update the viewColor background color
                         if(tap == 0){
-                            val protanopiaColor = SettingsUtil.hexToTritanomalyHex(red, green, blue)
-                            viewColor.setBackgroundColor(Color.parseColor(protanopiaColor))
+                            when {
+                                SettingsUtil.isProtanomalyEnabled(this) -> {
+                                    val protanopiaColor = SettingsUtil.hexToProtanomalyHex(red, green, blue)
+                                    viewColor.setBackgroundColor(Color.parseColor(protanopiaColor))
+                                }
+                                SettingsUtil.isDeuteranomalyEnabled(this) -> {
+                                    val deuteranomalyColor = SettingsUtil.hexToDeuteranomalyHex(red, green, blue)
+                                    viewColor.setBackgroundColor(Color.parseColor(deuteranomalyColor))
+                                }
+                                SettingsUtil.isTritanomalyEnabled(this) -> {
+                                    val tritanomalyColor = SettingsUtil.hexToTritanomalyHex(red, green, blue)
+                                    viewColor.setBackgroundColor(Color.parseColor(tritanomalyColor))
+                                }
+                                else -> {
+                                    viewColor.setBackgroundColor(Color.argb(alpha, red, green, blue))
+                                }
+                            }
                         }
                         else
                             viewColor_2.setBackgroundColor(Color.argb(alpha, red, green, blue))
