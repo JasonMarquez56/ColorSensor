@@ -112,7 +112,7 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
 
                     // Launch on background thread to avoid freezing the UI
                     lifecycleScope.launch {
-                        // Show a temporary loading state spinner
+                        // Show a temporary loading spinner
                         spinner.visibility = View.VISIBLE
 
                         val updatedBitmap = withContext(Dispatchers.Default) {
@@ -223,7 +223,7 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
                     // Convert back to ARGB with original alpha
                     val modifiedColor = Color.HSVToColor(Color.alpha(pixelColor), pixelHSV)
 
-                    // Optional: blend it softly with opacity
+                    // Blend it softly with opacity
                     val blendedColor = blendColors(pixelColor, modifiedColor, opacity)
                     pixels[x] = blendedColor
                 }
