@@ -15,8 +15,14 @@ import android.util.Log
 import android.view.View
 import com.example.colorsensor.utils.PaintFinder
 import android.view.MotionEvent
+import android.widget.ProgressBar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import androidx.lifecycle.lifecycleScope
 import java.util.*
-import kotlinx.coroutines.*
+
 
 class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColorSelectedListener {
 
@@ -28,26 +34,23 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
     private lateinit var originalBitmap: Bitmap
     private lateinit var modifiedBitmap: Bitmap
     private lateinit var colorBox: View
-
-    // Default selected color
     private var selectedColor: Int = Color.WHITE
-
-    // Stack to store bitmap history for undo functionality
     private val bitmapHistory: Stack<Bitmap> = Stack()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.color_changer)
 
-        // Initialize views
+        // Initializing views for xml
         rgbValueText = findViewById(R.id.rgbValueText)
         imageView = findViewById(R.id.imageView)
         colorsButton = findViewById(R.id.colorsButton)
         undoButton = findViewById(R.id.undoButton)
         resetButton = findViewById(R.id.resetButton)
         colorBox = findViewById(R.id.colorBox)
+        val spinner = findViewById<ProgressBar>(R.id.loadingSpinner)
 
-        // Retrieve the image URI from intent
+        // Retrieve the image URI from intent (passed from ColorFinder)
         val imageUriString = intent.getStringExtra("image_uri")
         if (imageUriString == null) {
             Log.e("ColorChangerActivity", "No imageUri provided")
@@ -55,6 +58,7 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
             return
         }
 
+        // Parsing image to bitmap
         try {
             val imageUri = Uri.parse(imageUriString)
             val inputStream = contentResolver.openInputStream(imageUri)
@@ -77,13 +81,13 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
             finish()
         }
 
-        // Open color picker when button is clicked
+        // Open color wheel when button is clicked
         colorsButton.setOnClickListener {
             val dialog = ColorPickerDialogFragment()
             dialog.show(supportFragmentManager, "ColorPickerDialog")
         }
 
-        // Detect taps on the image
+        // Detecting taps on the image
         imageView.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 val imageMatrix = imageView.imageMatrix
@@ -105,9 +109,24 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
                     // Save the current bitmap before making changes for undo functionality
                     bitmapHistory.push(modifiedBitmap.copy(modifiedBitmap.config ?: Bitmap.Config.ARGB_8888, true))
 
-                    // Replace similar pixels with selected color
-                    modifiedBitmap = replaceColorInBitmap(modifiedBitmap, tappedColor, selectedColor)
-                    imageView.setImageBitmap(modifiedBitmap)
+
+                    // Launch on background thread to avoid freezing the UI
+                    lifecycleScope.launch {
+                        // Show a temporary loading state spinner
+                        spinner.visibility = View.VISIBLE
+
+                        val updatedBitmap = withContext(Dispatchers.Default) {
+                            // Replace similar pixels with selected color
+                            replaceColorInBitmap(modifiedBitmap, tappedColor, selectedColor)
+                        }
+
+                        // Update the UI on the main thread
+                        imageView.setImageBitmap(updatedBitmap)
+                        modifiedBitmap = updatedBitmap
+
+                        // Removing spinner when done loading
+                        spinner.visibility = View.GONE
+                    }
                 }
             }
             true
@@ -126,12 +145,13 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         resetButton.setOnClickListener {
             modifiedBitmap = originalBitmap.copy(originalBitmap.config ?: Bitmap.Config.ARGB_8888, true)
             imageView.setImageBitmap(modifiedBitmap)
-            bitmapHistory.clear() // Clear history since we reset to original
+            // Clear history to reset to original
+            bitmapHistory.clear()
         }
     }
 
     override fun onColorSelected(color: Int) {
-        selectedColor = color // Store selected color
+        selectedColor = color
         colorBox.setBackgroundColor(color)
 
         val r = Color.red(color)
@@ -150,7 +170,7 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         updateColorInfo(color, colorBox)
     }
 
-    // Determines if two colors are similar within a given tolerance
+    // Determines if two colors are similar within a given tolerance (passed from replaceColor below)
     private fun isColorSimilar(color1: Int, color2: Int, tolerance: Int): Boolean {
         val r1 = Color.red(color1)
         val g1 = Color.green(color1)
@@ -165,7 +185,6 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
                 Math.abs(b1 - b2) < tolerance)
     }
 
-    // Replaces pixels similar to targetColor with newColor
     private fun replaceColorInBitmap(
         bitmap: Bitmap,
         targetColor: Int,
@@ -177,48 +196,58 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         val height = bitmap.height
         val newBitmap = Bitmap.createBitmap(width, height, bitmap.config ?: Bitmap.Config.ARGB_8888)
 
-        // We will process the pixels in blocks (rows) to speed up the operation
+        val targetHSV = FloatArray(3)
+        Color.colorToHSV(targetColor, targetHSV)
+
+        val newHSV = FloatArray(3)
+        Color.colorToHSV(newColor, newHSV)
+
         val pixels = IntArray(width)
+        val pixelHSV = FloatArray(3)
+
         for (y in 0 until height) {
-            // Get pixels for the current row (this is faster than getting one pixel at a time)
             bitmap.getPixels(pixels, 0, width, 0, y, width, 1)
 
             for (x in 0 until width) {
                 val pixelColor = pixels[x]
 
                 if (isColorSimilar(pixelColor, targetColor, tolerance)) {
-                    // Extract RGB values from the new color
-                    val newRed = Color.red(newColor)
-                    val newGreen = Color.green(newColor)
-                    val newBlue = Color.blue(newColor)
+                    // Convert the original pixel to HSV
+                    Color.colorToHSV(pixelColor, pixelHSV)
 
-                    // Modify the new color's alpha (opacity) value
-                    val newAlpha = opacity // Opacity is set between 0 and 255 (fully transparent to fully opaque)
+                    // Keep brightness, replace hue & saturation
+                    pixelHSV[0] = newHSV[0] // Hue
+                    pixelHSV[1] = newHSV[1] // Saturation
+                    // pixelHSV[2] stays the same (brightness)
 
-                    // Get the original pixel's alpha and blend with the new opacity
-                    val originalAlpha = Color.alpha(pixelColor)
+                    // Convert back to ARGB with original alpha
+                    val modifiedColor = Color.HSVToColor(Color.alpha(pixelColor), pixelHSV)
 
-                    // Soft blending of the colors
-                    val blendedAlpha = ((originalAlpha * (255 - opacity)) + (newAlpha * opacity)) / 255
-
-                    // Gradual blending of colors (this is key to make it look realistic)
-                    val blendedRed = (Color.red(pixelColor) * (255 - opacity) + newRed * opacity) / 255
-                    val blendedGreen = (Color.green(pixelColor) * (255 - opacity) + newGreen * opacity) / 255
-                    val blendedBlue = (Color.blue(pixelColor) * (255 - opacity) + newBlue * opacity) / 255
-
-                    // Create the new blended color
-                    val blendedColor = Color.argb(blendedAlpha, blendedRed, blendedGreen, blendedBlue)
-
-                    // Set the blended color to the pixel
+                    // Optional: blend it softly with opacity
+                    val blendedColor = blendColors(pixelColor, modifiedColor, opacity)
                     pixels[x] = blendedColor
                 }
             }
 
-            // Set the modified row of pixels to the new bitmap
             newBitmap.setPixels(pixels, 0, width, 0, y, width, 1)
         }
+
         return newBitmap
     }
+
+    private fun blendColors(originalColor: Int, newColor: Int, opacity: Int): Int {
+        val originalAlpha = Color.alpha(originalColor)
+        val newAlpha = opacity
+
+        val blendedAlpha = ((originalAlpha * (255 - newAlpha)) + (newAlpha * newAlpha)) / 255
+
+        val r = (Color.red(originalColor) * (255 - opacity) + Color.red(newColor) * opacity) / 255
+        val g = (Color.green(originalColor) * (255 - opacity) + Color.green(newColor) * opacity) / 255
+        val b = (Color.blue(originalColor) * (255 - opacity) + Color.blue(newColor) * opacity) / 255
+
+        return Color.argb(blendedAlpha, r, g, b)
+    }
+
 
 
     private fun updateColorInfo(

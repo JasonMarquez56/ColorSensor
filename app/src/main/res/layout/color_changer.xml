@@ -25,14 +25,29 @@
         android:background="#FFFFFF"
         android:layout_gravity="center_vertical"/>
 
-    <!-- ImageView to display the passed image -->
-    <ImageView
-        android:id="@+id/imageView"
+    <!-- FrameLayout to hold the ImageView and ProgressBar on top of each other -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scaleType="fitCenter"
-        android:contentDescription="Image to change color"/>
+        android:layout_weight="1">
+
+        <!-- ImageView to display the passed image -->
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:contentDescription="Image to change color"/>
+
+        <!-- ProgressBar to overlay over the ImageView -->
+        <ProgressBar
+            android:id="@+id/loadingSpinner"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center"/>
+    </FrameLayout>
 
     <!-- Color Picker View to allow the user to choose a color -->
     <com.skydoves.colorpickerview.ColorPickerView
