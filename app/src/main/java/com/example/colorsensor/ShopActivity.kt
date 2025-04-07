@@ -130,6 +130,9 @@ class ShopActivity : AppCompatActivity() {
                                 setTextColor(Color.BLUE)
                                 isClickable = true
                                 setPadding(10, 10, 10, 10)
+                                layoutParams = LinearLayout.LayoutParams(700, 200).apply {
+                                    setMargins(10, 10, 10, 10)
+                                }
 
                                 // Make it clickable
                                 setOnClickListener {
