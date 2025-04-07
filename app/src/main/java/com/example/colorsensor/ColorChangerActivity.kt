@@ -168,6 +168,7 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         }
 
         updateColorInfo(color, colorBox)
+        colorBox.setBackgroundColor(color)
     }
 
     // Determines if two colors are similar within a given tolerance (passed from replaceColor below)
