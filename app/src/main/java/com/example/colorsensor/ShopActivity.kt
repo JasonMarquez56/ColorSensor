@@ -13,25 +13,20 @@ import com.google.firebase.auth.FirebaseAuth
 import android.view.LayoutInflater
 import android.graphics.Color
 import android.net.Uri
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import android.widget.LinearLayout
 import android.widget.Toast
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.api.Distribution.BucketOptions.Linear
 import com.example.colorsensor.RegisterActivity.favColor
 import com.example.colorsensor.RegisterActivity.RGB
 import android.view.Gravity
 import android.widget.EditText
-import kotlinx.coroutines.selects.select
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import android.view.KeyEvent
-import kotlinx.coroutines.tasks.await
+import android.widget.ImageView
 
 //Testing result for search result
-import java.io.File
 import java.net.URL
 
 class ShopActivity : AppCompatActivity() {
@@ -83,9 +78,10 @@ class ShopActivity : AppCompatActivity() {
             showPopup(searchColors)
         }
         val results = findViewById<LinearLayout>(R.id.Results)
+        val logos = findViewById<LinearLayout>(R.id.Logos)
         searchColors.setOnKeyListener { _, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {
-                searchGoogle(searchColors.text.toString(),results)
+                searchGoogle(searchColors.text.toString(),results,logos)
                 true 
             } else {
                 false // Let the system handle other key events
@@ -95,8 +91,9 @@ class ShopActivity : AppCompatActivity() {
             finish() // Go back to the previous activity
         }
     }
-    private fun searchGoogle(query: String, results: LinearLayout){
+    private fun searchGoogle(query: String, results: LinearLayout, logos: LinearLayout){
         results.removeAllViews()
+        logos.removeAllViews()
         val apiKey = "AIzaSyBFCNcSION-b11NXfyz5ZR2jU_oXUjcgrE"
         val cx = "9302c865f0ecb43fe"
         val searchUrl = "https://www.googleapis.com/customsearch/v1?q=$query&key=$apiKey&cx=$cx"
@@ -141,11 +138,26 @@ class ShopActivity : AppCompatActivity() {
                                 }
 
                             }
+                            val logo = ImageView(this).apply {
+                                layoutParams = LinearLayout.LayoutParams(200, 200).apply {
+                                    setMargins(10, 10, 10, 10)
+                                }
+                                if (domain == "www.behr.com") {
+                                    setImageResource(R.drawable.behr)
+                                } else if (domain == "www.ppg.com") {
+                                    setImageResource(R.drawable.ppg)
+                                } else if (domain == "www.sherwin-williams.com") {
+                                    setImageResource(R.drawable.sherwin_williams)
+                                } else {
+                                    setImageResource(R.drawable.home_depot)
+                                }
+                            }
                             Toast.makeText(this, "Title:  $title", Toast.LENGTH_SHORT)
                                 .show()
 
                             // Add TextView to LinearLayout
                             results.addView(textView)
+                            logos.addView(logo)
                         }
                     }
                 }
