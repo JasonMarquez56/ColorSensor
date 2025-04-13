@@ -1,17 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/teal_200"
-    tools:context=".HomeActivity">
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <!-- Bottom navigation template -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        app:itemIconTint="@color/white"
+        app:itemRippleColor="@color/white"
+        app:itemTextColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav" />
+
+    <!-- Home screen wallpaper -->
+    <ImageView
+        android:id="@+id/HomeBanner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Home Fragment"
-        android:textSize="26dp"
-        android:layout_gravity="center"/>
+        android:adjustViewBounds="true"
+        android:contentDescription="Paint on a canvas"
+        android:scaleType="centerInside"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/colorsensor_home_banner" />
 
-</FrameLayout>
+    <!-- Search bar -->
+    <EditText
+        android:id="@+id/SearchColors"
+        android:layout_width="320dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/rounded_edittext"
+        android:drawableStart="@drawable/magnify"
+        android:drawablePadding="10dp"
+        android:ems="10"
+        android:hint="Search Colors"
+        android:importantForAutofill="no"
+        android:inputType="text|textAutoComplete"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/HomeBanner" />
+
+    <!-- Scrollable content with GridLayout -->
+    <ScrollView
+        android:id="@+id/scrollView4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SearchColors">
+
+        <LinearLayout
+            android:id="@+id/LinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- GridLayout with 2 columns and 3 rows -->
+            <androidx.gridlayout.widget.GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:padding="8dp"
+                app:columnCount="2"
+                app:rowCount="3">
+
+                <!-- Button 1 -->
+
+                <Button
+                    android:id="@+id/btnFindColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:backgroundTint="#8DC6A2"
+                    android:drawableTop="@drawable/camera_outline"
+                    android:text="Find\nColor"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:layout_columnWeight="1"
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1" />
+
+                <!-- Button 2 -->
+                <Button
+                    android:id="@+id/btnVideo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:backgroundTint="#8DBBC6"
+                    android:drawableTop="@drawable/video_outline"
+                    android:text="Live\nColor"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:iconPadding="8dp"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"
+                    app:layout_gravity="fill" />
+
+                <!-- Button 3 -->
+                <Button
+                    android:id="@+id/btnProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:backgroundTint="#C69D8D"
+                    android:drawableTop="@drawable/account"
+                    android:text="Profile\n"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:iconPadding="8dp"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"
+                    app:layout_gravity="fill" />
+
+                <!-- Button 4 -->
+                <Button
+                    android:id="@+id/btnShop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:backgroundTint="#C6C48D"
+                    android:drawableTop="@drawable/store"
+                    android:text="Shop\n"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:iconPadding="8dp"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"
+                    app:layout_gravity="fill" />
+
+                <!-- Button 5 -->
+                <Button
+                    android:id="@+id/btnPopularColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:backgroundTint="#FFE876"
+                    android:drawableTop="@drawable/brush_variant"
+                    android:text="Popular\nColor"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:iconPadding="8dp"
+                    app:layout_columnWeight="1"
+                    app:layout_rowWeight="1"
+                    app:layout_gravity="fill" />
+
+                <Button
+                    android:id="@+id/btnColorBlending"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:backgroundTint="#E49FDF"
+                    android:drawableTop="@drawable/palette_outline"
+                    android:text="Color\nBlending"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:iconPadding="8dp"
+                    app:layout_columnWeight="1"
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1" />
+
+                <!-- Button 6 -->
+
+            </androidx.gridlayout.widget.GridLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

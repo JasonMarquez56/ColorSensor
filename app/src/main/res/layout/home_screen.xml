@@ -82,7 +82,7 @@
                 <!-- Button 1 -->
 
                 <Button
-                    android:id="@+id/photoButton"
+                    android:id="@+id/btnFindColor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
@@ -98,7 +98,7 @@
 
                 <!-- Button 2 -->
                 <Button
-                    android:id="@+id/videoButton"
+                    android:id="@+id/btnVideo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
@@ -115,7 +115,7 @@
 
                 <!-- Button 3 -->
                 <Button
-                    android:id="@+id/profileButton"
+                    android:id="@+id/btnProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
@@ -132,7 +132,7 @@
 
                 <!-- Button 4 -->
                 <Button
-                    android:id="@+id/shopButton"
+                    android:id="@+id/btnShop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
@@ -149,7 +149,7 @@
 
                 <!-- Button 5 -->
                 <Button
-                    android:id="@+id/popularColor"
+                    android:id="@+id/btnPopularColor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
@@ -165,7 +165,7 @@
                     app:layout_gravity="fill" />
 
                 <Button
-                    android:id="@+id/colorBlending"
+                    android:id="@+id/btnColorBlending"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"

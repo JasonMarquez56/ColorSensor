@@ -2,12 +2,9 @@ package com.example.colorsensor
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
-import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.ByteArrayOutputStream
@@ -24,12 +21,12 @@ class HomeActivity : AppCompatActivity() {
         //sv.scrollTo(0, 100)
 
         // Find the button by its ID
-        val profileButton = findViewById<Button>(R.id.profileButton) // profile
-        val photoButton = findViewById<Button>(R.id.photoButton) // find color
-        val colorButtonTest = findViewById<Button>(R.id.videoButton) // live color
-        val popularColorButton = findViewById<Button>(R.id.popularColor) // popular color
-        val colorBlendingButton = findViewById<Button>(R.id.colorBlending) // color blending
-        val shopButton = findViewById<Button>(R.id.shopButton)
+        val profileButton = findViewById<Button>(R.id.btnProfile) // profile
+        val photoButton = findViewById<Button>(R.id.btnFindColor) // find color
+        val colorButtonTest = findViewById<Button>(R.id.btnVideo) // live color
+        val popularColorButton = findViewById<Button>(R.id.btnPopularColor) // popular color
+        val colorBlendingButton = findViewById<Button>(R.id.btnColorBlending) // color blending
+        val shopButton = findViewById<Button>(R.id.btnShop)
         // Set a click listener for the Photo button
         photoButton.setOnClickListener {
             val intent = Intent(this, PhotoActivity::class.java)

@@ -12,9 +12,9 @@ class LandingActivity : AppCompatActivity() {
         setContentView(R.layout.landing_screen) // Ensure the correct layout file is referenced here
 
         // Find the buttons by their IDs
-        val btnGoToHome = findViewById<Button>(R.id.guest_button)
-        val btnGoToLogin = findViewById<Button>(R.id.login_button)
-        val btnGoToRegister = findViewById<Button>(R.id.register_button)
+        val btnGoToHome = findViewById<Button>(R.id.btnGoToHome)
+        val btnGoToLogin = findViewById<Button>(R.id.btnGoToLogin)
+        val btnGoToRegister = findViewById<Button>(R.id.btnGoToRegister)
 
         // Set a click listener for the Login button
         btnGoToLogin.setOnClickListener {
