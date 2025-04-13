@@ -50,8 +50,17 @@ class PopularColor : AppCompatActivity() {
         // Load the original bitmap
         val bitmap = BitmapFactory.decodeResource(resources, R.drawable.blank_wall)
         // Define the region to change (xStart, yStart, width, height)
-        val targetRegion = Rect(0, 125, 1228, 809) // Adjust these values as needed
+        //val targetRegion = Rect(0, 125, 1228, 809) // Adjust these values as needed
 
+        val imageWidth = bitmap.width
+        val imageHeight = bitmap.height
+
+        val left = (0.0 * imageWidth).toInt()
+        val top = (0.13 * imageHeight).toInt()
+        val right = (0.735 * imageWidth).toInt()
+        val bottom = (0.85 * imageHeight).toInt()
+
+        val targetRegion = Rect(left, top, right, bottom)
         // Create a magnifier tutorial
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             magnifier = Magnifier.Builder(imageView)
