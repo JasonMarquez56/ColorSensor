@@ -57,6 +57,8 @@ class FindColorActivity : AppCompatActivity() {
     private val imageView: ImageView by lazy { findViewById(R.id.imageView) }
     // show what color has been changed by a view
     private val viewColor: View by lazy { findViewById(R.id.viewColor) }
+    private var saveColor: Int = Color.WHITE
+    private var textColor: Int = Color.WHITE
 
     private val accessbility: View by lazy { findViewById(R.id.viewColor15) }
     private val accessbilityText: TextView by lazy { findViewById(R.id.textView13) }
@@ -247,6 +249,7 @@ class FindColorActivity : AppCompatActivity() {
                         val alpha = Color.alpha(pixel)
                         // update the viewColor background color
                         viewColor.setBackgroundColor(Color.argb(alpha, red, green, blue))
+                        saveColor = Color.argb(alpha, red, green, blue)
                         // accessbility mode
                         when {
                             SettingsUtil.isProtanomalyEnabled(this) -> {
@@ -492,18 +495,18 @@ class FindColorActivity : AppCompatActivity() {
         val bannerHeight = 400
         val bannerBitmap = Bitmap.createBitmap(originalBitmap.width, bannerHeight, Bitmap.Config.ARGB_8888)
         val bannerCanvas = Canvas(bannerBitmap)
-        bannerCanvas.drawColor(Color.BLACK)
+        bannerCanvas.drawColor(saveColor)
 
         val paint = Paint().apply {
-            color = Color.WHITE
+            color = textColor
             textSize = 80f
             typeface = Typeface.DEFAULT_BOLD
             isAntiAlias = true
         }
 
-        bannerCanvas.drawText("Closest Paint: $paintName", 20f, 60f, paint)
-        bannerCanvas.drawText("RGB: $rgb", 20f, 160f, paint)
-        bannerCanvas.drawText("Hex: $hex", 20f, 260f, paint)
+        bannerCanvas.drawText("$paintName", 20f, 80f, paint)
+        bannerCanvas.drawText("$rgb", 20f, 180f, paint)
+        bannerCanvas.drawText("$hex", 20f, 280f, paint)
 
         // Step 2: Combine the image
         val combinedHeight = bannerHeight + originalBitmap.height
