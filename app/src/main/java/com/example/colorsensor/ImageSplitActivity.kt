@@ -77,23 +77,7 @@ class ImageSplitActivity : AppCompatActivity() {
                         val alpha = Color.alpha(pixel)
                         // update the viewColor background color
                         if(tap == 0){
-                            when {
-                                SettingsUtil.isProtanomalyEnabled(this) -> {
-                                    val protanopiaColor = SettingsUtil.hexToProtanomalyHex(red, green, blue)
-                                    viewColor.setBackgroundColor(Color.parseColor(protanopiaColor))
-                                }
-                                SettingsUtil.isDeuteranomalyEnabled(this) -> {
-                                    val deuteranomalyColor = SettingsUtil.hexToDeuteranomalyHex(red, green, blue)
-                                    viewColor.setBackgroundColor(Color.parseColor(deuteranomalyColor))
-                                }
-                                SettingsUtil.isTritanomalyEnabled(this) -> {
-                                    val tritanomalyColor = SettingsUtil.hexToTritanomalyHex(red, green, blue)
-                                    viewColor.setBackgroundColor(Color.parseColor(tritanomalyColor))
-                                }
-                                else -> {
-                                    viewColor.setBackgroundColor(Color.argb(alpha, red, green, blue))
-                                }
-                            }
+                            viewColor.setBackgroundColor(Color.argb(alpha, red, green, blue))
                         }
                         else
                             viewColor_2.setBackgroundColor(Color.argb(alpha, red, green, blue))
@@ -102,10 +86,30 @@ class ImageSplitActivity : AppCompatActivity() {
                         if(tap == 0) {
                             textHex.text = "Hex: #${Integer.toHexString(pixel).uppercase().substring(2)}"
                             textRGB.text = "RGB: ($red, $green, $blue)"
+
+                            applyAccessibilityMode(
+                                context = this,
+                                red = red,
+                                green = green,
+                                blue = blue,
+                                accessbilityView = findViewById(R.id.viewColor13),
+                                accessbilityTextView = findViewById(R.id.textViewAccessbilityName2),
+                                accessbilityHexView = findViewById(R.id.textViewAccessbility2)
+                            )
                         }
                         else{
                             textHex_2.text = "Hex: #${Integer.toHexString(pixel).uppercase().substring(2)}"
                             textRGB_2.text = "RGB: ($red, $green, $blue)"
+
+                            applyAccessibilityMode(
+                                context = this,
+                                red = red,
+                                green = green,
+                                blue = blue,
+                                accessbilityView = findViewById(R.id.viewColor14),
+                                accessbilityTextView = findViewById(R.id.textViewAccessbilityName),
+                                accessbilityHexView = findViewById(R.id.textViewAccessbility)
+                            )
                         }
 
                         // Calculating luminance with standard weighted formula
@@ -174,26 +178,36 @@ class ImageSplitActivity : AppCompatActivity() {
             textViewRGB_2.text = ""
         }
     }
+    fun applyAccessibilityMode(
+        context: Context,
+        red: Int,
+        green: Int,
+        blue: Int,
+        accessbilityView: View,
+        accessbilityTextView: TextView,
+        accessbilityHexView: TextView
+    ) {
+        when {
+            SettingsUtil.isProtanomalyEnabled(context) -> {
+                val protanopiaColor = SettingsUtil.hexToProtanomalyHex(red, green, blue)
+                accessbilityView.setBackgroundColor(Color.parseColor(protanopiaColor))
+                accessbilityHexView.text = "Hex: ${protanopiaColor.uppercase()}"
+                accessbilityTextView.text = "Protanomaly (Red-Blind)"
+            }
 
-    fun showPopup(context: Context, anchorView: View, message: String) {
-        // create a LinearLayout to serve as the popup content
-        val popupView = LinearLayout(context)
-        popupView.orientation = LinearLayout.VERTICAL
-        popupView.setPadding(20, 20, 20, 20)
+            SettingsUtil.isDeuteranomalyEnabled(context) -> {
+                val deuteranomalyColor = SettingsUtil.hexToDeuteranomalyHex(red, green, blue)
+                accessbilityView.setBackgroundColor(Color.parseColor(deuteranomalyColor))
+                accessbilityHexView.text = "Hex: ${deuteranomalyColor.uppercase()}"
+                accessbilityTextView.text = "Deuteranomaly"
+            }
 
-        // display the message
-        val textView = TextView(context)
-        textView.text = message
-        textView.textSize = 18f
-        textView.setTextColor(Color.BLACK)
-
-        // add textView to the layout
-        popupView.addView(textView)
-
-        // create a popupWindow using the dynamic layout
-        val popupWindow = PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true)
-
-        // show the popupWindow
-        popupWindow.showAsDropDown(anchorView, 0, 0)
+            SettingsUtil.isTritanomalyEnabled(context) -> {
+                val tritanomalyColor = SettingsUtil.hexToTritanomalyHex(red, green, blue)
+                accessbilityView.setBackgroundColor(Color.parseColor(tritanomalyColor))
+                accessbilityHexView.text = "Hex: ${tritanomalyColor.uppercase()}"
+                accessbilityTextView.text = "Tritanomaly"
+            }
+        }
     }
 }

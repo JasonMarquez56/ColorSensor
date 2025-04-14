@@ -39,9 +39,9 @@ class PopularColor : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.popular_color) // Ensure correct layout file
 
-        // These 2 lines of code test the settingActivity
-        val textView = findViewById<TextView>(R.id.textView17)
-        SettingsUtil.updateTextViewBasedOnSettings(this, textView)
+//        // These 2 lines of code test the settingActivity
+//        val textView = findViewById<TextView>(R.id.textView17)
+//        SettingsUtil.updateTextViewBasedOnSettings(this, textView)
 
         val imageView: ImageView = findViewById(R.id.imageView2)
         val hexMessage = findViewById<TextView>(R.id.textView9)
@@ -170,11 +170,40 @@ class PopularColor : AppCompatActivity() {
 
                 viewColor.setBackgroundColor(Color.argb(Color.alpha(backgroundColor), red, green, blue))
 
+                // accessbility mode
+                val accessbility: View by lazy { findViewById(R.id.viewColor12) }
+                val accessbilityText: TextView by lazy { findViewById(R.id.textViewAccessbilityName) }
+                val accessbilityHex: TextView by lazy { findViewById(R.id.textViewAccessbility) }
+                when {
+                    SettingsUtil.isProtanomalyEnabled(this) -> {
+                        val protanopiaColor = SettingsUtil.hexToProtanomalyHex(red, green, blue)
+                        accessbility.setBackgroundColor(Color.parseColor(protanopiaColor))
+                        accessbilityHex.text = "Hex: ${protanopiaColor.uppercase()}"
+                        accessbilityText.text = "Protanomaly (Red-Blind)"
+                    }
+
+                    SettingsUtil.isDeuteranomalyEnabled(this) -> {
+                        val deuteranomalyColor =
+                            SettingsUtil.hexToDeuteranomalyHex(red, green, blue)
+                        accessbility.setBackgroundColor(Color.parseColor(deuteranomalyColor))
+                        accessbilityHex.text = "Hex: ${deuteranomalyColor.uppercase()}"
+                        accessbilityText.text = "Deuteranomaly"
+                    }
+
+                    SettingsUtil.isTritanomalyEnabled(this) -> {
+                        val tritanomalyColor = SettingsUtil.hexToTritanomalyHex(red, green, blue)
+                        accessbility.setBackgroundColor(Color.parseColor(tritanomalyColor))
+                        accessbilityHex.text = "Hex: ${tritanomalyColor.uppercase()}"
+                        accessbilityText.text = "Tritanomaly"
+                    }
+                }
+
                 // CHANGE WALL COLOR
                 val newColor = Color.parseColor(colorHex)
                 val modifiedBitmap = fillRegionWithColor(bitmap, targetRegion, newColor)
                 imageView.setImageBitmap(modifiedBitmap)
             }
+
         }
     }
 

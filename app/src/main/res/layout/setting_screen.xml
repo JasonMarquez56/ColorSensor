@@ -47,37 +47,37 @@
             android:orientation="vertical"
             android:padding="3dp">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+<!--            <RelativeLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content">-->
 
-                <ImageView
-                    android:id="@+id/accessibilityMode"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/account"
-                    android:padding="12dp" />
+<!--                <ImageView-->
+<!--                    android:id="@+id/accessibilityMode"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_centerVertical="true"-->
+<!--                    android:background="@drawable/account"-->
+<!--                    android:padding="12dp" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginStart="20dp"
-                    android:layout_toEndOf="@+id/accessibilityMode"
-                    android:text="Accessbliity Mode"
-                    android:textStyle="bold" />
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_centerInParent="true"-->
+<!--                    android:layout_marginStart="20dp"-->
+<!--                    android:layout_toEndOf="@+id/accessibilityMode"-->
+<!--                    android:text="Accessbliity Mode"-->
+<!--                    android:textStyle="bold" />-->
 
-                <Switch
-                    android:id="@+id/colorBlind"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:height="48dp"
-                    android:switchMinWidth="50dp"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-            </RelativeLayout>
+<!--                <Switch-->
+<!--                    android:id="@+id/colorBlind"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_alignParentEnd="true"-->
+<!--                    android:layout_centerVertical="true"-->
+<!--                    android:height="48dp"-->
+<!--                    android:switchMinWidth="50dp"-->
+<!--                    tools:ignore="UseSwitchCompatOrMaterialXml" />-->
+<!--            </RelativeLayout>-->
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -97,7 +97,7 @@
                     android:layout_centerInParent="true"
                     android:layout_marginStart="20dp"
                     android:layout_toEndOf="@+id/protanomaly"
-                    android:text="Protanomaly"
+                    android:text="Protanomaly (Red-green)"
                     android:textStyle="bold" />
 
                 <Switch
@@ -129,7 +129,7 @@
                     android:layout_centerInParent="true"
                     android:layout_marginStart="20dp"
                     android:layout_toEndOf="@+id/deuteranomaly"
-                    android:text="Deuteranomaly"
+                    android:text="Deuteranomaly (Green-red)"
                     android:textStyle="bold" />
 
                 <Switch
@@ -161,7 +161,7 @@
                     android:layout_centerInParent="true"
                     android:layout_marginStart="20dp"
                     android:layout_toEndOf="@+id/tritanomaly"
-                    android:text="Tritanomaly"
+                    android:text="Tritanomaly (Blue-yellow)"
                     android:textStyle="bold" />
 
                 <Switch

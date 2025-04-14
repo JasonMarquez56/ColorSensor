@@ -250,22 +250,36 @@ class FindColorActivity : AppCompatActivity() {
                         // update the viewColor background color
                         viewColor.setBackgroundColor(Color.argb(alpha, red, green, blue))
                         saveColor = Color.argb(alpha, red, green, blue)
+
                         // accessbility mode
+                        val index = 15
+                        val resID = resources.getIdentifier("viewColor$index", "id", packageName)
+                        val targetView = findViewById<View>(resID)
+                        val stripTextHex: TextView by lazy { findViewById(R.id.textView3) }
                         when {
                             SettingsUtil.isProtanomalyEnabled(this) -> {
                                 val protanopiaColor = SettingsUtil.hexToProtanomalyHex(red, green, blue)
                                 accessbility.setBackgroundColor(Color.parseColor(protanopiaColor))
                                 accessbilityText.text = "Protanomaly (Red-Blind)"
+                                targetView?.setOnClickListener {
+                                    stripTextHex.text = "Color Strip\nHex: ${protanopiaColor.uppercase()}"
+                                }
                             }
                             SettingsUtil.isDeuteranomalyEnabled(this) -> {
                                 val deuteranomalyColor = SettingsUtil.hexToDeuteranomalyHex(red, green, blue)
                                 accessbility.setBackgroundColor(Color.parseColor(deuteranomalyColor))
                                 accessbilityText.text = "Deuteranomaly"
+                                targetView?.setOnClickListener {
+                                    stripTextHex.text = "Color Strip\nHex: ${deuteranomalyColor.uppercase()}"
+                                }
                             }
                             SettingsUtil.isTritanomalyEnabled(this) -> {
                                 val tritanomalyColor = SettingsUtil.hexToTritanomalyHex(red, green, blue)
                                 accessbility.setBackgroundColor(Color.parseColor(tritanomalyColor))
                                 accessbilityText.text = "Tritanomaly"
+                                targetView?.setOnClickListener {
+                                    stripTextHex.text = "Color Strip\nHex: ${tritanomalyColor.uppercase()}"
+                                }
                             }
                         }
 

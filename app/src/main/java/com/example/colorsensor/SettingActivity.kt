@@ -15,17 +15,17 @@ class SettingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.setting_screen)
 
-        val switch = findViewById<Switch>(R.id.colorBlind)
+        //val switch = findViewById<Switch>(R.id.colorBlind)
         val sharedPreferences: SharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE)
         val editor = sharedPreferences.edit()
 
         // Set switch state from saved preference
-        switch.isChecked = sharedPreferences.getBoolean("setting_enabled", false)
+        //switch.isChecked = sharedPreferences.getBoolean("setting_enabled", false)
 
-        switch.setOnCheckedChangeListener { _, isChecked ->
-            editor.putBoolean("setting_enabled", isChecked)
-            editor.apply()
-        }
+//        switch.setOnCheckedChangeListener { _, isChecked ->
+//            editor.putBoolean("setting_enabled", isChecked)
+//            editor.apply()
+//        }
 
         val backButton = findViewById<ImageButton>(R.id.backButton)
 
