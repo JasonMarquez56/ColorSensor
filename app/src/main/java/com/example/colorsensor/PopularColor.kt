@@ -19,6 +19,7 @@ import com.example.colorsensor.RegisterActivity.RGB
 import com.example.colorsensor.RegisterActivity.favColor
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.random.Random
+import androidx.core.graphics.ColorUtils
 
 import com.example.colorsensor.SettingsUtil
 
@@ -211,10 +212,43 @@ class PopularColor : AppCompatActivity() {
     fun fillRegionWithColor(bitmap: Bitmap, region: Rect, newColor: Int): Bitmap {
         val mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
 
-        for (x in region.left until region.right) {
-            for (y in region.top until region.bottom) {
-                mutableBitmap.setPixel(x, y, newColor)
+        // Storing the RGB values of the selected color
+        val pr = Color.red(newColor)
+        val pg = Color.green(newColor)
+        val pb = Color.blue(newColor)
+
+        // Create an array to hold the pixels for each row
+        val pixels = IntArray(region.right - region.left)
+
+        // Process each row individually
+        for (y in region.top until region.bottom) {
+            // Get the pixels of the current row
+            bitmap.getPixels(pixels, 0, region.right - region.left, region.left, y, region.right - region.left, 1)
+
+            // Process each pixel in the row
+            for (x in 0 until pixels.size) {
+                val pixel = pixels[x]
+
+                val r = Color.red(pixel)
+                val g = Color.green(pixel)
+                val b = Color.blue(pixel)
+
+                // Calculating a more realistic brightness
+                val brightness = (r + g + b) / 3f / 255f
+
+                // Setting the RGB values with respect to the new blended color
+                val newR = (pr * brightness).toInt().coerceIn(0, 255)
+                val newG = (pg * brightness).toInt().coerceIn(0, 255)
+                val newB = (pb * brightness).toInt().coerceIn(0, 255)
+
+                val newColor = Color.rgb(newR, newG, newB)
+
+                // Update the pixel color in the array
+                pixels[x] = newColor
             }
+
+            // Set the modified pixels back to the bitmap
+            mutableBitmap.setPixels(pixels, 0, region.right - region.left, region.left, y, region.right - region.left, 1)
         }
 
         return mutableBitmap
