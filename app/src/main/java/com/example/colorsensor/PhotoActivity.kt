@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.ByteArrayOutputStream
 import java.io.File
 
@@ -31,6 +32,7 @@ class PhotoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.find_color) // Ensure correct layout file
+        navigationBar()
 
         val takePhoto = findViewById<Button>(R.id.cameraButton)
         val uploadPhoto = findViewById<Button>(R.id.uploadButton)
@@ -110,5 +112,52 @@ class PhotoActivity : AppCompatActivity() {
         val intent = Intent(this, FindColorActivity::class.java)
         intent.putExtra("image_uri", uri.toString())
         startActivity(intent)
+    }
+
+    private fun navigationBar() {
+        // Navigation bar
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+
+        // Map default and selected icons
+        val iconMap = mapOf(
+            R.id.profile to Pair(R.drawable.account_outline, R.drawable.account),
+            R.id.home to Pair(R.drawable.home_outline, R.drawable.home),
+            R.id.settings to Pair(R.drawable.cog_outline, R.drawable.cog)
+        )
+
+        // Track currently selected item
+        var selectedItemId: Int? = null
+
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+
+            // Reset previous selection
+            selectedItemId?.let { prevId ->
+                bottomNavigationView.menu.findItem(prevId).setIcon(iconMap[prevId]?.first ?: R.drawable.home)
+            }
+
+            // Change selected icon
+            item.setIcon(iconMap[item.itemId]?.second ?: R.drawable.home)
+            selectedItemId = item.itemId
+
+            when (item.itemId) {
+                R.id.profile -> {
+                    val intent = Intent(this, ProfileActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.home -> {
+                    val intent = Intent(this, HomeActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.settings -> {
+                    // Handle Settings button click
+                    val intent = Intent(this, SettingActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
     }
 }
