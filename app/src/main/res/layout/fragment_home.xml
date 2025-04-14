@@ -23,15 +23,15 @@
     <!-- Home screen wallpaper -->
     <ImageView
         android:id="@+id/HomeBanner"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:contentDescription="Paint on a canvas"
-        android:scaleType="centerInside"
+        android:scaleType="fitStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/colorsensor_home_banner" />
+        app:srcCompat="@drawable/color_photo_background" />
 
     <!-- Search bar -->
     <EditText
