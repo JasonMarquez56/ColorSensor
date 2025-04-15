@@ -134,7 +134,7 @@ class HomeFragment : Fragment() {
             when (item.itemId) {
                 R.id.profile -> {
                     parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, HomeFragment())
+                        .replace(R.id.fragment_container, ProfileFragment())
                         .addToBackStack(null)
                         .commit()
                     true
