@@ -7,6 +7,8 @@ import androidx.activity.ComponentActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.firebase.FirebaseApp
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.navigation.fragment.NavHostFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -17,15 +19,21 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen()
 
         // Set your content view
-        //startActivity(Intent(this, LandingActivity::class.java))
         setContentView(R.layout.activity_main)
+
+        val sharedPref = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        val isLoggedIn = sharedPref.getBoolean("isLoggedIn", false)
 
         // Initialize Firebase
         FirebaseApp.initializeApp(this)
         Log.d("FirebaseInit", "Firebase has been initialized successfully")
 
         // Load initial fragment
-        if (savedInstanceState == null) {
+        if (isLoggedIn) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, HomeFragment())
+                .commit()
+        } else if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, LandingFragment())
                 .commit()

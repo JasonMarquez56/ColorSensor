@@ -88,6 +88,7 @@ dependencies {
 
     // ColorPicker
     implementation("com.github.skydoves:colorpickerview:2.3.0")
+    implementation(libs.androidx.navigation.fragment.ktx)
 
     // Debugging and Testing
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.0")

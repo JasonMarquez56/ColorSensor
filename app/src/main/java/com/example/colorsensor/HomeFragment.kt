@@ -55,7 +55,7 @@ class HomeFragment : Fragment() {
         // Set a click listener for the Profile button
         goToProfileButton.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, LoginFragment())
+                .replace(R.id.fragment_container, ProfileFragment())
                 .addToBackStack(null)
                 .commit()
         }
