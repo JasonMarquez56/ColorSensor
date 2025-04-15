@@ -449,7 +449,7 @@ class FindColorFragment : Fragment() {
 
                 try {
                     val color = hexColor.toColorInt()
-                    val fragments = PaintInfoActivity().apply {
+                    val fragments = PaintInfoFragment().apply {
                         arguments = Bundle().apply {
                             putInt("selected_color", color)
                             putString("color_name", colorName.replace("Closest Paint: ", ""))
@@ -467,7 +467,7 @@ class FindColorFragment : Fragment() {
                         }"
                     )
                     parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, PaintInfoFragment())
+                        .replace(R.id.fragment_container, fragments)
                         .addToBackStack(null)
                         .commit()
                 } catch (e: IllegalArgumentException) {

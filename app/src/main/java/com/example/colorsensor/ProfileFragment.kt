@@ -68,6 +68,17 @@ class ProfileFragment : Fragment() {
             if (selectedItem == "Logout") {
                 showLogoutConfirmation(sharedPreferences)
             }
+            if (selectedItem == "Favorite Colors") {
+                val fragments = ProfileFavoriteColorsFragment().apply {
+                    arguments = Bundle().apply {
+                        putString("username", username)
+                    }
+                }
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, fragments)
+                    .addToBackStack(null)
+                    .commit()
+            }
         }
     }
 
