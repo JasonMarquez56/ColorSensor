@@ -22,6 +22,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.lifecycle.lifecycleScope
 import java.util.*
+import org.opencv.android.Utils
+import org.opencv.core.Core
+import org.opencv.core.CvType
+import org.opencv.core.Mat
+import org.opencv.core.Size
+import org.opencv.imgproc.Imgproc
 
 
 class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColorSelectedListener {
@@ -36,6 +42,12 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
     private lateinit var colorBox: View
     private var selectedColor: Int = Color.WHITE
     private val bitmapHistory: Stack<Bitmap> = Stack()
+
+    companion object {
+        init {
+            System.loadLibrary("opencv_java4")  // load native lib
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +86,11 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
             originalBitmap = bitmap
             val config = originalBitmap.config ?: Bitmap.Config.ARGB_8888
             modifiedBitmap = originalBitmap.copy(config, true)
+
+            // Edge detection test
+            modifiedBitmap = applyEdgeDetection(originalBitmap)
+
+            // Remove edge detection if displaying normal image
             imageView.setImageBitmap(modifiedBitmap)
 
         } catch (e: Exception) {
@@ -249,6 +266,36 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         return Color.argb(blendedAlpha, r, g, b)
     }
 
+    fun applyEdgeDetection(bitmap: Bitmap): Bitmap {
+        val mat = Mat()
+        Utils.bitmapToMat(bitmap, mat)
+
+        val gray = Mat()
+        Imgproc.cvtColor(mat, gray, Imgproc.COLOR_BGR2GRAY)
+
+        // Apply Sobel
+        val gradX = Mat()
+        val gradY = Mat()
+        Imgproc.Sobel(gray, gradX, CvType.CV_16S, 1, 0)
+        Imgproc.Sobel(gray, gradY, CvType.CV_16S, 0, 1)
+
+        val absGradX = Mat()
+        val absGradY = Mat()
+        Core.convertScaleAbs(gradX, absGradX)
+        Core.convertScaleAbs(gradY, absGradY)
+
+        val sobelEdges = Mat()
+        Core.addWeighted(absGradX, 0.5, absGradY, 0.5, 0.0, sobelEdges)
+
+        // Convert to 3-channel
+        val edgesColor = Mat()
+        Imgproc.cvtColor(sobelEdges, edgesColor, Imgproc.COLOR_GRAY2BGR)
+
+        val edgeBitmap = Bitmap.createBitmap(edgesColor.cols(), edgesColor.rows(), Bitmap.Config.ARGB_8888)
+        Utils.matToBitmap(edgesColor, edgeBitmap)
+
+        return edgeBitmap
+    }
 
 
     private fun updateColorInfo(
