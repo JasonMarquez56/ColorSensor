@@ -96,6 +96,38 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
         val r = (Color.red(color1) + Color.red(color2)) / 2
         val g = (Color.green(color1) + Color.green(color2)) / 2
         val b = (Color.blue(color1) + Color.blue(color2)) / 2
+
+        // accessbility mode
+        val accessbility: View by lazy { findViewById(R.id.viewColor12) }
+        val accessbilityText: TextView by lazy { findViewById(R.id.textViewAccessbilityName) }
+        val accessbilityHex: TextView by lazy { findViewById(R.id.textViewAccessbility) }
+        // Set to default blank
+        accessbility.setBackgroundColor(Color.WHITE)
+        accessbilityHex.text = ""
+        accessbilityText.text = ""
+        when {
+            SettingsUtil.isProtanomalyEnabled(this) -> {
+                val protanopiaColor = SettingsUtil.hexToProtanomalyHex(r, g, b)
+                accessbility.setBackgroundColor(Color.parseColor(protanopiaColor))
+                accessbilityHex.text = "Hex: ${protanopiaColor.uppercase()}"
+                accessbilityText.text = "Protanomaly (Red-Blind)"
+            }
+
+            SettingsUtil.isDeuteranomalyEnabled(this) -> {
+                val deuteranomalyColor =
+                    SettingsUtil.hexToDeuteranomalyHex(r, g, b)
+                accessbility.setBackgroundColor(Color.parseColor(deuteranomalyColor))
+                accessbilityHex.text = "Hex: ${deuteranomalyColor.uppercase()}"
+                accessbilityText.text = "Deuteranomaly"
+            }
+
+            SettingsUtil.isTritanomalyEnabled(this) -> {
+                val tritanomalyColor = SettingsUtil.hexToTritanomalyHex(r, g, b)
+                accessbility.setBackgroundColor(Color.parseColor(tritanomalyColor))
+                accessbilityHex.text = "Hex: ${tritanomalyColor.uppercase()}"
+                accessbilityText.text = "Tritanomaly"
+            }
+        }
         return Color.rgb(r, g, b)
     }
 
@@ -151,7 +183,12 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
                     startActivity(intent)
                     true
                 }
-                R.id.settings -> true
+                R.id.settings -> {
+                    // Handle Settings button click
+                    val intent = Intent(this, SettingActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
                 else -> false
             }
         }
