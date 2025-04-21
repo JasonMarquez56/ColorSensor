@@ -292,22 +292,6 @@ class PopularColor : AppCompatActivity() {
         }
     }
 
-    fun parseColorString(colorString: String): Triple<Int, Int, Int> {
-        // Remove the curly braces and trim the string
-        val cleanedString = colorString.removePrefix("{").removeSuffix("}")
-
-        // Use regex to extract the numbers after "r=", "g=", and "b="
-        val regex = Regex("""r=(\d+),\s*b=(\d+),\s*g=(\d+)""")
-        val matchResult = regex.find(cleanedString)
-
-        return if (matchResult != null) {
-            val (r, b, g) = matchResult.destructured
-            Triple(r.toInt(), g.toInt(), b.toInt()) // Reorder to correct RGB order
-        } else {
-            throw IllegalArgumentException("Invalid color string format")
-        }
-    }
-
     private fun navigationBar() {
         // Navigation bar
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView3)

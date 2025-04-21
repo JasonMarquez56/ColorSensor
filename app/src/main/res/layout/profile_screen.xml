@@ -21,31 +21,9 @@
         android:scaleType="fitCenter"
         android:src="@drawable/ic_back_arrow" />
 
-    <TextView
-        android:id="@+id/profileUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/backButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Username"
-        android:textSize="24sp"
-        android:textColor="@android:color/black"
-        android:textStyle="bold" />
-
     <!-- Coming Soon Message -->
 
     <!-- Logout Button -->
-    <TextView
-        android:id="@+id/favoriteColorsText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/profileUsername"
-        android:layout_marginLeft="34dp"
-        android:layout_marginTop="21dp"
-        android:text="Favorite Colors "
-        android:textColor="@android:color/black"
-        android:textSize="20sp" />
 
     <!-- Scroll view for favorite colors -->
 
@@ -178,6 +156,35 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
         </ScrollView>
+
+        <TextView
+            android:id="@+id/favoriteColorsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Favorite Colors "
+            android:textColor="@android:color/black"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/upButton"
+            app:layout_constraintHorizontal_bias="0.238"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.173" />
+
+        <TextView
+            android:id="@+id/profileUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textColor="@android:color/black"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/favoriteColorsText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.053"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.772" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
