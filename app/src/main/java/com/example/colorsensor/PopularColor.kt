@@ -76,13 +76,17 @@ class PopularColor : AppCompatActivity() {
         }
 
         // Toggle magnifier on button press
+        val disappearImage = findViewById<ImageView>(R.id.imageView5)
         zoomButton.setOnClickListener {
             isMagnifierActive = !isMagnifierActive // Toggle state
+            // toggle image to go away
+            disappearImage.visibility = View.GONE
 
             if (isMagnifierActive) {
                 zoomButton.text = "Disable Magnifier"
             } else {
-                zoomButton.text = "Enable Magnifier"
+                zoomButton.text = "Magnifier"
+                disappearImage.visibility = View.VISIBLE
                 magnifier?.dismiss()
             }
         }

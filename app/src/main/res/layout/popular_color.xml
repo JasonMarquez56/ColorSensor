@@ -326,7 +326,8 @@ favorite color and display on a wall-->
         app:layout_constraintHorizontal_bias="0.993"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gridLayout"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:backgroundTint="#52b6de"/>
 
     <TextView
         android:id="@+id/textView12"
@@ -334,7 +335,7 @@ favorite color and display on a wall-->
         android:layout_height="100dp"
         android:layout_marginTop="65dp"
         android:layout_marginBottom="108dp"
-        android:text="Colors our users frequent and we recommend."
+        android:text="Favorite colors among our users and our recommendations."
         android:textColor="@color/black"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
