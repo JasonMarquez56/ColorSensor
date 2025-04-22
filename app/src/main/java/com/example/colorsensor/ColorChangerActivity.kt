@@ -10,7 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import ColorPickerDialogFragment
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.view.View
 import com.example.colorsensor.utils.PaintFinder
@@ -28,6 +30,7 @@ import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
+import java.io.IOException
 
 
 class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColorSelectedListener {
@@ -75,9 +78,7 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         // Parsing image to bitmap
         try {
             val imageUri = Uri.parse(imageUriString)
-            val inputStream = contentResolver.openInputStream(imageUri)
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-            inputStream?.close()
+            val bitmap = loadBitmapFromUri(imageUri)
 
             if (bitmap == null) {
                 Log.e("ColorChangerActivity", "Failed to decode bitmap from URI")
@@ -169,6 +170,26 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
             imageView.setImageBitmap(modifiedBitmap)
             // Clear history to reset to original
             bitmapHistory.clear()
+        }
+    }
+
+    private fun loadBitmapFromUri(uri: Uri): Bitmap? {
+        return try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                val source = ImageDecoder.createSource(contentResolver, uri)
+                ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                    decoder.setAllocator(ImageDecoder.ALLOCATOR_SOFTWARE)
+                }
+            } else {
+                contentResolver.openInputStream(uri)?.use { inputStream ->
+                    BitmapFactory.decodeStream(inputStream, null, BitmapFactory.Options().apply {
+                        inPreferredConfig = Bitmap.Config.ARGB_8888
+                    })
+                }
+            }
+        } catch (e: IOException) {
+            Log.e("FindColorActivity", "Error loading bitmap from Uri: $uri", e)
+            null
         }
     }
 
