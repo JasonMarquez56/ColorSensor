@@ -71,7 +71,7 @@ class HomeFragment : Fragment() {
         // Set a click listener for the Popular Color button
         goToPopularColor.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, LoginFragment())
+                .replace(R.id.fragment_container, PopularColorFragment())
                 .addToBackStack(null)
                 .commit()
         }
