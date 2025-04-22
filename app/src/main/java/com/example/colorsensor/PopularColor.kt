@@ -1,5 +1,6 @@
 package com.example.colorsensor
 
+import android.content.Intent
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -19,8 +20,10 @@ import com.example.colorsensor.RegisterActivity.RGB
 import com.example.colorsensor.RegisterActivity.favColor
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.random.Random
+import androidx.core.graphics.ColorUtils
 
 import com.example.colorsensor.SettingsUtil
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 //testing
 class PopularColor : AppCompatActivity() {
@@ -38,10 +41,11 @@ class PopularColor : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.popular_color) // Ensure correct layout file
+        navigationBar()
 
-        // These 2 lines of code test the settingActivity
-        val textView = findViewById<TextView>(R.id.textView17)
-        SettingsUtil.updateTextViewBasedOnSettings(this, textView)
+//        // These 2 lines of code test the settingActivity
+//        val textView = findViewById<TextView>(R.id.textView17)
+//        SettingsUtil.updateTextViewBasedOnSettings(this, textView)
 
         val imageView: ImageView = findViewById(R.id.imageView2)
         val hexMessage = findViewById<TextView>(R.id.textView9)
@@ -50,8 +54,17 @@ class PopularColor : AppCompatActivity() {
         // Load the original bitmap
         val bitmap = BitmapFactory.decodeResource(resources, R.drawable.blank_wall)
         // Define the region to change (xStart, yStart, width, height)
-        val targetRegion = Rect(0, 125, 1228, 809) // Adjust these values as needed
+        //val targetRegion = Rect(0, 125, 1228, 809) // Adjust these values as needed
 
+        val imageWidth = bitmap.width
+        val imageHeight = bitmap.height
+
+        val left = (0.0 * imageWidth).toInt()
+        val top = (0.13 * imageHeight).toInt()
+        val right = (0.735 * imageWidth).toInt()
+        val bottom = (0.85 * imageHeight).toInt()
+
+        val targetRegion = Rect(left, top, right, bottom)
         // Create a magnifier tutorial
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             magnifier = Magnifier.Builder(imageView)
@@ -63,13 +76,17 @@ class PopularColor : AppCompatActivity() {
         }
 
         // Toggle magnifier on button press
+        val disappearImage = findViewById<ImageView>(R.id.imageView5)
         zoomButton.setOnClickListener {
             isMagnifierActive = !isMagnifierActive // Toggle state
+            // toggle image to go away
+            disappearImage.visibility = View.GONE
 
             if (isMagnifierActive) {
                 zoomButton.text = "Disable Magnifier"
             } else {
-                zoomButton.text = "Enable Magnifier"
+                zoomButton.text = "Magnifier"
+                disappearImage.visibility = View.VISIBLE
                 magnifier?.dismiss()
             }
         }
@@ -161,11 +178,44 @@ class PopularColor : AppCompatActivity() {
 
                 viewColor.setBackgroundColor(Color.argb(Color.alpha(backgroundColor), red, green, blue))
 
+                // accessbility mode
+                val accessbility: View by lazy { findViewById(R.id.viewColor12) }
+                val accessbilityText: TextView by lazy { findViewById(R.id.textViewAccessbilityName) }
+                val accessbilityHex: TextView by lazy { findViewById(R.id.textViewAccessbility) }
+                // Set to default blank
+                accessbility.setBackgroundColor(Color.WHITE)
+                accessbilityHex.text = ""
+                accessbilityText.text = ""
+                when {
+                    SettingsUtil.isProtanomalyEnabled(this) -> {
+                        val protanopiaColor = SettingsUtil.hexToProtanomalyHex(red, green, blue)
+                        accessbility.setBackgroundColor(Color.parseColor(protanopiaColor))
+                        accessbilityHex.text = "Hex: ${protanopiaColor.uppercase()}"
+                        accessbilityText.text = "Protanomaly (Red-Blind)"
+                    }
+
+                    SettingsUtil.isDeuteranomalyEnabled(this) -> {
+                        val deuteranomalyColor =
+                            SettingsUtil.hexToDeuteranomalyHex(red, green, blue)
+                        accessbility.setBackgroundColor(Color.parseColor(deuteranomalyColor))
+                        accessbilityHex.text = "Hex: ${deuteranomalyColor.uppercase()}"
+                        accessbilityText.text = "Deuteranomaly"
+                    }
+
+                    SettingsUtil.isTritanomalyEnabled(this) -> {
+                        val tritanomalyColor = SettingsUtil.hexToTritanomalyHex(red, green, blue)
+                        accessbility.setBackgroundColor(Color.parseColor(tritanomalyColor))
+                        accessbilityHex.text = "Hex: ${tritanomalyColor.uppercase()}"
+                        accessbilityText.text = "Tritanomaly"
+                    }
+                }
+
                 // CHANGE WALL COLOR
                 val newColor = Color.parseColor(colorHex)
                 val modifiedBitmap = fillRegionWithColor(bitmap, targetRegion, newColor)
                 imageView.setImageBitmap(modifiedBitmap)
             }
+
         }
     }
 
@@ -173,10 +223,43 @@ class PopularColor : AppCompatActivity() {
     fun fillRegionWithColor(bitmap: Bitmap, region: Rect, newColor: Int): Bitmap {
         val mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
 
-        for (x in region.left until region.right) {
-            for (y in region.top until region.bottom) {
-                mutableBitmap.setPixel(x, y, newColor)
+        // Storing the RGB values of the selected color
+        val pr = Color.red(newColor)
+        val pg = Color.green(newColor)
+        val pb = Color.blue(newColor)
+
+        // Create an array to hold the pixels for each row
+        val pixels = IntArray(region.right - region.left)
+
+        // Process each row individually
+        for (y in region.top until region.bottom) {
+            // Get the pixels of the current row
+            bitmap.getPixels(pixels, 0, region.right - region.left, region.left, y, region.right - region.left, 1)
+
+            // Process each pixel in the row
+            for (x in 0 until pixels.size) {
+                val pixel = pixels[x]
+
+                val r = Color.red(pixel)
+                val g = Color.green(pixel)
+                val b = Color.blue(pixel)
+
+                // Calculating a more realistic brightness
+                val brightness = (r + g + b) / 3f / 255f
+
+                // Setting the RGB values with respect to the new blended color
+                val newR = (pr * brightness).toInt().coerceIn(0, 255)
+                val newG = (pg * brightness).toInt().coerceIn(0, 255)
+                val newB = (pb * brightness).toInt().coerceIn(0, 255)
+
+                val newColor = Color.rgb(newR, newG, newB)
+
+                // Update the pixel color in the array
+                pixels[x] = newColor
             }
+
+            // Set the modified pixels back to the bitmap
+            mutableBitmap.setPixels(pixels, 0, region.right - region.left, region.left, y, region.right - region.left, 1)
         }
 
         return mutableBitmap
@@ -209,19 +292,50 @@ class PopularColor : AppCompatActivity() {
         }
     }
 
-    fun parseColorString(colorString: String): Triple<Int, Int, Int> {
-        // Remove the curly braces and trim the string
-        val cleanedString = colorString.removePrefix("{").removeSuffix("}")
+    private fun navigationBar() {
+        // Navigation bar
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView3)
 
-        // Use regex to extract the numbers after "r=", "g=", and "b="
-        val regex = Regex("""r=(\d+),\s*b=(\d+),\s*g=(\d+)""")
-        val matchResult = regex.find(cleanedString)
+        // Map default and selected icons
+        val iconMap = mapOf(
+            R.id.profile to Pair(R.drawable.account_outline, R.drawable.account),
+            R.id.home to Pair(R.drawable.home_outline, R.drawable.home),
+            R.id.settings to Pair(R.drawable.cog_outline, R.drawable.cog)
+        )
 
-        return if (matchResult != null) {
-            val (r, b, g) = matchResult.destructured
-            Triple(r.toInt(), g.toInt(), b.toInt()) // Reorder to correct RGB order
-        } else {
-            throw IllegalArgumentException("Invalid color string format")
+        // Track currently selected item
+        var selectedItemId: Int? = null
+
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+
+            // Reset previous selection
+            selectedItemId?.let { prevId ->
+                bottomNavigationView.menu.findItem(prevId).setIcon(iconMap[prevId]?.first ?: R.drawable.home)
+            }
+
+            // Change selected icon
+            item.setIcon(iconMap[item.itemId]?.second ?: R.drawable.home)
+            selectedItemId = item.itemId
+
+            when (item.itemId) {
+                R.id.profile -> {
+                    val intent = Intent(this, ProfileActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.home -> {
+                    val intent = Intent(this, HomeActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.settings -> {
+                    // Handle Settings button click
+                    val intent = Intent(this, SettingActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
         }
     }
 }

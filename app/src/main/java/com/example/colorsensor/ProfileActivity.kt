@@ -364,8 +364,11 @@ class ProfileActivity : AppCompatActivity() {
                 selectedFav = textView.text.toString()
             }
             textView.textSize = 20f
-            textView.setTextColor(Color.BLACK)
             textView.setPadding(16, 8, 16, 8)
+            // Calculating luminance with standard weighted formula
+            val luminance = (0.299 * red + 0.587 * green + 0.114 * blue) / 255
+            // Changing text color based off luminance, making it more visible
+            val textColor = if (luminance > 0.5) textView.setTextColor(Color.BLACK) else textView.setTextColor(Color.WHITE)
 
             // Add to LinearLayout
             favColorContainer.addView(textView)

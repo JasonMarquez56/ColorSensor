@@ -55,6 +55,8 @@ class FindColorActivity : AppCompatActivity() {
     private val imageView: ImageView by lazy { findViewById(R.id.imageView) }
     // show what color has been changed by a view
     private val viewColor: View by lazy { findViewById(R.id.viewColor) }
+    private var saveColor: Int = Color.WHITE
+    private var textColor: Int = Color.WHITE
 
     private val accessbility: View by lazy { findViewById(R.id.viewColor15) }
     private val accessbilityText: TextView by lazy { findViewById(R.id.textView13) }
@@ -245,22 +247,37 @@ class FindColorActivity : AppCompatActivity() {
                         val alpha = Color.alpha(pixel)
                         // update the viewColor background color
                         viewColor.setBackgroundColor(Color.argb(alpha, red, green, blue))
+                        saveColor = Color.argb(alpha, red, green, blue)
+
                         // accessbility mode
+                        val index = 15
+                        val resID = resources.getIdentifier("viewColor$index", "id", packageName)
+                        val targetView = findViewById<View>(resID)
+                        val stripTextHex: TextView by lazy { findViewById(R.id.textView3) }
                         when {
                             SettingsUtil.isProtanomalyEnabled(this) -> {
                                 val protanopiaColor = SettingsUtil.hexToProtanomalyHex(red, green, blue)
                                 accessbility.setBackgroundColor(Color.parseColor(protanopiaColor))
                                 accessbilityText.text = "Protanomaly (Red-Blind)"
+                                targetView?.setOnClickListener {
+                                    stripTextHex.text = "Color Strip\nHex: ${protanopiaColor.uppercase()}"
+                                }
                             }
                             SettingsUtil.isDeuteranomalyEnabled(this) -> {
                                 val deuteranomalyColor = SettingsUtil.hexToDeuteranomalyHex(red, green, blue)
                                 accessbility.setBackgroundColor(Color.parseColor(deuteranomalyColor))
                                 accessbilityText.text = "Deuteranomaly"
+                                targetView?.setOnClickListener {
+                                    stripTextHex.text = "Color Strip\nHex: ${deuteranomalyColor.uppercase()}"
+                                }
                             }
                             SettingsUtil.isTritanomalyEnabled(this) -> {
                                 val tritanomalyColor = SettingsUtil.hexToTritanomalyHex(red, green, blue)
                                 accessbility.setBackgroundColor(Color.parseColor(tritanomalyColor))
                                 accessbilityText.text = "Tritanomaly"
+                                targetView?.setOnClickListener {
+                                    stripTextHex.text = "Color Strip\nHex: ${tritanomalyColor.uppercase()}"
+                                }
                             }
                         }
 
@@ -490,18 +507,18 @@ class FindColorActivity : AppCompatActivity() {
         val bannerHeight = 400
         val bannerBitmap = Bitmap.createBitmap(originalBitmap.width, bannerHeight, Bitmap.Config.ARGB_8888)
         val bannerCanvas = Canvas(bannerBitmap)
-        bannerCanvas.drawColor(Color.BLACK)
+        bannerCanvas.drawColor(saveColor)
 
         val paint = Paint().apply {
-            color = Color.WHITE
+            color = textColor
             textSize = 80f
             typeface = Typeface.DEFAULT_BOLD
             isAntiAlias = true
         }
 
-        bannerCanvas.drawText("Closest Paint: $paintName", 20f, 60f, paint)
-        bannerCanvas.drawText("RGB: $rgb", 20f, 160f, paint)
-        bannerCanvas.drawText("Hex: $hex", 20f, 260f, paint)
+        bannerCanvas.drawText("$paintName", 20f, 80f, paint)
+        bannerCanvas.drawText("$rgb", 20f, 180f, paint)
+        bannerCanvas.drawText("$hex", 20f, 280f, paint)
 
         // Step 2: Combine the image
         val combinedHeight = bannerHeight + originalBitmap.height
