@@ -1,5 +1,6 @@
 package com.example.colorsensor
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -47,19 +48,19 @@ class PopularColorFragment : Fragment() {
     var rgbList = mutableListOf<Int>()
 
     // Create a magnifier tutorial
+    @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        navigationBar()
 
 //        // These 2 lines of code test the settingActivity
 //        val textView = findViewById<TextView>(R.id.textView17)
 //        SettingsUtil.updateTextViewBasedOnSettings(this, textView)
 
-        val imageView: ImageView = view?.findViewById(R.id.imageView2) ?:
+        val imageView: ImageView? = view?.findViewById(R.id.imageView2)
         val hexMessage = view?.findViewById<TextView>(R.id.textView9)
-        val textRGB = view.?findViewById<TextView>(R.id.textView11)
-        val zoomButton: Button = view.?findViewById(R.id.button) // Button to toggle magnifier
+        val textRGB = view?.findViewById<TextView>(R.id.textView11)
+        val zoomButton: Button? = view?.findViewById(R.id.button) // Button to toggle magnifier
         // Load the original bitmap
         val bitmap = BitmapFactory.decodeResource(resources, R.drawable.blank_wall)
         // Define the region to change (xStart, yStart, width, height)
@@ -75,7 +76,7 @@ class PopularColorFragment : Fragment() {
 
         val targetRegion = Rect(left, top, right, bottom)
         // Create a magnifier tutorial
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        if (imageView != null) {
             magnifier = Magnifier.Builder(imageView)
                 .setInitialZoom(2.3f)
                 .setElevation(10.0f)
@@ -85,34 +86,42 @@ class PopularColorFragment : Fragment() {
         }
 
         // Toggle magnifier on button press
-        val disappearImage = findViewById<ImageView>(R.id.imageView5)
-        zoomButton.setOnClickListener {
-            isMagnifierActive = !isMagnifierActive // Toggle state
-            // toggle image to go away
-            disappearImage.visibility = View.GONE
+        val disappearImage = view?.findViewById<ImageView>(R.id.imageView5)
+        if (zoomButton != null) {
+            zoomButton.setOnClickListener {
+                isMagnifierActive = !isMagnifierActive // Toggle state
+                // toggle image to go away
+                if (disappearImage != null) {
+                    disappearImage.visibility = View.GONE
+                }
 
-            if (isMagnifierActive) {
-                zoomButton.text = "Disable Magnifier"
-            } else {
-                zoomButton.text = "Magnifier"
-                disappearImage.visibility = View.VISIBLE
-                magnifier?.dismiss()
+                if (isMagnifierActive) {
+                    zoomButton.text = "Disable Magnifier"
+                } else {
+                    zoomButton.text = "Magnifier"
+                    if (disappearImage != null) {
+                        disappearImage.visibility = View.VISIBLE
+                    }
+                    magnifier?.dismiss()
+                }
             }
         }
 
         // Move the magnifier while touching the screen
-        imageView.setOnTouchListener { _, event ->
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && isMagnifierActive) {
-                when (event.action) {
-                    MotionEvent.ACTION_MOVE, MotionEvent.ACTION_DOWN -> {
-                        magnifier?.show(event.rawX, event.y)
-                    }
-                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                        magnifier?.dismiss()
+        if (imageView != null) {
+            imageView.setOnTouchListener { _, event ->
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && isMagnifierActive) {
+                    when (event.action) {
+                        MotionEvent.ACTION_MOVE, MotionEvent.ACTION_DOWN -> {
+                            magnifier?.show(event.rawX, event.y)
+                        }
+                        MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                            magnifier?.dismiss()
+                        }
                     }
                 }
+                true
             }
-            true
         }
 
         // Retrieve favorite color from firebase.
@@ -147,8 +156,8 @@ class PopularColorFragment : Fragment() {
                 rgbList = rgbList.toMutableSet().toMutableList()
                 // Set the colors from the rgbList
                 for (i in 0 until minOf(rgbList.size, 25)) {
-                    val resID = resources.getIdentifier("button${i + 1}", "id", packageName)
-                    findViewById<Button>(resID)?.setBackgroundColor(rgbList[i])
+                    val resID = resources.getIdentifier("button${i + 1}", "id", requireContext().packageName)
+                    view?.findViewById<Button>(resID)?.setBackgroundColor(rgbList[i])
                 }
 
                 // Set random colors for the remaining buttons starting from button 2
@@ -161,68 +170,76 @@ class PopularColorFragment : Fragment() {
                     val color = Color.argb(255, newRed, newGreen, newBlue)
 
                     // Find the view by its ID and set the background color
-                    val resID = resources.getIdentifier("button${i + 1}", "id", packageName)
-                    findViewById<Button>(resID)?.setBackgroundColor(color)
+                    val resID = resources.getIdentifier("button${i + 1}", "id", requireContext().packageName)
+                    view?.findViewById<Button>(resID)?.setBackgroundColor(color)
                 }
             }
         //rgbList.add(Color.argb(255, 255, 0, 0)) // Red
 
         // Handle color selection from buttons
         for (i in 1..25) {
-            val buttonId = resources.getIdentifier("button$i", "id", packageName)
-            val button = findViewById<Button>(buttonId)
+            val buttonId = resources.getIdentifier("button$i", "id", requireContext().packageName)
+            val button = view?.findViewById<Button>(buttonId)
             // press any 1 - 25 button
             button?.setOnClickListener {
                 val backgroundColor = (button.background as ColorDrawable).color
                 val colorHex = String.format("#%06X", 0xFFFFFF and backgroundColor)
-                val viewColor: View = findViewById(R.id.viewColor11)
+                val viewColor: View? = view?.findViewById(R.id.viewColor11)
 
                 // Set the TextView text to show the button's background color
-                hexMessage.text = "Hex: $colorHex"
+                if (hexMessage != null) {
+                    hexMessage.text = "Hex: $colorHex"
+                }
                 // Get rgb value
                 val red = Color.red(backgroundColor)
                 val green = Color.green(backgroundColor)
                 val blue = Color.blue(backgroundColor)
-                textRGB.text = "RGB: ($red, $green, $blue)"
+                if (textRGB != null) {
+                    textRGB.text = "RGB: ($red, $green, $blue)"
+                }
 
-                viewColor.setBackgroundColor(Color.argb(Color.alpha(backgroundColor), red, green, blue))
+                viewColor?.setBackgroundColor(Color.argb(Color.alpha(backgroundColor), red, green, blue))
 
                 // accessbility mode
-                val accessbility: View by lazy { findViewById(R.id.viewColor12) }
-                val accessbilityText: TextView by lazy { findViewById(R.id.textViewAccessbilityName) }
-                val accessbilityHex: TextView by lazy { findViewById(R.id.textViewAccessbility) }
+                val accessbility = view?.findViewById<View>(R.id.viewColor12)
+                val accessbilityText: TextView? by lazy { view?.findViewById(R.id.textViewAccessbilityName) }
+                val accessbilityHex: TextView? by lazy { view?.findViewById(R.id.textViewAccessbility) }
                 // Set to default blank
-                accessbility.setBackgroundColor(Color.WHITE)
-                accessbilityHex.text = ""
-                accessbilityText.text = ""
+                hexMessage?.text = "Hex: $colorHex"
+                textRGB?.text = "RGB: ($red, $green, $blue)"
+                viewColor?.setBackgroundColor(Color.argb(Color.alpha(backgroundColor), red, green, blue))
                 when {
-                    SettingsUtil.isProtanomalyEnabled(this) -> {
+                    SettingsUtil.isProtanomalyEnabled(requireContext()) -> {
                         val protanopiaColor = SettingsUtil.hexToProtanomalyHex(red, green, blue)
-                        accessbility.setBackgroundColor(Color.parseColor(protanopiaColor))
-                        accessbilityHex.text = "Hex: ${protanopiaColor.uppercase()}"
-                        accessbilityText.text = "Protanomaly (Red-Blind)"
+                        if (accessbility != null) {
+                            accessbility.setBackgroundColor(Color.parseColor(protanopiaColor))
+                            accessbilityHex?.text = "Hex: ${protanopiaColor.uppercase()}"
+                            accessbilityText?.text = "Protanomaly (Red-Blind)"
+                        }
                     }
 
-                    SettingsUtil.isDeuteranomalyEnabled(this) -> {
+                    SettingsUtil.isDeuteranomalyEnabled(requireContext()) -> {
                         val deuteranomalyColor =
                             SettingsUtil.hexToDeuteranomalyHex(red, green, blue)
-                        accessbility.setBackgroundColor(Color.parseColor(deuteranomalyColor))
-                        accessbilityHex.text = "Hex: ${deuteranomalyColor.uppercase()}"
-                        accessbilityText.text = "Deuteranomaly"
+                        if (accessbility != null) {
+                            accessbility.setBackgroundColor(Color.parseColor(deuteranomalyColor))
+                        }
+                        accessbilityHex?.text = "Hex: ${deuteranomalyColor.uppercase()}"
+                        accessbilityText?.text = "Deuteranomaly"
                     }
 
-                    SettingsUtil.isTritanomalyEnabled(this) -> {
+                    SettingsUtil.isTritanomalyEnabled(requireContext()) -> {
                         val tritanomalyColor = SettingsUtil.hexToTritanomalyHex(red, green, blue)
-                        accessbility.setBackgroundColor(Color.parseColor(tritanomalyColor))
-                        accessbilityHex.text = "Hex: ${tritanomalyColor.uppercase()}"
-                        accessbilityText.text = "Tritanomaly"
+                        accessbility?.setBackgroundColor(Color.parseColor(tritanomalyColor))
+                        accessbilityHex?.text = "Hex: ${tritanomalyColor.uppercase()}"
+                        accessbilityText?.text = "Tritanomaly"
                     }
                 }
 
                 // CHANGE WALL COLOR
                 val newColor = Color.parseColor(colorHex)
                 val modifiedBitmap = fillRegionWithColor(bitmap, targetRegion, newColor)
-                imageView.setImageBitmap(modifiedBitmap)
+                imageView?.setImageBitmap(modifiedBitmap)
             }
 
         }
@@ -280,7 +297,7 @@ class PopularColorFragment : Fragment() {
     private fun displayColors(favColorContainer : LinearLayout){
         favColorContainer.removeAllViews()
         for (color in favColors){
-            val textView = TextView(this)
+            val textView = TextView(requireContext())
             textView.text = color
             firestore.collection("paints")
                 .whereEqualTo("name", color)  // Query by username
@@ -298,53 +315,6 @@ class PopularColorFragment : Fragment() {
                         }
                     }
                 }
-        }
-    }
-
-    private fun navigationBar() {
-        // Navigation bar
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView3)
-
-        // Map default and selected icons
-        val iconMap = mapOf(
-            R.id.profile to Pair(R.drawable.account_outline, R.drawable.account),
-            R.id.home to Pair(R.drawable.home_outline, R.drawable.home),
-            R.id.settings to Pair(R.drawable.cog_outline, R.drawable.cog)
-        )
-
-        // Track currently selected item
-        var selectedItemId: Int? = null
-
-        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-
-            // Reset previous selection
-            selectedItemId?.let { prevId ->
-                bottomNavigationView.menu.findItem(prevId).setIcon(iconMap[prevId]?.first ?: R.drawable.home)
-            }
-
-            // Change selected icon
-            item.setIcon(iconMap[item.itemId]?.second ?: R.drawable.home)
-            selectedItemId = item.itemId
-
-            when (item.itemId) {
-                R.id.profile -> {
-                    val intent = Intent(this, ProfileActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                R.id.home -> {
-                    val intent = Intent(this, HomeActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                R.id.settings -> {
-                    // Handle Settings button click
-                    val intent = Intent(this, SettingActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                else -> false
-            }
         }
     }
 }
