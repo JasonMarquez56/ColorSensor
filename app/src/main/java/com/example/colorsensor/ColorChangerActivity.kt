@@ -16,7 +16,7 @@ import android.view.View
 import com.example.colorsensor.utils.PaintFinder
 import android.view.MotionEvent
 import android.widget.ProgressBar
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -39,13 +39,15 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
     private lateinit var resetButton: Button
     private lateinit var originalBitmap: Bitmap
     private lateinit var modifiedBitmap: Bitmap
+    private lateinit var sobelBitmap: Bitmap
     private lateinit var colorBox: View
     private var selectedColor: Int = Color.WHITE
     private val bitmapHistory: Stack<Bitmap> = Stack()
 
     companion object {
         init {
-            System.loadLibrary("opencv_java4")  // load native lib
+            // Load native library
+            System.loadLibrary("opencv_java4")
         }
     }
 
@@ -84,13 +86,16 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
             }
 
             originalBitmap = bitmap
+            // Scale to a manageable size
+            originalBitmap = scaleBitmap(originalBitmap, 800, 600)
             val config = originalBitmap.config ?: Bitmap.Config.ARGB_8888
             modifiedBitmap = originalBitmap.copy(config, true)
 
-            // Edge detection test
-            modifiedBitmap = applyEdgeDetection(originalBitmap)
+            // Apply Sobel edge detection to create sobelBitmap
+            sobelBitmap = applyEdgeDetection(originalBitmap)
+            sobelBitmap = scaleBitmap(sobelBitmap, 800, 600)
 
-            // Remove edge detection if displaying normal image
+            // Display the original (or modified) image
             imageView.setImageBitmap(modifiedBitmap)
 
         } catch (e: Exception) {
@@ -134,7 +139,7 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
 
                         val updatedBitmap = withContext(Dispatchers.Default) {
                             // Replace similar pixels with selected color
-                            replaceColorInBitmap(modifiedBitmap, tappedColor, selectedColor)
+                            replaceColorInBitmapParallel(modifiedBitmap, tappedColor, selectedColor)
                         }
 
                         // Update the UI on the main thread
@@ -188,7 +193,6 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         colorBox.setBackgroundColor(color)
     }
 
-    // Determines if two colors are similar within a given tolerance (passed from replaceColor below)
     private fun isColorSimilar(color1: Int, color2: Int, tolerance: Int): Boolean {
         val r1 = Color.red(color1)
         val g1 = Color.green(color1)
@@ -198,18 +202,40 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         val g2 = Color.green(color2)
         val b2 = Color.blue(color2)
 
-        return (Math.abs(r1 - r2) < tolerance &&
-                Math.abs(g1 - g2) < tolerance &&
-                Math.abs(b1 - b2) < tolerance)
+        val dr = r1 - r2
+        val dg = g1 - g2
+        val db = b1 - b2
+
+        val distanceSquared = dr * dr + dg * dg + db * db
+        return distanceSquared <= tolerance * tolerance
     }
 
-    private fun replaceColorInBitmap(
+    private fun scaleBitmap(bitmap: Bitmap, maxWidth: Int, maxHeight: Int): Bitmap {
+        val width = bitmap.width
+        val height = bitmap.height
+
+        // Calculate the ratio to scale the image down proportionally
+        val ratioBitmap = width.toFloat() / height.toFloat()
+        var finalWidth = maxWidth
+        var finalHeight = maxHeight
+
+        if (ratioBitmap > 1) {
+            finalHeight = (maxWidth / ratioBitmap).toInt()
+        } else {
+            finalWidth = (maxHeight * ratioBitmap).toInt()
+        }
+
+        return Bitmap.createScaledBitmap(bitmap, finalWidth, finalHeight, true)
+    }
+
+    suspend fun replaceColorInBitmapParallel(
         bitmap: Bitmap,
         targetColor: Int,
         newColor: Int,
         opacity: Int = 200,
-        tolerance: Int = 80
-    ): Bitmap {
+        tolerance: Int = 80,
+        numChunks: Int = Runtime.getRuntime().availableProcessors()
+    ): Bitmap = withContext(Dispatchers.Default) {
         val width = bitmap.width
         val height = bitmap.height
         val newBitmap = Bitmap.createBitmap(width, height, bitmap.config ?: Bitmap.Config.ARGB_8888)
@@ -220,37 +246,54 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         val newHSV = FloatArray(3)
         Color.colorToHSV(newColor, newHSV)
 
-        val pixels = IntArray(width)
-        val pixelHSV = FloatArray(3)
+        val targetR = Color.red(targetColor)
+        val targetG = Color.green(targetColor)
+        val targetB = Color.blue(targetColor)
 
-        for (y in 0 until height) {
-            bitmap.getPixels(pixels, 0, width, 0, y, width, 1)
+        val chunkSize = height / numChunks
+        val jobs = mutableListOf<Deferred<Unit>>()
 
-            for (x in 0 until width) {
-                val pixelColor = pixels[x]
+        for (i in 0 until numChunks) {
+            val startY = i * chunkSize
+            val endY = if (i == numChunks - 1) height else (i + 1) * chunkSize
 
-                if (isColorSimilar(pixelColor, targetColor, tolerance)) {
-                    // Convert the original pixel to HSV
-                    Color.colorToHSV(pixelColor, pixelHSV)
+            jobs += async {
+                val pixels = IntArray(width)
+                val pixelHSV = FloatArray(3)
 
-                    // Keep brightness, replace hue & saturation
-                    pixelHSV[0] = newHSV[0] // Hue
-                    pixelHSV[1] = newHSV[1] // Saturation
-                    // pixelHSV[2] stays the same (brightness)
+                for (y in startY until endY) {
+                    bitmap.getPixels(pixels, 0, width, 0, y, width, 1)
 
-                    // Convert back to ARGB with original alpha
-                    val modifiedColor = Color.HSVToColor(Color.alpha(pixelColor), pixelHSV)
+                    for (x in 0 until width) {
+                        val pixelColor = pixels[x]
 
-                    // Blend it softly with opacity
-                    val blendedColor = blendColors(pixelColor, modifiedColor, opacity)
-                    pixels[x] = blendedColor
+                        val r = Color.red(pixelColor)
+                        val g = Color.green(pixelColor)
+                        val b = Color.blue(pixelColor)
+
+                        val dr = r - targetR
+                        val dg = g - targetG
+                        val db = b - targetB
+
+                        val distanceSq = dr * dr + dg * dg + db * db
+                        if (distanceSq <= tolerance * tolerance) {
+                            Color.colorToHSV(pixelColor, pixelHSV)
+                            pixelHSV[0] = newHSV[0]
+                            pixelHSV[1] = newHSV[1]
+                            val modifiedColor = Color.HSVToColor(Color.alpha(pixelColor), pixelHSV)
+                            pixels[x] = blendColors(pixelColor, modifiedColor, opacity)
+                        }
+                    }
+
+                    synchronized(newBitmap) {
+                        newBitmap.setPixels(pixels, 0, width, 0, y, width, 1)
+                    }
                 }
             }
-
-            newBitmap.setPixels(pixels, 0, width, 0, y, width, 1)
         }
 
-        return newBitmap
+        jobs.awaitAll()
+        newBitmap
     }
 
     private fun blendColors(originalColor: Int, newColor: Int, opacity: Int): Int {
