@@ -18,16 +18,14 @@ import android.view.View
 import com.example.colorsensor.utils.PaintFinder
 import android.view.MotionEvent
 import android.widget.ProgressBar
-import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.lifecycle.lifecycleScope
 import java.util.*
 import org.opencv.android.Utils
-import org.opencv.core.Core
-import org.opencv.core.CvType
 import org.opencv.core.Mat
+import org.opencv.core.Point
 import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 import java.io.IOException
@@ -42,8 +40,12 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
     private lateinit var resetButton: Button
     private lateinit var originalBitmap: Bitmap
     private lateinit var modifiedBitmap: Bitmap
-    private lateinit var sobelBitmap: Bitmap
+    private lateinit var cannyBitmap: Bitmap
     private lateinit var colorBox: View
+    private var x: Int = 0
+    private var y: Int = 0
+    private var threshold: Int = 200
+    private var opacity: Int = 128
     private var selectedColor: Int = Color.WHITE
     private val bitmapHistory: Stack<Bitmap> = Stack()
 
@@ -93,11 +95,11 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
             modifiedBitmap = originalBitmap.copy(config, true)
 
             // Apply Sobel edge detection to create sobelBitmap
-            sobelBitmap = applyEdgeDetection(originalBitmap)
-            sobelBitmap = scaleBitmap(sobelBitmap, 800, 600)
+            cannyBitmap = applyEdgeDetection(originalBitmap)
+            cannyBitmap = scaleBitmap(cannyBitmap, 800, 600)
 
             // Display the original (or modified) image
-            imageView.setImageBitmap(modifiedBitmap)
+            imageView.setImageBitmap(cannyBitmap)
 
         } catch (e: Exception) {
             Log.e("ColorChangerActivity", "Error loading image from URI", e)
@@ -122,8 +124,8 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
                 val touchPoint = floatArrayOf(event.x, event.y)
                 inverse.mapPoints(touchPoint)
 
-                val x = touchPoint[0].toInt()
-                val y = touchPoint[1].toInt()
+                x = touchPoint[0].toInt()
+                y = touchPoint[1].toInt()
 
                 if (x in 0 until modifiedBitmap.width && y in 0 until modifiedBitmap.height) {
                     val tappedColor = modifiedBitmap.getPixel(x, y)
@@ -138,14 +140,25 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
                         // Show a temporary loading spinner
                         spinner.visibility = View.VISIBLE
 
+                        // Before applying the color change, store the current state of the modified bitmap in history
+                        bitmapHistory.push(modifiedBitmap.copy(modifiedBitmap.config ?: Bitmap.Config.ARGB_8888, true))
+
+
                         val updatedBitmap = withContext(Dispatchers.Default) {
                             // Replace similar pixels with selected color
-                            replaceColorInBitmapParallel(modifiedBitmap, tappedColor, selectedColor)
+                            edgeAwareColorReplace(
+                                modifiedBitmap,   // Use modifiedBitmap to accumulate changes
+                                cannyBitmap,      // Sobel edge-detection bitmap
+                                x,          // X coordinate where tapped
+                                y,          // Y coordinate where tapped
+                                selectedColor,    // The new color to apply
+                                opacity           // Opacity for blending
+                            )
                         }
 
                         // Update the UI on the main thread
                         imageView.setImageBitmap(updatedBitmap)
-                        modifiedBitmap = updatedBitmap
+                        modifiedBitmap = updatedBitmap  // Update modifiedBitmap after change
 
                         // Removing spinner when done loading
                         spinner.visibility = View.GONE
@@ -172,6 +185,119 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
             bitmapHistory.clear()
         }
     }
+
+
+    private fun getBrightness(color: Int): Int {
+        return ((Color.red(color) * 0.299) + (Color.green(color) * 0.587) + (Color.blue(color) * 0.114)).toInt()
+    }
+
+    private fun adjustColorBrightness(baseColor: Int, targetBrightness: Int): Int {
+        val r = Color.red(baseColor)
+        val g = Color.green(baseColor)
+        val b = Color.blue(baseColor)
+
+        val currentBrightness = getBrightness(baseColor)
+        // Avoid division by zero
+        if (currentBrightness == 0) return baseColor
+
+        val ratio = targetBrightness.toFloat() / currentBrightness
+
+        val newR = (r * ratio).coerceIn(0f, 255f).toInt()
+        val newG = (g * ratio).coerceIn(0f, 255f).toInt()
+        val newB = (b * ratio).coerceIn(0f, 255f).toInt()
+
+        return Color.rgb(newR, newG, newB)
+    }
+
+
+    private fun isEdgePixel(pixel: Int): Boolean {
+        // Assuming Canny edge detection produces a binary image
+        return pixel == Color.WHITE
+    }
+
+    private fun floodFillWallRegion(
+        cannyBitmap: Bitmap,
+        originalBitmap: Bitmap,
+        startX: Int,
+        startY: Int
+    ): List<Pair<Int, Int>> {
+        val width = originalBitmap.width
+        val height = originalBitmap.height
+
+        val tappedPixel = cannyBitmap.getPixel(startX, startY)
+        Log.d("DEBUG", "Tapped pixel at ($startX, $startY): $tappedPixel")
+
+        if (isEdgePixel(tappedPixel)) {
+            Log.d("DEBUG", "Edge pixel detected at ($startX, $startY): $tappedPixel")
+            return emptyList()
+        }
+
+        val visited = Array(height) { BooleanArray(width) }
+        val region = mutableListOf<Pair<Int, Int>>()
+        val queue = ArrayDeque<Pair<Int, Int>>()
+
+        queue.add(Pair(startX, startY))
+        visited[startY][startX] = true
+
+        val directions = arrayOf(
+            Pair(0, 1), Pair(1, 0), Pair(0, -1), Pair(-1, 0),
+            Pair(1, 1), Pair(1, -1), Pair(-1, 1), Pair(-1, -1)
+        )
+
+        while (queue.isNotEmpty()) {
+            val (x, y) = queue.removeFirst()
+            region.add(Pair(x, y))
+
+            for ((dx, dy) in directions) {
+                val newX = x + dx
+                val newY = y + dy
+
+                if (
+                    newX in 0 until width &&
+                    newY in 0 until height &&
+                    !visited[newY][newX] &&
+                    !isEdgePixel(cannyBitmap.getPixel(newX, newY))
+                ) {
+                    visited[newY][newX] = true
+                    queue.add(Pair(newX, newY))
+                }
+            }
+        }
+
+        return region
+    }
+
+
+    private fun edgeAwareColorReplace(
+        modifiedBitmap: Bitmap,
+        cannyBitmap: Bitmap,
+        tappedX: Int,
+        tappedY: Int,
+        newColor: Int,
+        opacity: Int
+    ): Bitmap {
+        val newBitmap = modifiedBitmap.copy(modifiedBitmap.config ?: Bitmap.Config.ARGB_8888, true)
+
+        // Get region to replace (non-edge area)
+        val region = floodFillWallRegion(cannyBitmap, modifiedBitmap, tappedX, tappedY)
+        Log.d("DEBUG", "Region to replace: $region")
+
+        // Apply color changes only to the region
+        for ((x, y) in region) {
+            val originalPixel = modifiedBitmap.getPixel(x, y)
+
+            // Adjust the brightness of the new color to match the original pixel’s brightness
+            val adjustedColor = adjustColorBrightness(newColor, getBrightness(originalPixel))
+
+            // Blend the adjusted color with the original pixel’s color
+            val blendedColor = blendColors(originalPixel, adjustedColor, opacity)
+
+            newBitmap.setPixel(x, y, blendedColor)
+        }
+
+        return newBitmap
+    }
+
 
     private fun loadBitmapFromUri(uri: Uri): Bitmap? {
         return try {
@@ -214,22 +340,6 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         colorBox.setBackgroundColor(color)
     }
 
-    private fun isColorSimilar(color1: Int, color2: Int, tolerance: Int): Boolean {
-        val r1 = Color.red(color1)
-        val g1 = Color.green(color1)
-        val b1 = Color.blue(color1)
-
-        val r2 = Color.red(color2)
-        val g2 = Color.green(color2)
-        val b2 = Color.blue(color2)
-
-        val dr = r1 - r2
-        val dg = g1 - g2
-        val db = b1 - b2
-
-        val distanceSquared = dr * dr + dg * dg + db * db
-        return distanceSquared <= tolerance * tolerance
-    }
 
     private fun scaleBitmap(bitmap: Bitmap, maxWidth: Int, maxHeight: Int): Bitmap {
         val width = bitmap.width
@@ -249,85 +359,20 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         return Bitmap.createScaledBitmap(bitmap, finalWidth, finalHeight, true)
     }
 
-    suspend fun replaceColorInBitmapParallel(
-        bitmap: Bitmap,
-        targetColor: Int,
-        newColor: Int,
-        opacity: Int = 200,
-        tolerance: Int = 80,
-        numChunks: Int = Runtime.getRuntime().availableProcessors()
-    ): Bitmap = withContext(Dispatchers.Default) {
-        val width = bitmap.width
-        val height = bitmap.height
-        val newBitmap = Bitmap.createBitmap(width, height, bitmap.config ?: Bitmap.Config.ARGB_8888)
-
-        val targetHSV = FloatArray(3)
-        Color.colorToHSV(targetColor, targetHSV)
-
-        val newHSV = FloatArray(3)
-        Color.colorToHSV(newColor, newHSV)
-
-        val targetR = Color.red(targetColor)
-        val targetG = Color.green(targetColor)
-        val targetB = Color.blue(targetColor)
-
-        val chunkSize = height / numChunks
-        val jobs = mutableListOf<Deferred<Unit>>()
-
-        for (i in 0 until numChunks) {
-            val startY = i * chunkSize
-            val endY = if (i == numChunks - 1) height else (i + 1) * chunkSize
-
-            jobs += async {
-                val pixels = IntArray(width)
-                val pixelHSV = FloatArray(3)
-
-                for (y in startY until endY) {
-                    bitmap.getPixels(pixels, 0, width, 0, y, width, 1)
-
-                    for (x in 0 until width) {
-                        val pixelColor = pixels[x]
-
-                        val r = Color.red(pixelColor)
-                        val g = Color.green(pixelColor)
-                        val b = Color.blue(pixelColor)
-
-                        val dr = r - targetR
-                        val dg = g - targetG
-                        val db = b - targetB
-
-                        val distanceSq = dr * dr + dg * dg + db * db
-                        if (distanceSq <= tolerance * tolerance) {
-                            Color.colorToHSV(pixelColor, pixelHSV)
-                            pixelHSV[0] = newHSV[0]
-                            pixelHSV[1] = newHSV[1]
-                            val modifiedColor = Color.HSVToColor(Color.alpha(pixelColor), pixelHSV)
-                            pixels[x] = blendColors(pixelColor, modifiedColor, opacity)
-                        }
-                    }
-
-                    synchronized(newBitmap) {
-                        newBitmap.setPixels(pixels, 0, width, 0, y, width, 1)
-                    }
-                }
-            }
-        }
-
-        jobs.awaitAll()
-        newBitmap
-    }
-
     private fun blendColors(originalColor: Int, newColor: Int, opacity: Int): Int {
-        val originalAlpha = Color.alpha(originalColor)
-        val newAlpha = opacity
+        // Alpha values of both colors
+        val originalAlpha = Color.alpha(originalColor) / 255f
+        val newAlpha = opacity / 255f
 
-        val blendedAlpha = ((originalAlpha * (255 - newAlpha)) + (newAlpha * newAlpha)) / 255
+        // Blending the alpha values
+        val blendedAlpha = (newAlpha + originalAlpha * (1 - newAlpha)) * 255
 
-        val r = (Color.red(originalColor) * (255 - opacity) + Color.red(newColor) * opacity) / 255
-        val g = (Color.green(originalColor) * (255 - opacity) + Color.green(newColor) * opacity) / 255
-        val b = (Color.blue(originalColor) * (255 - opacity) + Color.blue(newColor) * opacity) / 255
+        // Blending RGB channels with respective opacities
+        val r = (Color.red(originalColor) * (1 - newAlpha) + Color.red(newColor) * newAlpha).toInt()
+        val g = (Color.green(originalColor) * (1 - newAlpha) + Color.green(newColor) * newAlpha).toInt()
+        val b = (Color.blue(originalColor) * (1 - newAlpha) + Color.blue(newColor) * newAlpha).toInt()
 
-        return Color.argb(blendedAlpha, r, g, b)
+        return Color.argb(blendedAlpha.toInt(), r, g, b)
     }
 
     fun applyEdgeDetection(bitmap: Bitmap): Bitmap {
@@ -337,23 +382,18 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         val gray = Mat()
         Imgproc.cvtColor(mat, gray, Imgproc.COLOR_BGR2GRAY)
 
-        // Apply Sobel
-        val gradX = Mat()
-        val gradY = Mat()
-        Imgproc.Sobel(gray, gradX, CvType.CV_16S, 1, 0)
-        Imgproc.Sobel(gray, gradY, CvType.CV_16S, 0, 1)
+        // Apply Canny edge detection
+        val edges = Mat()
+        Imgproc.GaussianBlur(gray, gray, Size(3.0, 3.0), 0.5, 0.5)
+        Imgproc.Canny(gray, edges, 40.0, 100.0)  // Thresholds for Canny (can be adjusted)
 
-        val absGradX = Mat()
-        val absGradY = Mat()
-        Core.convertScaleAbs(gradX, absGradX)
-        Core.convertScaleAbs(gradY, absGradY)
+        // Dilate to thicken the edges to 2 pixels
+        val kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, Size(2.0, 2.0))
+        Imgproc.dilate(edges, edges, kernel, Point(-1.0, -1.0), 1)
 
-        val sobelEdges = Mat()
-        Core.addWeighted(absGradX, 0.5, absGradY, 0.5, 0.0, sobelEdges)
-
-        // Convert to 3-channel
+        // Convert the edges to a 3-channel BGR image for visualization
         val edgesColor = Mat()
-        Imgproc.cvtColor(sobelEdges, edgesColor, Imgproc.COLOR_GRAY2BGR)
+        Imgproc.cvtColor(edges, edgesColor, Imgproc.COLOR_GRAY2BGR)
 
         val edgeBitmap = Bitmap.createBitmap(edgesColor.cols(), edgesColor.rows(), Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(edgesColor, edgeBitmap)
