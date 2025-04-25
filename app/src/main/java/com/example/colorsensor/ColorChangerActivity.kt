@@ -401,7 +401,6 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         return edgeBitmap
     }
 
-
     private fun updateColorInfo(
         color: Int,
         colorBox: View

@@ -170,19 +170,14 @@ class FindColorActivity : AppCompatActivity() {
         // image split
         // Avoid crashing dur to high-resolution images. Pass the image along a temporary png file
         testButton.setOnClickListener {
-            //intent is created to navigate from the current activity to ImageSplitActivity
-            val intent = Intent(this, ImageSplitActivity::class.java)
-
-            // Save Bitmap to a temporary file inside the cacheDir on Android
-            val file = File(cacheDir, "image.png")
-            file.outputStream().use { outputStream ->
-                //Bitmap is compressed into a PNG format and written to the file using the output stream.
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            if (imageUri != null) {
+                val intent = Intent(this, ImageSplitActivity::class.java)
+                intent.putExtra("image_uri", imageUri.toString()) // pass as string
+                startActivity(intent)
+            } else {
+                Log.e("ImageSplitActivity", "No image URI found to pass")
+                Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show()
             }
-
-            // Pass file path through intent
-            intent.putExtra("image", file.absolutePath)
-            startActivity(intent)
         }
 
         imageView.post {
