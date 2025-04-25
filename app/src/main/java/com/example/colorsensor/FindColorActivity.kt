@@ -79,7 +79,7 @@ class FindColorActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.color_sensor)
-
+        SettingsUtil.navigationBar(this)
         setupButtonClickListener()
 
         val byteArray = intent.getByteArrayExtra("image_bitmap")
