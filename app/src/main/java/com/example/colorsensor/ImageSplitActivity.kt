@@ -104,8 +104,8 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
             cannyBitmap = applyEdgeDetection(originalBitmap)
             cannyBitmap = scaleBitmap(cannyBitmap, 800, 600)
 
-            // Display the original (or modified) image
-            imageView.setImageBitmap(cannyBitmap)
+            // Display the original image (can change to canny for debugging)
+            imageView.setImageBitmap(modifiedBitmap)
 
             // Calculating half the original height and the whole width
             val width = originalBitmap.width
@@ -253,7 +253,6 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
             true
         }
 
-        // Undo button
         // Undo button
         undoButton.setOnClickListener {
             if (bitmapHistory.isNotEmpty()) {

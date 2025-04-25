@@ -98,8 +98,8 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
             cannyBitmap = applyEdgeDetection(originalBitmap)
             cannyBitmap = scaleBitmap(cannyBitmap, 800, 600)
 
-            // Display the original (or modified) image
-            imageView.setImageBitmap(cannyBitmap)
+            // Display the original image (can change to canny for debugging)
+            imageView.setImageBitmap(modifiedBitmap)
 
         } catch (e: Exception) {
             Log.e("ColorChangerActivity", "Error loading image from URI", e)
