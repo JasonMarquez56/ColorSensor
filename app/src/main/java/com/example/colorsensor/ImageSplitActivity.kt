@@ -46,6 +46,7 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
     private lateinit var rightCannyBitmap: Bitmap
     private lateinit var leftCannyBitmap:  Bitmap
     private lateinit var colorBox: View
+    private lateinit var divider: View
     private var mid: Int = 0
     private var x: Int = 0
     private var y: Int = 0
@@ -73,6 +74,7 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
         undoButton = findViewById(R.id.undoButton)
         resetButton = findViewById(R.id.resetButton)
         colorBox = findViewById(R.id.colorBox)
+        divider = findViewById(R.id.verticalDivider)
         val spinner = findViewById<ProgressBar>(R.id.loadingSpinner)
 
         // Retrieve the image URI from intent (passed from ColorFinder)
@@ -125,7 +127,21 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
             Log.e("ImageSplitActivity", "Error loading image from URI", e)
             finish()
         }
+        imageView.post {//fixing the height of divider
+            val drawable = imageView.drawable
+            val imageViewHeight = imageView.height
+            val imageViewWidth = imageView.width
 
+            val drawableIntrinsicHeight = drawable.intrinsicHeight
+            val drawableIntrinsicWidth = drawable.intrinsicWidth
+
+            val scale = imageViewWidth.toFloat() / drawableIntrinsicWidth
+            val displayedHeight = (drawableIntrinsicHeight * scale).toInt()
+
+            val params = divider.layoutParams
+            params.height = displayedHeight
+            divider.layoutParams = params
+        }
         // Open color wheel when button is clicked
         colorsButton.setOnClickListener {
             val dialog = ColorPickerDialogFragment()
