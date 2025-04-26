@@ -90,6 +90,7 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
             val imageUri = Uri.parse(imageUriString)
             val bitmap = loadBitmapFromUri(imageUri)
 
+            // Error handling failed decoding
             if (bitmap == null) {
                 Log.e("ImageSplitActivity", "Failed to decode bitmap from URI")
                 finish()
@@ -102,7 +103,7 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
             val config = originalBitmap.config ?: Bitmap.Config.ARGB_8888
             modifiedBitmap = originalBitmap.copy(config, true)
 
-            // Apply Sobel edge detection to create sobelBitmap
+            // Apply canny edge detection to create cannyBitmap
             cannyBitmap = applyEdgeDetection(originalBitmap)
             cannyBitmap = scaleBitmap(cannyBitmap, 800, 600)
 
@@ -118,7 +119,7 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
             leftModifiedBitmap = Bitmap.createBitmap(modifiedBitmap, 0, 0, mid, height)
             rightModifiedBitmap = Bitmap.createBitmap(modifiedBitmap, mid, 0, width - mid, height)
 
-            // Split cannyBitmap into left and right
+            // Split cannyBitmap into left and right for image split
             leftCannyBitmap = Bitmap.createBitmap(cannyBitmap, 0, 0, mid, height)
             rightCannyBitmap = Bitmap.createBitmap(cannyBitmap, mid, 0, width - mid, height)
 
@@ -127,7 +128,8 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
             Log.e("ImageSplitActivity", "Error loading image from URI", e)
             finish()
         }
-        imageView.post {//fixing the height of divider
+        imageView.post {
+            // Fixing divider height, since XML does not fully handle
             val drawable = imageView.drawable
             val imageViewHeight = imageView.height
             val imageViewWidth = imageView.width
@@ -167,7 +169,9 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
                     val tappedColor = modifiedBitmap.getPixel(x, y)
                     Log.d("ImageSplitActivity", "Tapped Color: $tappedColor at ($x, $y)")
 
-                    // Save the current bitmap before making changes for undo functionality
+                    /* Save the current bitmap before making changes for undo functionality.
+                    Since image split works with pairs, bitmap history is pushed as a pair.
+                    */
                     bitmapHistory.push(
                         Pair(
                             leftModifiedBitmap.copy(
@@ -197,16 +201,17 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
                             )
                         )
 
+                        // If the area to the left of the divider is tapped, change the left side
                         if (x < mid) {
                             val updatedBitmap = withContext(Dispatchers.Default) {
                                 // Replace similar pixels with selected color
                                 edgeAwareColorReplace(
-                                    leftModifiedBitmap,   // Use modifiedBitmap to accumulate changes
-                                    leftCannyBitmap,      // Sobel edge-detection bitmap
-                                    x,          // X coordinate where tapped
-                                    y,          // Y coordinate where tapped
-                                    selectedColor,    // The new color to apply
-                                    opacity           // Opacity for blending
+                                    leftModifiedBitmap,
+                                    leftCannyBitmap,
+                                    x,
+                                    y,
+                                    selectedColor,
+                                    opacity
                                 )
                             }
 
@@ -231,18 +236,20 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
                             // Hide the loading spinner
                             spinner.visibility = View.GONE
                         } else {
+                            // If the area to the right of the divider is tapped, change the right side
                             val updatedBitmap = withContext(Dispatchers.Default) {
                                 // Replace similar pixels with selected color
                                 edgeAwareColorReplace(
-                                    rightModifiedBitmap,   // Use modifiedBitmap to accumulate changes
-                                    rightCannyBitmap,      // Canny edge-detection bitmap
-                                    x - mid,          // X coordinate where tapped, subtract mid since split
-                                    y,          // Y coordinate where tapped
-                                    selectedColor,    // The new color to apply
-                                    opacity           // Opacity for blending
+                                    rightModifiedBitmap,
+                                    rightCannyBitmap,
+                                    x - mid,
+                                    y,
+                                    selectedColor,
+                                    opacity
                                 )
                             }
 
+                            // Update rightModifiedBitmap to keep track of the new state
                             rightModifiedBitmap = updatedBitmap
 
                             // Recombine both halves into a new full image
@@ -296,8 +303,9 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
             }
         }
 
-        // Reset button
+        // Reset button, clears back to the original state of the image
         resetButton.setOnClickListener {
+            // Copying original config for both halves
             leftModifiedBitmap =
                 originalBitmap.copy(originalBitmap.config ?: Bitmap.Config.ARGB_8888, true)
                     .let { Bitmap.createBitmap(it, 0, 0, it.width / 2, it.height) }
@@ -306,6 +314,7 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
                 originalBitmap.copy(originalBitmap.config ?: Bitmap.Config.ARGB_8888, true)
                     .let { Bitmap.createBitmap(it, it.width / 2, 0, it.width / 2, it.height) }
 
+            // Combining both halves of bitmap again
             val combined = Bitmap.createBitmap(
                 leftModifiedBitmap.width + rightModifiedBitmap.width,
                 leftModifiedBitmap.height,
@@ -315,13 +324,15 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
             canvas.drawBitmap(leftModifiedBitmap, 0f, 0f, null)
             canvas.drawBitmap(rightModifiedBitmap, leftModifiedBitmap.width.toFloat(), 0f, null)
 
+            // Setting bitmap back to original state and clearing history
             modifiedBitmap = combined
             imageView.setImageBitmap(combined)
             bitmapHistory.clear()
         }
     }
 
-        private fun getBrightness(color: Int): Int {
+    private fun getBrightness(color: Int): Int {
+        // Using relative luminance formula
         return ((Color.red(color) * 0.299) + (Color.green(color) * 0.587) + (Color.blue(color) * 0.114)).toInt()
     }
 
@@ -334,6 +345,7 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
         // Avoid division by zero
         if (currentBrightness == 0) return baseColor
 
+        // Blending brightness of original and target color to reach a more realistic finish
         val ratio = targetBrightness.toFloat() / currentBrightness
 
         val newR = (r * ratio).coerceIn(0f, 255f).toInt()
@@ -345,7 +357,7 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
 
 
     private fun isEdgePixel(pixel: Int): Boolean {
-        // Assuming Canny edge detection produces a binary image
+        // Canny produces a black and white image where white pixels are defined as edges
         return pixel == Color.WHITE
     }
 
@@ -358,34 +370,42 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
         val width = originalBitmap.width
         val height = originalBitmap.height
 
+        /* Used for debugging. Displays tapped pixel and pixel's marked as edge pixels
+
         val tappedPixel = cannyBitmap.getPixel(startX, startY)
         Log.d("DEBUG", "Tapped pixel at ($startX, $startY): $tappedPixel")
 
         if (isEdgePixel(tappedPixel)) {
             Log.d("DEBUG", "Edge pixel detected at ($startX, $startY): $tappedPixel")
             return emptyList()
-        }
+        } */
 
+        // Creating storage variables for the region and visited pixels
         val visited = Array(height) { BooleanArray(width) }
         val region = mutableListOf<Pair<Int, Int>>()
         val queue = ArrayDeque<Pair<Int, Int>>()
 
+        // Setting starting point
         queue.add(Pair(startX, startY))
         visited[startY][startX] = true
 
+        // Setting possible directions to move in
         val directions = arrayOf(
             Pair(0, 1), Pair(1, 0), Pair(0, -1), Pair(-1, 0),
             Pair(1, 1), Pair(1, -1), Pair(-1, 1), Pair(-1, -1)
         )
 
+        // Loop for going through the image
         while (queue.isNotEmpty()) {
             val (x, y) = queue.removeFirst()
             region.add(Pair(x, y))
 
+            // Iterating through pixels
             for ((dx, dy) in directions) {
                 val newX = x + dx
                 val newY = y + dy
 
+                // If pixel has not been visited, and is not an edge, add to queue and mark as visited
                 if (
                     newX in 0 until width &&
                     newY in 0 until height &&
@@ -436,13 +456,17 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
     private fun loadBitmapFromUri(uri: Uri): Bitmap? {
         return try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                // Using ImageDecoder function
                 val source = ImageDecoder.createSource(contentResolver, uri)
                 ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                    // Setting allocator to avoid hardware related issues when rendering
                     decoder.setAllocator(ImageDecoder.ALLOCATOR_SOFTWARE)
                 }
             } else {
+                // Fallback for older Android versions using BitmapFactory
                 contentResolver.openInputStream(uri)?.use { inputStream ->
                     BitmapFactory.decodeStream(inputStream, null, BitmapFactory.Options().apply {
+                        // Using ARGB_8888 config for better image quality
                         inPreferredConfig = Bitmap.Config.ARGB_8888
                     })
                 }
@@ -457,10 +481,12 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
         selectedColor = color
         colorBox.setBackgroundColor(color)
 
+        // Collecting RGB values of selected color
         val r = Color.red(color)
         val g = Color.green(color)
         val b = Color.blue(color)
 
+        // Finding closest matching paint in the database
         val targetColor = PaintFinder.PaintColor("Selected", "Current", r, g, b)
         val closestPaint = PaintFinder.findClosestPaint(targetColor, this)
 
@@ -479,7 +505,7 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
         val width = bitmap.width
         val height = bitmap.height
 
-        // Calculate the ratio to scale the image down proportionally
+        // // Scaling down image, maintains aspect ratio
         val ratioBitmap = width.toFloat() / height.toFloat()
         var finalWidth = maxWidth
         var finalHeight = maxHeight
@@ -494,7 +520,7 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
     }
 
     private fun blendColors(originalColor: Int, newColor: Int, opacity: Int): Int {
-        // Alpha values of both colors
+        // Alpha values of original and selected color
         val originalAlpha = Color.alpha(originalColor) / 255f
         val newAlpha = opacity / 255f
 
@@ -521,7 +547,7 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
         Imgproc.GaussianBlur(gray, gray, Size(3.0, 3.0), 0.5, 0.5)
         Imgproc.Canny(gray, edges, 40.0, 100.0)  // Thresholds for Canny (can be adjusted)
 
-        // Dilate to thicken the edges to 2 pixels
+        // Dilate to thicken the edges to 2 pixels (1 pixel was causing issues of edges not connecting)
         val kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, Size(2.0, 2.0))
         Imgproc.dilate(edges, edges, kernel, Point(-1.0, -1.0), 1)
 

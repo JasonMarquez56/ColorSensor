@@ -82,6 +82,7 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
             val imageUri = Uri.parse(imageUriString)
             val bitmap = loadBitmapFromUri(imageUri)
 
+            // Error handling failed decoding
             if (bitmap == null) {
                 Log.e("ColorChangerActivity", "Failed to decode bitmap from URI")
                 finish()
@@ -94,11 +95,11 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
             val config = originalBitmap.config ?: Bitmap.Config.ARGB_8888
             modifiedBitmap = originalBitmap.copy(config, true)
 
-            // Apply Sobel edge detection to create sobelBitmap
+            // Apply canny edge detection to create cannyBitmap
             cannyBitmap = applyEdgeDetection(originalBitmap)
             cannyBitmap = scaleBitmap(cannyBitmap, 800, 600)
 
-            // Display the original image (can change to canny for debugging)
+            // Display the original image (can change to cannyBitmap for debugging)
             imageView.setImageBitmap(modifiedBitmap)
 
         } catch (e: Exception) {
@@ -106,7 +107,7 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
             finish()
         }
 
-        // Open color wheel when button is clicked
+        // Open color wheel when button is clicked for choosing color to change to
         colorsButton.setOnClickListener {
             val dialog = ColorPickerDialogFragment()
             dialog.show(supportFragmentManager, "ColorPickerDialog")
@@ -147,12 +148,12 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
                         val updatedBitmap = withContext(Dispatchers.Default) {
                             // Replace similar pixels with selected color
                             edgeAwareColorReplace(
-                                modifiedBitmap,   // Use modifiedBitmap to accumulate changes
-                                cannyBitmap,      // Sobel edge-detection bitmap
-                                x,          // X coordinate where tapped
-                                y,          // Y coordinate where tapped
-                                selectedColor,    // The new color to apply
-                                opacity           // Opacity for blending
+                                modifiedBitmap,
+                                cannyBitmap,
+                                x,
+                                y,
+                                selectedColor,
+                                opacity
                             )
                         }
 
@@ -188,6 +189,7 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
 
 
     private fun getBrightness(color: Int): Int {
+        // Using relative luminance formula
         return ((Color.red(color) * 0.299) + (Color.green(color) * 0.587) + (Color.blue(color) * 0.114)).toInt()
     }
 
@@ -200,6 +202,7 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         // Avoid division by zero
         if (currentBrightness == 0) return baseColor
 
+        // Blending brightness of original and target color to reach a more realistic finish
         val ratio = targetBrightness.toFloat() / currentBrightness
 
         val newR = (r * ratio).coerceIn(0f, 255f).toInt()
@@ -211,7 +214,7 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
 
 
     private fun isEdgePixel(pixel: Int): Boolean {
-        // Assuming Canny edge detection produces a binary image
+        // Canny produces a black and white image where white pixels are defined as edges
         return pixel == Color.WHITE
     }
 
@@ -224,34 +227,42 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         val width = originalBitmap.width
         val height = originalBitmap.height
 
+        /* Used for debugging. Displays tapped pixel and pixel's marked as edge pixels
+
         val tappedPixel = cannyBitmap.getPixel(startX, startY)
         Log.d("DEBUG", "Tapped pixel at ($startX, $startY): $tappedPixel")
 
         if (isEdgePixel(tappedPixel)) {
             Log.d("DEBUG", "Edge pixel detected at ($startX, $startY): $tappedPixel")
             return emptyList()
-        }
+        } */
 
+        // Creating storage variables for the region and visited pixels
         val visited = Array(height) { BooleanArray(width) }
         val region = mutableListOf<Pair<Int, Int>>()
         val queue = ArrayDeque<Pair<Int, Int>>()
 
+        // Setting starting point
         queue.add(Pair(startX, startY))
         visited[startY][startX] = true
 
+        // Setting possible directions to move in
         val directions = arrayOf(
             Pair(0, 1), Pair(1, 0), Pair(0, -1), Pair(-1, 0),
             Pair(1, 1), Pair(1, -1), Pair(-1, 1), Pair(-1, -1)
         )
 
+        // Loop for going through the image
         while (queue.isNotEmpty()) {
             val (x, y) = queue.removeFirst()
             region.add(Pair(x, y))
 
             for ((dx, dy) in directions) {
+                // Iterating through pixels
                 val newX = x + dx
                 val newY = y + dy
 
+                // If pixel has not been visited, and is not an edge, add to queue and mark as visited
                 if (
                     newX in 0 until width &&
                     newY in 0 until height &&
@@ -302,13 +313,17 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
     private fun loadBitmapFromUri(uri: Uri): Bitmap? {
         return try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                // Using ImageDecoder function
                 val source = ImageDecoder.createSource(contentResolver, uri)
                 ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                    // Setting allocator to avoid hardware related issues when rendering
                     decoder.setAllocator(ImageDecoder.ALLOCATOR_SOFTWARE)
                 }
             } else {
+                // Fallback for older Android versions using BitmapFactory
                 contentResolver.openInputStream(uri)?.use { inputStream ->
                     BitmapFactory.decodeStream(inputStream, null, BitmapFactory.Options().apply {
+                        // Using ARGB_8888 config for better image quality
                         inPreferredConfig = Bitmap.Config.ARGB_8888
                     })
                 }
@@ -323,10 +338,12 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         selectedColor = color
         colorBox.setBackgroundColor(color)
 
+        // Collecting RGB values of selected color
         val r = Color.red(color)
         val g = Color.green(color)
         val b = Color.blue(color)
 
+        // Finding closest matching paint in the database
         val targetColor = PaintFinder.PaintColor("Selected", "Current", r, g, b)
         val closestPaint = PaintFinder.findClosestPaint(targetColor, this)
 
@@ -345,7 +362,7 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         val width = bitmap.width
         val height = bitmap.height
 
-        // Calculate the ratio to scale the image down proportionally
+        // Scaling down image, maintains aspect ratio
         val ratioBitmap = width.toFloat() / height.toFloat()
         var finalWidth = maxWidth
         var finalHeight = maxHeight
@@ -360,7 +377,7 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
     }
 
     private fun blendColors(originalColor: Int, newColor: Int, opacity: Int): Int {
-        // Alpha values of both colors
+        // Alpha values of original and selected color
         val originalAlpha = Color.alpha(originalColor) / 255f
         val newAlpha = opacity / 255f
 
@@ -385,9 +402,10 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
         // Apply Canny edge detection
         val edges = Mat()
         Imgproc.GaussianBlur(gray, gray, Size(3.0, 3.0), 0.5, 0.5)
-        Imgproc.Canny(gray, edges, 40.0, 100.0)  // Thresholds for Canny (can be adjusted)
+        // Thresholds for Canny (can be adjusted)
+        Imgproc.Canny(gray, edges, 40.0, 100.0)
 
-        // Dilate to thicken the edges to 2 pixels
+        // Dilate to thicken the edges to 2 pixels (1 pixel was causing issues of edges not connecting)
         val kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, Size(2.0, 2.0))
         Imgproc.dilate(edges, edges, kernel, Point(-1.0, -1.0), 1)
 
