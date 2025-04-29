@@ -22,7 +22,7 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.color_blending)
-        navigationBar()
+        SettingsUtil.navigationBar(this)
 
         val color1 = findViewById<View>(R.id.blendColor1)
         val color2 = findViewById<View>(R.id.blendColor2)
@@ -151,46 +151,5 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
 
     private fun rgbToHex(red: Int, green: Int, blue: Int): String {
         return String.format("#%02X%02X%02X", red, green, blue)
-    }
-
-    private fun navigationBar() {
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView3)
-
-        val iconMap = mapOf(
-            R.id.profile to Pair(R.drawable.account_outline, R.drawable.account),
-            R.id.home to Pair(R.drawable.home_outline, R.drawable.home),
-            R.id.settings to Pair(R.drawable.cog_outline, R.drawable.cog)
-        )
-
-        var selectedItemId: Int? = null
-
-        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-            selectedItemId?.let { prevId ->
-                bottomNavigationView.menu.findItem(prevId).setIcon(iconMap[prevId]?.first ?: R.drawable.home)
-            }
-
-            item.setIcon(iconMap[item.itemId]?.second ?: R.drawable.home)
-            selectedItemId = item.itemId
-
-            when (item.itemId) {
-                R.id.profile -> {
-                    val intent = Intent(this, ProfileActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                R.id.home -> {
-                    val intent = Intent(this, HomeActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                R.id.settings -> {
-                    // Handle Settings button click
-                    val intent = Intent(this, SettingActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                else -> false
-            }
-        }
     }
 }

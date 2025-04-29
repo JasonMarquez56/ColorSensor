@@ -2,8 +2,10 @@ package com.example.colorsensor
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.widget.Switch
 import android.widget.TextView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 object SettingsUtil {
     fun updateTextViewBasedOnSettings(context: Context, textView: TextView) {
@@ -107,5 +109,46 @@ object SettingsUtil {
     fun isTritanomalyEnabled(context: Context): Boolean {
         val prefs = context.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
         return prefs.getBoolean("tritanomaly_enabled", false)
+    }
+
+    fun navigationBar(activity: Activity) {
+        val bottomNavigationView = activity.findViewById<BottomNavigationView>(R.id.bottomNavigationView3)
+
+        val iconMap = mapOf(
+            R.id.profile to Pair(R.drawable.account_outline, R.drawable.account),
+            R.id.home to Pair(R.drawable.home_outline, R.drawable.home),
+            R.id.settings to Pair(R.drawable.cog_outline, R.drawable.cog)
+        )
+
+        var selectedItemId: Int? = null
+
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+
+            selectedItemId?.let { prevId ->
+                bottomNavigationView.menu.findItem(prevId).setIcon(iconMap[prevId]?.first ?: R.drawable.home)
+            }
+
+            item.setIcon(iconMap[item.itemId]?.second ?: R.drawable.home)
+            selectedItemId = item.itemId
+
+            when (item.itemId) {
+                R.id.profile -> {
+                    val intent = Intent(activity, ProfileActivity::class.java)
+                    activity.startActivity(intent)
+                    true
+                }
+                R.id.home -> {
+                    val intent = Intent(activity, HomeActivity::class.java)
+                    activity.startActivity(intent)
+                    true
+                }
+                R.id.settings -> {
+                    val intent = Intent(activity, SettingActivity::class.java)
+                    activity.startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
     }
 }

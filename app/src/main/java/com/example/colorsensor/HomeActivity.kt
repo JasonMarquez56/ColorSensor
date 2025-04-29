@@ -14,7 +14,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_screen)
-        navigationBar()
+        SettingsUtil.navigationBar(this)
 
         // Sets the scroll view to the bottom
         //val sv = findViewById<View>(R.id.scrollView3) as ScrollView
@@ -75,52 +75,5 @@ class HomeActivity : AppCompatActivity() {
         val intent = Intent(this, FindColorActivity::class.java)
         intent.putExtra("image_uri", uri.toString())
         startActivity(intent)
-    }
-
-    private fun navigationBar() {
-        // Navigation bar
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView3)
-
-        // Map default and selected icons
-        val iconMap = mapOf(
-            R.id.profile to Pair(R.drawable.account_outline, R.drawable.account),
-            R.id.home to Pair(R.drawable.home_outline, R.drawable.home),
-            R.id.settings to Pair(R.drawable.cog_outline, R.drawable.cog)
-        )
-
-        // Track currently selected item
-        var selectedItemId: Int? = null
-
-        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-
-            // Reset previous selection
-            selectedItemId?.let { prevId ->
-                bottomNavigationView.menu.findItem(prevId).setIcon(iconMap[prevId]?.first ?: R.drawable.home)
-            }
-
-            // Change selected icon
-            item.setIcon(iconMap[item.itemId]?.second ?: R.drawable.home)
-            selectedItemId = item.itemId
-
-            when (item.itemId) {
-                R.id.profile -> {
-                    val intent = Intent(this, ProfileActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                R.id.home -> {
-                    val intent = Intent(this, HomeActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                R.id.settings -> {
-                    // Handle Settings button click
-                    val intent = Intent(this, SettingActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                else -> false
-            }
-        }
     }
 }

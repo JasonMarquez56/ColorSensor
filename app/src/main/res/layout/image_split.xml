@@ -1,218 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-             android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <!--ImageView used for upload picture and camera-->
+    <!-- TextView to display the selected RGB value -->
+    <TextView
+        android:id="@+id/rgbValueText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" "
+        android:textSize="18sp"
+        android:layout_marginStart="8dp"
+        android:paddingBottom="8dp"/>
 
-    <LinearLayout
-        android:layout_width="135dp"
-        android:layout_height="114dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.855"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.933">
-
-        <View
-            android:id="@+id/viewColor14"
-            android:layout_width="73dp"
-            android:layout_height="63dp"
-            android:background="@color/white" />
-
-        <TextView
-            android:id="@+id/textViewAccessbility"
-            android:layout_width="146dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="" />
-
-        <TextView
-            android:id="@+id/textViewAccessbilityName"
-            android:layout_width="match_parent"
-            android:layout_height="21dp"
-            android:layout_marginTop="4dp"
-            android:text="" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="135dp"
-        android:layout_height="114dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.137"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.933">
-
-        <View
-            android:id="@+id/viewColor13"
-            android:layout_width="73dp"
-            android:layout_height="63dp"
-            android:background="@color/white" />
-
-        <TextView
-            android:id="@+id/textViewAccessbility2"
-            android:layout_width="146dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="" />
-
-        <TextView
-            android:id="@+id/textViewAccessbilityName2"
-            android:layout_width="match_parent"
-            android:layout_height="21dp"
-            android:layout_marginTop="4dp"
-            android:text="" />
-    </LinearLayout>
-
+    <!-- Color box to display the selected color -->
     <View
-        android:id="@+id/viewColor"
-        android:layout_width="207dp"
-        android:layout_height="136dp"
-        android:background="#8DC6A2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/colorBox"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:background="#FFFFFF"
+        android:layout_gravity="center_vertical"/>
 
-    <View
-        android:id="@+id/viewColor12"
-        android:layout_width="207dp"
-        android:layout_height="136dp"
-        android:background="#7EC8E3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <!-- FrameLayout to hold the ImageView and ProgressBar on top of each other -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="0dp"
-        android:layout_height="440dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewColor"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/colorsensor_home_banner" />
-    <!--Label for Color Strip-->
+        <!-- ImageView to display the passed image -->
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:contentDescription="Image to change color"/>
 
-    <!--container to store color strip view-->
-    <!--show the name of color from the database -->
-    <!--show Paint RGB-->
-    <!--show RGB-->
+        <!-- Divider line in the center of the ImageView -->
+        <View
+            android:id="@+id/verticalDivider"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:layout_gravity="center"
+            android:background="#000000" />
 
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="189dp"
-        android:layout_height="74dp"
-        android:text=""
-        app:layout_constraintBottom_toBottomOf="@+id/viewColor"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.054"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        <!-- ProgressBar to overlay over the ImageView -->
+        <ProgressBar
+            android:id="@+id/loadingSpinner"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center"/>
+    </FrameLayout>
 
-    <TextView
-        android:id="@+id/textViewRGB"
-        android:layout_width="181dp"
-        android:layout_height="31dp"
-        android:layout_marginTop="16dp"
-        android:text="RGB: "
-        app:layout_constraintBottom_toBottomOf="@+id/viewColor"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.052"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.297" />
+    <!-- Color Picker View to allow the user to choose a color -->
+    <com.skydoves.colorpickerview.ColorPickerView
+        android:id="@+id/colorPickerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="181dp"
-        android:layout_height="31dp"
-        android:layout_marginTop="16dp"
-        android:text="RGB: "
-        app:layout_constraintBottom_toBottomOf="@+id/viewColor"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.053"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.808" />
-    <!--show Hex-->
-    <!--template for future button to store favorite color for users-->
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="202dp"
-        android:layout_height="48dp"
-        android:text="Hex:"
-        app:layout_constraintBottom_toBottomOf="@+id/viewColor"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.057"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.806" />
+    <Button
+        android:id="@+id/undoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Undo"
+        android:layout_marginTop="16dp"/>
 
-    <TextView
-        android:id="@+id/textView8_2"
-        android:layout_width="196dp"
-        android:layout_height="74dp"
-        android:text=""
-        app:layout_constraintBottom_toBottomOf="@+id/viewColor"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+    <Button
+        android:id="@+id/resetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset"
+        android:layout_marginTop="16dp"/>
 
-    <TextView
-        android:id="@+id/textViewRGB_2"
-        android:layout_width="181dp"
-        android:layout_height="31dp"
-        android:layout_marginTop="16dp"
-        android:text="RGB: "
-        app:layout_constraintBottom_toBottomOf="@+id/viewColor"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.93"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.292" />
 
-    <!--show Hex-->
-    <!--template for future button to store favorite color for users-->
-    <TextView
-        android:id="@+id/textView2_2"
-        android:layout_width="181dp"
-        android:layout_height="31dp"
-        android:layout_marginTop="16dp"
-        android:text="RGB: "
-        app:layout_constraintBottom_toBottomOf="@+id/viewColor"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.93"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.808" />
+    <!-- Button to show RGB picker and test color changes -->
+    <Button
+        android:id="@+id/colorsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Colors"
+        android:layout_gravity="center"/>
 
-    <TextView
-        android:id="@+id/textView_2"
-        android:layout_width="196dp"
-        android:layout_height="47dp"
-        android:text="Hex:"
-        app:layout_constraintBottom_toBottomOf="@+id/viewColor"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.806" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
