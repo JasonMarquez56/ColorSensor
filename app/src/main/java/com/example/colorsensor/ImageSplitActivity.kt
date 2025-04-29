@@ -100,13 +100,13 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
 
             originalBitmap = bitmap
             // Scale to a manageable size
-            originalBitmap = scaleBitmap(originalBitmap, 800, 600)
+            originalBitmap = scaleBitmap(originalBitmap, 600, 800)
             val config = originalBitmap.config ?: Bitmap.Config.ARGB_8888
             modifiedBitmap = originalBitmap.copy(config, true)
 
             // Apply canny edge detection to create cannyBitmap
             cannyBitmap = applyEdgeDetection(originalBitmap)
-            cannyBitmap = scaleBitmap(cannyBitmap, 800, 600)
+            cannyBitmap = scaleBitmap(cannyBitmap, 600, 800)
 
             // Display the original image (can change to canny for debugging)
             imageView.setImageBitmap(modifiedBitmap)
