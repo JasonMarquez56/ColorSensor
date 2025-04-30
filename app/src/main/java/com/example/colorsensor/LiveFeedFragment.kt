@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -22,11 +21,8 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import com.example.colorsensor.PaintInfoActivity
-import com.example.colorsensor.R
 import com.example.colorsensor.utils.PaintFinder
 import androidx.core.graphics.toColorInt
-import androidx.core.graphics.get
 
 class LiveFeedFragment : Fragment() {
     override fun onCreateView(

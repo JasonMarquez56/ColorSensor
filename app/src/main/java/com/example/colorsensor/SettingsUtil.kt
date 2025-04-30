@@ -1,9 +1,7 @@
 package com.example.colorsensor
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.widget.Switch
 import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -96,22 +94,22 @@ object SettingsUtil {
     }
 
 
-    fun isProtanomalyEnabled(context: Context): Boolean {
+    fun isProtanomalyEnabled(context: ColorBlendingActivity): Boolean {
         val prefs = context.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
         return prefs.getBoolean("protanomaly_enabled", false)
     }
 
-    fun isDeuteranomalyEnabled(context: Context): Boolean {
+    fun isDeuteranomalyEnabled(context: ColorBlendingActivity): Boolean {
         val prefs = context.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
         return prefs.getBoolean("deuteranomaly_enabled", false)
     }
 
-    fun isTritanomalyEnabled(context: Context): Boolean {
+    fun isTritanomalyEnabled(context: ColorBlendingActivity): Boolean {
         val prefs = context.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
         return prefs.getBoolean("tritanomaly_enabled", false)
     }
 
-    fun navigationBar(activity: Activity) {
+    fun navigationBar(activity: ColorBlendingActivity) {
         val bottomNavigationView = activity.findViewById<BottomNavigationView>(R.id.bottomNavigationView3)
 
         val iconMap = mapOf(

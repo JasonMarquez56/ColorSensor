@@ -19,8 +19,6 @@ import android.view.View
 import com.example.colorsensor.utils.PaintFinder
 import android.view.MotionEvent
 import android.widget.ProgressBar
-import android.widget.Toast
-import androidx.compose.ui.Modifier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

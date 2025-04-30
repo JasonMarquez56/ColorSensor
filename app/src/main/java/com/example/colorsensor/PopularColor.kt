@@ -1,11 +1,9 @@
 package com.example.colorsensor
 
-import android.content.Intent
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
@@ -13,17 +11,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Magnifier
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.example.colorsensor.RegisterActivity.RGB
-import com.example.colorsensor.RegisterActivity.favColor
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.random.Random
-import androidx.core.graphics.ColorUtils
-
-import com.example.colorsensor.SettingsUtil
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 //testing
 class PopularColor : AppCompatActivity() {

@@ -18,8 +18,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.Toast
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.api.Distribution.BucketOptions.Linear
 import com.example.colorsensor.RegisterActivity.favColor
 import com.example.colorsensor.RegisterActivity.RGB
 

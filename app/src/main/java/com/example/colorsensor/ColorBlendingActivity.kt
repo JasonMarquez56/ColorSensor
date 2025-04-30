@@ -2,7 +2,6 @@ package com.example.colorsensor
 
 import ColorPickerDialogFragment
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
@@ -11,7 +10,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.colorsensor.utils.PaintFinder
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.core.graphics.toColorInt
 
 class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColorSelectedListener {
 
@@ -92,6 +91,7 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
         colorOverlay?.setColor(color)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun blendColors(color1: Int, color2: Int): Int {
         val r = (Color.red(color1) + Color.red(color2)) / 2
         val g = (Color.green(color1) + Color.green(color2)) / 2
@@ -106,24 +106,24 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
         accessbilityHex.text = ""
         accessbilityText.text = ""
         when {
-            SettingsUtil.isProtanomalyEnabled(this) -> {
+            SettingsUtil.isProtanomalyEnabled(this@ColorBlendingActivity) -> {
                 val protanopiaColor = SettingsUtil.hexToProtanomalyHex(r, g, b)
-                accessbility.setBackgroundColor(Color.parseColor(protanopiaColor))
+                accessbility.setBackgroundColor(protanopiaColor.toColorInt())
                 accessbilityHex.text = "Hex: ${protanopiaColor.uppercase()}"
                 accessbilityText.text = "Protanomaly (Red-Blind)"
             }
 
-            SettingsUtil.isDeuteranomalyEnabled(this) -> {
+            SettingsUtil.isDeuteranomalyEnabled(this@ColorBlendingActivity) -> {
                 val deuteranomalyColor =
                     SettingsUtil.hexToDeuteranomalyHex(r, g, b)
-                accessbility.setBackgroundColor(Color.parseColor(deuteranomalyColor))
+                accessbility.setBackgroundColor(deuteranomalyColor.toColorInt())
                 accessbilityHex.text = "Hex: ${deuteranomalyColor.uppercase()}"
                 accessbilityText.text = "Deuteranomaly"
             }
 
-            SettingsUtil.isTritanomalyEnabled(this) -> {
+            SettingsUtil.isTritanomalyEnabled(this@ColorBlendingActivity) -> {
                 val tritanomalyColor = SettingsUtil.hexToTritanomalyHex(r, g, b)
-                accessbility.setBackgroundColor(Color.parseColor(tritanomalyColor))
+                accessbility.setBackgroundColor(tritanomalyColor.toColorInt())
                 accessbilityHex.text = "Hex: ${tritanomalyColor.uppercase()}"
                 accessbilityText.text = "Tritanomaly"
             }
@@ -134,7 +134,7 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
     @SuppressLint("SetTextI18n")
     private fun searchClosestColor(targetRed: Int, targetGreen: Int, targetBlue: Int, textName: TextView, textViewRGB: TextView, textViewHex: TextView) {
         val targetColor = PaintFinder.PaintColor("", "", targetRed, targetGreen, targetBlue)
-        val closestPaint = PaintFinder.findClosestPaint(targetColor, this)
+        val closestPaint = PaintFinder.findClosestPaint(targetColor, this@ColorBlendingActivity)
         // Setting XML values to correct paint and RGB when found
         if (closestPaint != null) {
             val closestRGB = "(${closestPaint.r}, ${closestPaint.g}, ${closestPaint.b})"
