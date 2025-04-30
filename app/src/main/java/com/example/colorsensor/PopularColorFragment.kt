@@ -124,19 +124,19 @@ class PopularColorFragment : Fragment() {
                 hexMessage.text = "Hex: $colorHex"
                 textRGB.text = "RGB: ($red, $green, $blue)"
 
-                when {
-                    SettingsUtil.isProtanomalyEnabled(requireContext()) -> {
-                        val hex = SettingsUtil.hexToProtanomalyHex(red, green, blue)
-                    }
-
-                    SettingsUtil.isDeuteranomalyEnabled(requireContext()) -> {
-                        val hex = SettingsUtil.hexToDeuteranomalyHex(red, green, blue)
-                    }
-
-                    SettingsUtil.isTritanomalyEnabled(requireContext()) -> {
-                        val hex = SettingsUtil.hexToTritanomalyHex(red, green, blue)
-                    }
-                }
+//                when {
+//                    SettingsUtil.isProtanomalyEnabled(requireContext()) -> {
+//                        val hex = SettingsUtil.hexToProtanomalyHex(red, green, blue)
+//                    }
+//
+//                    SettingsUtil.isDeuteranomalyEnabled(requireContext()) -> {
+//                        val hex = SettingsUtil.hexToDeuteranomalyHex(red, green, blue)
+//                    }
+//
+//                    SettingsUtil.isTritanomalyEnabled(requireContext()) -> {
+//                        val hex = SettingsUtil.hexToTritanomalyHex(red, green, blue)
+//                    }
+//                }
 
                 val modifiedBitmap = fillRegionWithColor(bitmap, targetRegion, color)
                 imageView.setImageBitmap(modifiedBitmap)

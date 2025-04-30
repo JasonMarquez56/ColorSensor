@@ -63,7 +63,7 @@ class HomeFragment : Fragment() {
         // Set a click listener for the Video button
         goToLiveColor.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, LoginFragment())
+                .replace(R.id.fragment_container, LiveFeedFragment())
                 .addToBackStack(null)
                 .commit()
         }

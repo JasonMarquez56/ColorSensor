@@ -12,6 +12,7 @@ import androidx.camera.core.Preview
 import androidx.core.content.ContextCompat
 import android.util.Log
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.view.LayoutInflater
@@ -24,8 +25,10 @@ import androidx.fragment.app.Fragment
 import com.example.colorsensor.PaintInfoActivity
 import com.example.colorsensor.R
 import com.example.colorsensor.utils.PaintFinder
+import androidx.core.graphics.toColorInt
+import androidx.core.graphics.get
 
-class FragmentLiveFeed : Fragment() {
+class LiveFeedFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,8 +38,16 @@ class FragmentLiveFeed : Fragment() {
         return inflater.inflate(R.layout.fragment_live_feed, container, false)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private lateinit var cameraPreview: PreviewView
+    private lateinit var colorDisplay: TextView
+    private lateinit var colorPreviewBox: Button
+
+    // Unique request code for permissions
+    private val CAMERA_REQUEST_CODE = 101
+
+    @SuppressLint("ClickableViewAccessibility", "UseKtx", "SetTextI18n")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         // Find views
         cameraPreview = view.findViewById(R.id.camera_preview)
@@ -52,11 +63,9 @@ class FragmentLiveFeed : Fragment() {
             startCamera()
         }
 
-
         // Handle touch event to extract color
         cameraPreview.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                // Capture current camera frame
                 val bitmap = cameraPreview.bitmap
                 if (bitmap != null) {
                     val x = event.x.toInt()
@@ -64,7 +73,6 @@ class FragmentLiveFeed : Fragment() {
                     if (x in 0 until bitmap.width && y in 0 until bitmap.height) {
                         val pixel = bitmap.getPixel(x, y)
 
-                        // Create PaintColor object with RGB values
                         val selectedPaintColor = PaintFinder.PaintColor(
                             brand = "",
                             name = "",
@@ -73,46 +81,31 @@ class FragmentLiveFeed : Fragment() {
                             b = Color.blue(pixel)
                         )
 
-                        // Find the closest matching paint color
-                        val closestPaint = PaintFinder.findClosestPaint(selectedPaintColor, this)
+                        val closestPaint = PaintFinder.findClosestPaint(selectedPaintColor, requireContext())
 
-                        // Set the click listener for the color preview button
                         colorPreviewBox.setOnClickListener {
-                            // Assuming closestPaint is already defined and contains the selected color
                             val colorName = closestPaint?.name
                             val r = closestPaint?.r
                             val g = closestPaint?.g
                             val b = closestPaint?.b
-
-                            // Convert RGB to Hex
                             val hexValue = String.format("#%02X%02X%02X", r, g, b)
 
-                            // Try to create a valid color from the RGB values
                             try {
-                                // Create a Color object using the hex value
-                                val color = Color.parseColor(hexValue)
-
-                                // Create an Intent to start the PaintInfoActivity
-                                val intent = Intent(this, PaintInfoActivity::class.java).apply {
-                                    // Pass the RGB color (as hex), color name, and hex value using putExtra
+                                val color = hexValue.toColorInt()
+                                val intent = Intent(requireContext(), PaintInfoActivity::class.java).apply {
                                     putExtra("selected_color", color)
                                     putExtra("color_name", colorName)
                                     putExtra("color_hex", hexValue)
                                 }
-
-                                // Log the information being passed for debugging
                                 Log.d("DEBUG", "Starting PaintInfoActivity with colorHex: $hexValue, colorName: $colorName")
-
-                                // Start the PaintInfoActivity
                                 startActivity(intent)
                             } catch (e: IllegalArgumentException) {
-                                // Handle the case where the hex value is invalid
                                 Log.e("ERROR", "Invalid hex color format: $hexValue")
-                                Toast.makeText(this, "Invalid color format", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), "Invalid color format", Toast.LENGTH_SHORT).show()
                             }
                         }
-                        // Display the closest paint color's name
-                        runOnUiThread {
+
+                        requireActivity().runOnUiThread {
                             colorDisplay.text = "Selected Color: ${closestPaint?.name ?: "No Match"}"
                             colorPreviewBox.setBackgroundColor(pixel)
                         }
@@ -123,12 +116,12 @@ class FragmentLiveFeed : Fragment() {
             }
             true
         }
-
     }
+
 
     // Start camera after permission is granted
     private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
         cameraProviderFuture.addListener({
             try {
                 val cameraProvider = cameraProviderFuture.get()
@@ -141,17 +134,18 @@ class FragmentLiveFeed : Fragment() {
 
                 // Ensure no duplicate bindings
                 cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(this, cameraSelector, preview)
+                cameraProvider.bindToLifecycle(viewLifecycleOwner, cameraSelector, preview)
 
                 Log.d("LiveFeedActivity", "Camera started successfully")
 
             } catch (e: Exception) {
                 Log.e("LiveFeedActivity", "Camera initialization failed", e)
             }
-        }, ContextCompat.getMainExecutor(this))
+        }, ContextCompat.getMainExecutor(requireContext()))
     }
 
     // Handle the result of the camera permission request
+    @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {
@@ -161,7 +155,7 @@ class FragmentLiveFeed : Fragment() {
                 startCamera()
             } else {
                 Toast.makeText(
-                    this,
+                    requireContext(),
                     "Camera permission denied. Please allow access to use the camera.",
                     Toast.LENGTH_SHORT
                 ).show()
