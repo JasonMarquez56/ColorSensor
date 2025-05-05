@@ -77,6 +77,8 @@ class ImageSplitActivity : AppCompatActivity(), ColorPickerDialogFragment.OnColo
         colorBox = findViewById(R.id.colorBox)
         divider = findViewById(R.id.verticalDivider)
         val spinner = findViewById<ProgressBar>(R.id.loadingSpinner)
+        // navigation bar
+        SettingsUtil.navigationBar(this)
 
         // Retrieve the image URI from intent (passed from ColorFinder)
         val imageUriString = intent.getStringExtra("image_uri")

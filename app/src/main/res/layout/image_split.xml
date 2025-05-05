@@ -7,6 +7,7 @@
     android:padding="16dp">
 
     <!-- TextView to display the selected RGB value -->
+
     <TextView
         android:id="@+id/rgbValueText"
         android:layout_width="wrap_content"
@@ -64,27 +65,51 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <Button
-        android:id="@+id/undoButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Undo"
-        android:layout_marginTop="16dp"/>
 
-    <Button
-        android:id="@+id/resetButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Reset"
-        android:layout_marginTop="16dp"/>
 
 
     <!-- Button to show RGB picker and test color changes -->
-    <Button
-        android:id="@+id/colorsButton"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/undoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="Undo"
+            android:layout_marginTop="16dp"/>
+
+        <Button
+            android:id="@+id/resetButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reset"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"/>
+
+        <Button
+            android:id="@+id/colorsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="Colors" />
+    </RelativeLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Colors"
-        android:layout_gravity="center"/>
+        android:background="@color/black"
+        app:itemIconTint="@color/white"
+        app:itemRippleColor="@color/white"
+        app:itemTextColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav" />
 
 </LinearLayout>
