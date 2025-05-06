@@ -34,33 +34,17 @@
         app:srcCompat="@drawable/color_photo_background" />
 
     <!-- Search bar -->
-    <EditText
-        android:id="@+id/SearchColors"
-        android:layout_width="320dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/rounded_edittext"
-        android:drawableStart="@drawable/magnify"
-        android:drawablePadding="10dp"
-        android:ems="10"
-        android:hint="Search Colors"
-        android:importantForAutofill="no"
-        android:inputType="text|textAutoComplete"
-        android:paddingStart="10dp"
-        android:paddingEnd="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/HomeBanner" />
 
     <!-- Scrollable content with GridLayout -->
     <ScrollView
         android:id="@+id/scrollView4"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/SearchColors">
+        app:layout_constraintTop_toBottomOf="@+id/HomeBanner">
 
         <LinearLayout
             android:id="@+id/LinearLayout"
@@ -85,8 +69,8 @@
                     android:id="@+id/btnFindColor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
                     android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:backgroundTint="#8DC6A2"
                     android:drawableTop="@drawable/camera_outline"
                     android:text="Find\nColor"
@@ -101,8 +85,8 @@
                     android:id="@+id/btnVideo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
                     android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:backgroundTint="#8DBBC6"
                     android:drawableTop="@drawable/video_outline"
                     android:text="Live\nColor"
@@ -110,16 +94,16 @@
                     android:textStyle="bold"
                     app:iconPadding="8dp"
                     app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    app:layout_gravity="fill" />
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1" />
 
                 <!-- Button 3 -->
                 <Button
                     android:id="@+id/btnProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
                     android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:backgroundTint="#C69D8D"
                     android:drawableTop="@drawable/account"
                     android:text="Profile\n"
@@ -127,16 +111,16 @@
                     android:textStyle="bold"
                     app:iconPadding="8dp"
                     app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    app:layout_gravity="fill" />
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1" />
 
                 <!-- Button 4 -->
                 <Button
                     android:id="@+id/btnShop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
                     android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:backgroundTint="#C6C48D"
                     android:drawableTop="@drawable/store"
                     android:text="Shop\n"
@@ -144,16 +128,16 @@
                     android:textStyle="bold"
                     app:iconPadding="8dp"
                     app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    app:layout_gravity="fill" />
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1" />
 
                 <!-- Button 5 -->
                 <Button
                     android:id="@+id/btnPopularColor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
                     android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:backgroundTint="#FFE876"
                     android:drawableTop="@drawable/brush_variant"
                     android:text="Popular\nColor"
@@ -161,8 +145,8 @@
                     android:textStyle="bold"
                     app:iconPadding="8dp"
                     app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    app:layout_gravity="fill" />
+                    app:layout_gravity="fill"
+                    app:layout_rowWeight="1" />
 
                 <Button
                     android:id="@+id/btnColorBlending"
