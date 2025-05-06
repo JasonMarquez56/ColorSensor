@@ -62,10 +62,17 @@ export PATH=$JAVA_HOME/bin:$PATH
 - Open Android Studio.
 - Go to **Tools > SDK Manager**.
 - Ensure the following are installed:
-  - **Android SDK Platform 35**
-  - **Android Emulator**
-  - **Intel x86 Emulator Accelerator (HAXM)** (if using Intel CPU)
-  - **Build Tools**, **Platform Tools**, **Command Line Tools**
+    **SDK Platforms** 
+        - Android 14.0 ("UpsideDownCake") API Level 34
+        - Android 15.0 ("UpsideDownCake") API Level 35
+    **SDK Tools**
+        - Android SDK Build-Tools 36-rc1
+        - Android SDK Command-line Tools (latest)
+        - Android Emulator
+        - Android Emulator hypervisor driver (installer)
+        - Android SDK Platform-Tools
+- Search for build tools on the left and go to Gradle tab.
+- Ensure Distribution is set to "Wrapper" and Gradle JDK is set to JBR 21 (should be automatically set by Android Studio)
 
 ---
 
