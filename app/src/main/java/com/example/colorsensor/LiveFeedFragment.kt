@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -21,10 +22,11 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import com.example.colorsensor.PaintInfoActivity
+import com.example.colorsensor.R
 import com.example.colorsensor.utils.PaintFinder
-import androidx.core.graphics.toColorInt
 
-class LiveFeedFragment : Fragment() {
+class FragmentLiveFeed : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -37,11 +39,10 @@ class LiveFeedFragment : Fragment() {
     private lateinit var cameraPreview: PreviewView
     private lateinit var colorDisplay: TextView
     private lateinit var colorPreviewBox: Button
-
     // Unique request code for permissions
     private val CAMERA_REQUEST_CODE = 101
 
-    @SuppressLint("ClickableViewAccessibility", "UseKtx", "SetTextI18n")
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -59,9 +60,11 @@ class LiveFeedFragment : Fragment() {
             startCamera()
         }
 
+
         // Handle touch event to extract color
         cameraPreview.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
+                // Capture current camera frame
                 val bitmap = cameraPreview.bitmap
                 if (bitmap != null) {
                     val x = event.x.toInt()
@@ -69,6 +72,7 @@ class LiveFeedFragment : Fragment() {
                     if (x in 0 until bitmap.width && y in 0 until bitmap.height) {
                         val pixel = bitmap.getPixel(x, y)
 
+                        // Create PaintColor object with RGB values
                         val selectedPaintColor = PaintFinder.PaintColor(
                             brand = "",
                             name = "",
@@ -77,34 +81,47 @@ class LiveFeedFragment : Fragment() {
                             b = Color.blue(pixel)
                         )
 
+                        // Find the closest matching paint color
                         val closestPaint = PaintFinder.findClosestPaint(selectedPaintColor, requireContext())
 
+                        // Set the click listener for the color preview button
                         colorPreviewBox.setOnClickListener {
+                            // Assuming closestPaint is already defined and contains the selected color
                             val colorName = closestPaint?.name
                             val r = closestPaint?.r
                             val g = closestPaint?.g
                             val b = closestPaint?.b
+
+                            // Convert RGB to Hex
                             val hexValue = String.format("#%02X%02X%02X", r, g, b)
 
+                            // Try to create a valid color from the RGB values
                             try {
-                                val color = hexValue.toColorInt()
-                                val intent = Intent(requireContext(), PaintInfoActivity::class.java).apply {
+                                // Create a Color object using the hex value
+                                val color = Color.parseColor(hexValue)
+
+                                // Create an Intent to start the PaintInfoActivity
+                                val intent = Intent(requireActivity(), PaintInfoActivity::class.java).apply {
+                                    // Pass the RGB color (as hex), color name, and hex value using putExtra
                                     putExtra("selected_color", color)
                                     putExtra("color_name", colorName)
                                     putExtra("color_hex", hexValue)
                                 }
+
+                                // Log the information being passed for debugging
                                 Log.d("DEBUG", "Starting PaintInfoActivity with colorHex: $hexValue, colorName: $colorName")
+
+                                // Start the PaintInfoActivity
                                 startActivity(intent)
                             } catch (e: IllegalArgumentException) {
+                                // Handle the case where the hex value is invalid
                                 Log.e("ERROR", "Invalid hex color format: $hexValue")
                                 Toast.makeText(requireContext(), "Invalid color format", Toast.LENGTH_SHORT).show()
                             }
                         }
-
-                        requireActivity().runOnUiThread {
-                            colorDisplay.text = "Selected Color: ${closestPaint?.name ?: "No Match"}"
-                            colorPreviewBox.setBackgroundColor(pixel)
-                        }
+                        // Display the closest paint color's name
+                        colorDisplay.text = "Selected Color: ${closestPaint?.name ?: "No Match"}"
+                        colorPreviewBox.setBackgroundColor(pixel)
                     }
                 } else {
                     Log.e("LiveFeedActivity", "Bitmap is null, cannot extract color")
@@ -112,8 +129,8 @@ class LiveFeedFragment : Fragment() {
             }
             true
         }
-    }
 
+    }
 
     // Start camera after permission is granted
     private fun startCamera() {
@@ -130,7 +147,7 @@ class LiveFeedFragment : Fragment() {
 
                 // Ensure no duplicate bindings
                 cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(viewLifecycleOwner, cameraSelector, preview)
+                cameraProvider.bindToLifecycle(this, cameraSelector, preview)
 
                 Log.d("LiveFeedActivity", "Camera started successfully")
 
@@ -141,7 +158,6 @@ class LiveFeedFragment : Fragment() {
     }
 
     // Handle the result of the camera permission request
-    @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {

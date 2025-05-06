@@ -60,7 +60,8 @@ class ColorPickerDialogFragment : DialogFragment() {
                 val hexColor = hexInput.text.toString().trim()
                 if (hexColor.matches(Regex("^#([A-Fa-f0-9]{6})$"))) {
                     val color = Color.parseColor(hexColor)
-                    (activity as? OnColorSelectedListener)?.onColorSelected(color)
+                    (parentFragment as? OnColorSelectedListener)?.onColorSelected(color)
+
                 }
             }
             .setNegativeButton("Cancel") { _, _ -> dismiss() }

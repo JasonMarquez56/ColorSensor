@@ -8,6 +8,10 @@ android {
     namespace = "com.example.colorsensor"
     compileSdk = 35
 
+    viewBinding {
+        enable = true
+    }
+
     defaultConfig {
         applicationId = "com.example.colorsensor"
         minSdk = 21
