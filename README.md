@@ -62,10 +62,10 @@ export PATH=$JAVA_HOME/bin:$PATH
 - Open Android Studio.
 - Go to **Tools > SDK Manager**.
 - Ensure the following are installed:
-    **SDK Platforms** 
+   - **SDK Platforms** 
         - Android 14.0 ("UpsideDownCake") API Level 34
         - Android 15.0 ("UpsideDownCake") API Level 35
-    **SDK Tools**
+    - **SDK Tools**
         - Android SDK Build-Tools 36-rc1
         - Android SDK Command-line Tools (latest)
         - Android Emulator
