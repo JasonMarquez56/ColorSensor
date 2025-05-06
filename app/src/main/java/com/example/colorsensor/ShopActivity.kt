@@ -147,7 +147,7 @@ class ShopActivity : AppCompatActivity() {
                                 }
                                 if (domain == "www.behr.com") {
                                     setImageResource(R.drawable.behr)
-                                } else if (domain == "www.ppg.com") {
+                                } else if (domain == "www.ppgpaints.com") {
                                     setImageResource(R.drawable.ppg)
                                 } else if (domain == "www.sherwin-williams.com") {
                                     setImageResource(R.drawable.sherwin_williams)
