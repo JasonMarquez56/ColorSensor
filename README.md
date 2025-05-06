@@ -105,7 +105,7 @@ Or use **GitHub Desktop**:
 
 1. Go to **Tools > Device Manager**.
 2. Click **“Create Device”**.
-3. Choose **Phone > Pixel 4 (or Medium Phone equivalent)**.
+3. Choose **Phone > Pixel 9 Pro (or Medium Phone equivalent)**.
 4. Select **API Level 35 (Android 14)** image (download if not installed).
 5. Click **Next > Finish** to create the emulator.
 6. Click the play icon ▶ to launch the emulator.
