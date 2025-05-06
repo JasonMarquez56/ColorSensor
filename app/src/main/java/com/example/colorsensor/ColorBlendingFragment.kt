@@ -29,7 +29,7 @@ class ColorBlendingFragment : Fragment(), ColorPickerDialogFragment.OnColorSelec
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        SettingsUtil.navigationBar(requireActivity())
+        //SettingsUtil.navigationBar(ColorBlendingActivity())
 
         val color1 = view.findViewById<View>(R.id.blendColor1)
         val color2 = view.findViewById<View>(R.id.blendColor2)
@@ -47,10 +47,10 @@ class ColorBlendingFragment : Fragment(), ColorPickerDialogFragment.OnColorSelec
 
         // Define the click listener for color blocks
         val clickListener = View.OnClickListener { view ->
-            selectedBlock = view
-            val dialog = ColorPickerDialogFragment()
+            //selectedBlock = view
+            //val dialog = ColorPickerDialogFragment()
             //dialog.setTargetFragment(this, 0)  // Make sure to set the target fragment
-            dialog.show(parentFragmentManager, "ColorPickerDialog")
+            //dialog.show(parentFragmentManager, "ColorPickerDialog")
         }
 
         // Set click listeners for color blocks

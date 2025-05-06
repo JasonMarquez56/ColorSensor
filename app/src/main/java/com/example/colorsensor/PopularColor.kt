@@ -32,7 +32,7 @@ class PopularColor : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.popular_color) // Ensure correct layout file
-        SettingsUtil.navigationBar(this)
+        //SettingsUtil.navigationBar(this)
 
 //        // These 2 lines of code test the settingActivity
 //        val textView = findViewById<TextView>(R.id.textView17)
@@ -177,29 +177,29 @@ class PopularColor : AppCompatActivity() {
                 accessbility.setBackgroundColor(Color.WHITE)
                 accessbilityHex.text = ""
                 accessbilityText.text = ""
-                when {
-                    SettingsUtil.isProtanomalyEnabled(this) -> {
-                        val protanopiaColor = SettingsUtil.hexToProtanomalyHex(red, green, blue)
-                        accessbility.setBackgroundColor(Color.parseColor(protanopiaColor))
-                        accessbilityHex.text = "Hex: ${protanopiaColor.uppercase()}"
-                        accessbilityText.text = "Protanomaly (Red-Blind)"
-                    }
-
-                    SettingsUtil.isDeuteranomalyEnabled(this) -> {
-                        val deuteranomalyColor =
-                            SettingsUtil.hexToDeuteranomalyHex(red, green, blue)
-                        accessbility.setBackgroundColor(Color.parseColor(deuteranomalyColor))
-                        accessbilityHex.text = "Hex: ${deuteranomalyColor.uppercase()}"
-                        accessbilityText.text = "Deuteranomaly"
-                    }
-
-                    SettingsUtil.isTritanomalyEnabled(this) -> {
-                        val tritanomalyColor = SettingsUtil.hexToTritanomalyHex(red, green, blue)
-                        accessbility.setBackgroundColor(Color.parseColor(tritanomalyColor))
-                        accessbilityHex.text = "Hex: ${tritanomalyColor.uppercase()}"
-                        accessbilityText.text = "Tritanomaly"
-                    }
-                }
+//                when {
+//                    SettingsUtil.isProtanomalyEnabled(this) -> {
+//                        val protanopiaColor = SettingsUtil.hexToProtanomalyHex(red, green, blue)
+//                        accessbility.setBackgroundColor(Color.parseColor(protanopiaColor))
+//                        accessbilityHex.text = "Hex: ${protanopiaColor.uppercase()}"
+//                        accessbilityText.text = "Protanomaly (Red-Blind)"
+//                    }
+//
+//                    SettingsUtil.isDeuteranomalyEnabled(this) -> {
+//                        val deuteranomalyColor =
+//                            SettingsUtil.hexToDeuteranomalyHex(red, green, blue)
+//                        accessbility.setBackgroundColor(Color.parseColor(deuteranomalyColor))
+//                        accessbilityHex.text = "Hex: ${deuteranomalyColor.uppercase()}"
+//                        accessbilityText.text = "Deuteranomaly"
+//                    }
+//
+//                    SettingsUtil.isTritanomalyEnabled(this) -> {
+//                        val tritanomalyColor = SettingsUtil.hexToTritanomalyHex(red, green, blue)
+//                        accessbility.setBackgroundColor(Color.parseColor(tritanomalyColor))
+//                        accessbilityHex.text = "Hex: ${tritanomalyColor.uppercase()}"
+//                        accessbilityText.text = "Tritanomaly"
+//                    }
+//                }
 
                 // CHANGE WALL COLOR
                 val newColor = Color.parseColor(colorHex)

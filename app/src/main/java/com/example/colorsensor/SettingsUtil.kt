@@ -109,7 +109,7 @@ object SettingsUtil {
         return prefs.getBoolean("tritanomaly_enabled", false)
     }
 
-    fun navigationBar(activity: ColorBlendingActivity) {
+    fun navigationBar(activity: HomeActivity) {
         val bottomNavigationView = activity.findViewById<BottomNavigationView>(R.id.bottomNavigationView3)
 
         val iconMap = mapOf(

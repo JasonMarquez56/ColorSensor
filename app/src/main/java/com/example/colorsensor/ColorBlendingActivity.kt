@@ -21,7 +21,7 @@ class ColorBlendingActivity : AppCompatActivity(), ColorPickerDialogFragment.OnC
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.color_blending)
-        SettingsUtil.navigationBar(this)
+        //SettingsUtil.navigationBar(this)
 
         val color1 = findViewById<View>(R.id.blendColor1)
         val color2 = findViewById<View>(R.id.blendColor2)

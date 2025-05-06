@@ -1,9 +1,8 @@
 package com.example.colorsensor
 
-import PaintInfoFragment
 import android.annotation.SuppressLint
 import android.content.ContentValues
-import android.widget.Toast
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -19,7 +18,9 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Magnifier
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import java.io.IOException
@@ -29,7 +30,6 @@ import com.example.colorsensor.RegisterActivity.RGB
 import com.example.colorsensor.RegisterActivity.favColor
 // import for popupWindow
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.graphics.drawable.ColorDrawable
 import android.widget.LinearLayout
 import android.widget.PopupWindow
@@ -39,91 +39,63 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Environment
 import android.provider.MediaStore
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.core.net.toUri
-import androidx.core.graphics.toColorInt
 
 
-class FindColorFragment : Fragment() {
+class FindColorActivity : AppCompatActivity() {
 
-    private var imageByteArray: ByteArray? = null
-    private var imageUri: String? = null
     private lateinit var bitmap: Bitmap
-    private lateinit var firestore: FirebaseFirestore
-    private lateinit var imageView: ImageView
-    private lateinit var textName: TextView
-    private lateinit var textRGB: TextView
-    private lateinit var textHex: TextView
-    private lateinit var changeColorButton: Button
-
+    private lateinit var firestore: FirebaseFirestore // reference to the database for color and username
+    //Magnifer
     private var magnifier: Magnifier? = null
-    private val viewColor: View by lazy {
-        view?.findViewById<View>(R.id.viewColor)
-            ?: throw IllegalStateException("View not found")
-    }
+    private var isMagnifierActive = false // Track magnifier state
 
-    private val accessibility: View by lazy {
-        view?.findViewById<View>(R.id.viewColor15)
-            ?: throw IllegalStateException("View not found")
-    }
 
-    private val accessibilityText: TextView by lazy {
-        view?.findViewById<TextView>(R.id.textView13)
-            ?: throw IllegalStateException("View not found")
-    }
+    // reference to the layout of an imageview to find color
+    private val imageView: ImageView by lazy { findViewById(R.id.imageView) }
+    // show what color has been changed by a view
+    private val viewColor: View by lazy { findViewById(R.id.viewColor) }
+    private var saveColor: Int = Color.WHITE
+    private var textColor: Int = Color.WHITE
 
-    private val textViewRGB: TextView by lazy {
-        view?.findViewById<TextView>(R.id.textViewRGB)
-            ?: throw IllegalStateException("View not found")
-    }
+    private val accessbility: View by lazy { findViewById(R.id.viewColor15) }
+    private val accessbilityText: TextView by lazy { findViewById(R.id.textView13) }
+    private val textHex: TextView by lazy { findViewById(R.id.textView) }
+    private val textRGB: TextView by lazy { findViewById(R.id.textView2) }
+    private val textName: TextView by lazy { findViewById(R.id.textView8) }
+    private val textViewRGB: TextView by lazy { findViewById(R.id.textViewRGB) }
+    // find the closest Color
     private var selectedColor = RGB(0,0,0)
+    // the size of the imageview and bitmap we need to 2 variables
     private var xRatioForBitmap = 1f
     private var yRatioForBitmap = 1f
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_color_sensor, container, false)
-    }
+    // button to map to color changer activity
+    private lateinit var changeColorButton: Button
 
     @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("ClickableViewAccessibility", "SetTextI18n", "DiscouragedApi")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        arguments?.let {
-            imageByteArray = it.getByteArray("image_bitmap")
-            imageUri = it.getString("image_uri")
-        }
-
-        imageView = view.findViewById(R.id.imageView)
-        textName = view.findViewById(R.id.textView8)
-        textRGB = view.findViewById(R.id.textView2)
-        textHex = view.findViewById(R.id.textView)
-
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.color_sensor)
+        //SettingsUtil.navigationBar(this)
         setupButtonClickListener()
-        val testButton = view.findViewById<Button>(R.id.button27)
-        val saveButton = view.findViewById<Button>(R.id.saveColorButton)
-        val favoriteButton = view.findViewById<ImageButton>(R.id.favoriteButton)
-        changeColorButton = view.findViewById(R.id.btnChangeColor)
+
+        val byteArray = intent.getByteArrayExtra("image_bitmap")
+        val imageUri = intent.getStringExtra("image_uri")
+        val testButton = findViewById<Button>(R.id.button27)
+        val saveButton = findViewById<Button>(R.id.saveColorButton)
+        val favoriteButton = findViewById<ImageButton>(R.id.favoriteButton)
+        changeColorButton = findViewById(R.id.btnChangeColor)
         firestore = FirebaseFirestore.getInstance()
 
         saveButton.setOnClickListener {
             // Save the image with the banner
             val originalBitmap = bitmap
             saveImageWithBanner(this, originalBitmap, textName.text.toString(), textRGB.text.toString(), textHex.text.toString())
-            Toast.makeText(context, "Image saved with banner", Toast.LENGTH_SHORT).show()
-
+            Toast.makeText(this, "Image saved with banner", Toast.LENGTH_SHORT).show()
         }
 
         favoriteButton.setOnClickListener {
-            val sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+            val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
             sharedPreferences.all
             //gets the username of current session.
             val username = sharedPreferences.getString("username", "Guest")
@@ -137,18 +109,18 @@ class FindColorFragment : Fragment() {
                         for (document in documents) {
                             //finds user id
                             val userId = document.id
-                            Toast.makeText(context, userId, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, userId, Toast.LENGTH_SHORT).show()
                             val user = firestore.collection("users").document(userId)
                             val colorAdd = favColor(textName.text.toString().replace("Closest Paint: ",""),selectedColor)
                             //add favorite color.
                             user.update("favoriteColors", FieldValue.arrayUnion(colorAdd))
                                 .addOnSuccessListener {
-                                    Toast.makeText(context, "Succeeded to create", Toast.LENGTH_SHORT)
+                                    Toast.makeText(this, "Succeeded to create", Toast.LENGTH_SHORT)
                                         .show()
                                     favoriteButton.isSelected = true // Change the star icon to filled
                                 }//in case failed to update
                                 .addOnFailureListener { e ->
-                                    Toast.makeText(context, "Failed to create", Toast.LENGTH_SHORT)
+                                    Toast.makeText(this, "Failed to create", Toast.LENGTH_SHORT)
                                         .show()
                                 }
                         }
@@ -165,8 +137,8 @@ class FindColorFragment : Fragment() {
 
         // Load bitmap from byte array or URI with WeakReference
         bitmap = when {
-            imageByteArray != null -> BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray!!.size)
-            imageUri != null -> loadBitmapFromUri(imageUri!!.toUri()) ?: getDefaultBitmap()
+            byteArray != null -> BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+            imageUri != null -> loadBitmapFromUri(Uri.parse(imageUri)) ?: getDefaultBitmap()
             else -> getDefaultBitmap()
         }
 
@@ -174,49 +146,36 @@ class FindColorFragment : Fragment() {
         val weakBitmap = WeakReference(bitmap)
 
         // If the bitmap is null, log the error and set a default image
-        if (this::bitmap.isInitialized && bitmap != null) {
-            imageView.setImageBitmap(bitmap)
-            Log.d("DEBUG", "Bitmap successfully set in imageView")
+        if (this::bitmap.isInitialized) {
+            imageView.setImageBitmap(weakBitmap.get())  // Use the bitmap from the WeakReference
         } else {
-            Log.e("FindColorActivity", "Bitmap is not initialized or is null")
+            Log.e("FindColorActivity", "Error: Bitmap is not initialized properly.")
             imageView.setImageBitmap(getDefaultBitmap())
         }
 
-
-//        changeColorButton.setOnClickListener {
-//            if (imageUri != null) {
-//                parentFragmentManager.beginTransaction()
-//                    .replace(R.id.fragment_container, ColorChangerFragment())
-//                    .addToBackStack(null)
-//                    .commit()
-//                val fragments = FindColorFragment().apply {
-//                    arguments = Bundle().apply {
-//                        putString("image_uri", imageUri.toString())
-//                    }
-//                }
-//            } else {
-//                Log.e("FindColorActivity", "No image URI found to pass")
-//                Toast.makeText(context, "No image selected", Toast.LENGTH_SHORT).show()
-//            }
-//        }
+        changeColorButton.setOnClickListener {
+            if (imageUri != null) {
+                val intent = Intent(this, ColorChangerActivity::class.java)
+                intent.putExtra("image_uri", imageUri.toString()) // pass as string
+                startActivity(intent)
+            } else {
+                Log.e("FindColorActivity", "No image URI found to pass")
+                Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         // image split
         // Avoid crashing dur to high-resolution images. Pass the image along a temporary png file
-//        testButton.setOnClickListener {
-//            //intent is created to navigate from the current activity to ImageSplitActivity
-//            val intent = Intent(this, ImageSplitActivity::class.java)
-//
-//            // Save Bitmap to a temporary file inside the cacheDir on Android
-//            val file = File(cacheDir, "image.png")
-//            file.outputStream().use { outputStream ->
-//                //Bitmap is compressed into a PNG format and written to the file using the output stream.
-//                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-//            }
-//
-//            // Pass file path through intent
-//            intent.putExtra("image", file.absolutePath)
-//            startActivity(intent)
-//        }
+        testButton.setOnClickListener {
+            if (imageUri != null) {
+                val intent = Intent(this, ImageSplitActivity::class.java)
+                intent.putExtra("image_uri", imageUri.toString()) // pass as string
+                startActivity(intent)
+            } else {
+                Log.e("ImageSplitActivity", "No image URI found to pass")
+                Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         imageView.post {
             // bitmap is initialized before finding color and update color strip
@@ -282,22 +241,37 @@ class FindColorFragment : Fragment() {
                         val alpha = Color.alpha(pixel)
                         // update the viewColor background color
                         viewColor.setBackgroundColor(Color.argb(alpha, red, green, blue))
-                        // accessbility mode
+                        saveColor = Color.argb(alpha, red, green, blue)
+
+//                        // accessbility mode
+//                        val index = 15
+//                        val resID = resources.getIdentifier("viewColor$index", "id", packageName)
+//                        val targetView = findViewById<View>(resID)
+//                        val stripTextHex: TextView by lazy { findViewById(R.id.textView3) }
 //                        when {
-//                            SettingsUtil.isProtanomalyEnabled(requireContext()) -> {
+//                            SettingsUtil.isProtanomalyEnabled(this) -> {
 //                                val protanopiaColor = SettingsUtil.hexToProtanomalyHex(red, green, blue)
-//                                accessibility.setBackgroundColor(Color.parseColor(protanopiaColor))
-//                                accessibilityText.text = "Protanomaly (Red-Blind)"
+//                                accessbility.setBackgroundColor(Color.parseColor(protanopiaColor))
+//                                accessbilityText.text = "Protanomaly (Red-Blind)"
+//                                targetView?.setOnClickListener {
+//                                    stripTextHex.text = "Color Strip\nHex: ${protanopiaColor.uppercase()}"
+//                                }
 //                            }
-//                            SettingsUtil.isDeuteranomalyEnabled(requireContext()) -> {
+//                            SettingsUtil.isDeuteranomalyEnabled(this) -> {
 //                                val deuteranomalyColor = SettingsUtil.hexToDeuteranomalyHex(red, green, blue)
-//                                accessibility.setBackgroundColor(Color.parseColor(deuteranomalyColor))
-//                                accessibilityText.text = "Deuteranomaly"
+//                                accessbility.setBackgroundColor(Color.parseColor(deuteranomalyColor))
+//                                accessbilityText.text = "Deuteranomaly"
+//                                targetView?.setOnClickListener {
+//                                    stripTextHex.text = "Color Strip\nHex: ${deuteranomalyColor.uppercase()}"
+//                                }
 //                            }
-//                            SettingsUtil.isTritanomalyEnabled(requireContext()) -> {
+//                            SettingsUtil.isTritanomalyEnabled(this) -> {
 //                                val tritanomalyColor = SettingsUtil.hexToTritanomalyHex(red, green, blue)
-//                                accessibility.setBackgroundColor(Color.parseColor(tritanomalyColor))
-//                                accessibilityText.text = "Tritanomaly"
+//                                accessbility.setBackgroundColor(Color.parseColor(tritanomalyColor))
+//                                accessbilityText.text = "Tritanomaly"
+//                                targetView?.setOnClickListener {
+//                                    stripTextHex.text = "Color Strip\nHex: ${tritanomalyColor.uppercase()}"
+//                                }
 //                            }
 //                        }
 
@@ -311,12 +285,12 @@ class FindColorFragment : Fragment() {
                             val color = Color.argb(alpha, newRed, newGreen, newBlue)
                             // Find corresponding view by ID and set the background color
                             // this avoid manually getting each viewColor by viewColor2 - 10
-                            val resID = resources.getIdentifier("viewColor$i", "id", requireContext().packageName)
-                            view.findViewById<View>(resID)?.setBackgroundColor(color)
-                            view.findViewById<View>(resID)?.setOnClickListener {
-                                val colorStrip = (view.findViewById<View>(resID)?.background as ColorDrawable).color
+                            val resID = resources.getIdentifier("viewColor$i", "id", packageName)
+                            findViewById<View>(resID)?.setBackgroundColor(color)
+                            findViewById<View>(resID)?.setOnClickListener {
+                                val colorStrip = (findViewById<View>(resID)?.background as ColorDrawable).color
                                 // Changed where the text will appear on the screen
-                                val stripTextHex: TextView by lazy { view.findViewById(R.id.textView3) }
+                                val stripTextHex: TextView by lazy { findViewById(R.id.textView3) }
                                 val colorHex = String.format("#%06X", 0xFFFFFF and colorStrip)
                                 stripTextHex.text = "Color Strip\nHex: $colorHex"
                                 // for the popup for color strip
@@ -336,11 +310,11 @@ class FindColorFragment : Fragment() {
 
                             // Find corresponding view by ID and set the background color
                             // this avoid manually getting each viewColor by viewColor2 - 10
-                            val resID = resources.getIdentifier("viewColor$i", "id", requireContext().packageName)
-                            view.findViewById<View>(resID)?.setBackgroundColor(color) //set the background color
-                            view.findViewById<View>(resID)?.setOnClickListener {
-                                val colorStrip = (view.findViewById<View>(resID)?.background as ColorDrawable).color
-                                val stripTextHex: TextView by lazy { view.findViewById(R.id.textView3) }
+                            val resID = resources.getIdentifier("viewColor$i", "id", packageName)
+                            findViewById<View>(resID)?.setBackgroundColor(color) //set the background color
+                            findViewById<View>(resID)?.setOnClickListener {
+                                val colorStrip = (findViewById<View>(resID)?.background as ColorDrawable).color
+                                val stripTextHex: TextView by lazy { findViewById(R.id.textView3) }
                                 val colorHex = String.format("#%06X", 0xFFFFFF and colorStrip)
                                 stripTextHex.text = "Color Strip\nHex: $colorHex"
                                 // for the popup for color strip
@@ -386,7 +360,7 @@ class FindColorFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun searchClosestColor(targetRed: Int, targetGreen: Int, targetBlue: Int) {
         val targetColor = PaintFinder.PaintColor("", "", targetRed, targetGreen, targetBlue)
-        val closestPaint = PaintFinder.findClosestPaint(targetColor, requireContext())
+        val closestPaint = PaintFinder.findClosestPaint(targetColor, this)
         // Setting XML values to correct paint and RGB when found
         if (closestPaint != null) {
             val closestRGB = "(${closestPaint.r}, ${closestPaint.g}, ${closestPaint.b})"
@@ -400,9 +374,9 @@ class FindColorFragment : Fragment() {
 
 
     private fun checkIfFavorited() {
-        val sharedPreferences = requireContext().getSharedPreferences("UserSession", MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
         val username = sharedPreferences.getString("username", "Guest")
-        val favoriteButton = view?.findViewById<ImageButton>(R.id.favoriteButton)
+        val favoriteButton = findViewById<ImageButton>(R.id.favoriteButton)
 
         firestore.collection("users")
             .whereEqualTo("username", username)
@@ -410,12 +384,10 @@ class FindColorFragment : Fragment() {
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
                     for (document in documents) {
-                        val favoriteColors = document.get("favoriteColors") as? List<Map<String, Any>> ?: emptyList()
+                        val favoriteColors = document.get("favoriteColors") as? List<Map<String, Any>> ?: listOf()
                         val isFavorite = favoriteColors.any { it["colorName"] == textName.text.toString() }
 
-                        if (favoriteButton != null) {
-                            favoriteButton.isSelected = isFavorite
-                        }
+                        favoriteButton.isSelected = isFavorite
                     }
                 }
             }
@@ -423,8 +395,9 @@ class FindColorFragment : Fragment() {
 
 
     private fun setupButtonClickListener() {
+        val viewColor = findViewById<View>(R.id.viewColor)
 
-        view?.findViewById<View>(R.id.viewColor)?.setOnClickListener {
+        viewColor.setOnClickListener {
             val colorName = textName.text.toString()
             val rgbText = textViewRGB.text.toString()
 
@@ -433,7 +406,7 @@ class FindColorFragment : Fragment() {
             // Ensure a valid color is selected before proceeding
             if (colorName.contains("No matching paint found") || rgbText.isEmpty()) {
                 Log.e("ERROR", "setupButtonClickListener - No color loaded!")
-                Toast.makeText(context, "No color loaded", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "No color loaded", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -448,35 +421,22 @@ class FindColorFragment : Fragment() {
                 val hexColor = String.format("#%02X%02X%02X", red, green, blue)
 
                 try {
-                    val color = hexColor.toColorInt()
-                    val fragments = PaintInfoFragment().apply {
-                        arguments = Bundle().apply {
-                            putInt("selected_color", color)
-                            putString("color_name", colorName.replace("Closest Paint: ", ""))
-                            putString("color_hex", hexColor)
-                        }
+                    val color = Color.parseColor(hexColor)
+                    val intent = Intent(this, PaintInfoActivity::class.java).apply {
+                        putExtra("selected_color", color)
+                        putExtra("color_name", colorName.replace("Closest Paint: ", ""))
+                        putExtra("color_hex", hexColor)
                     }
 
-                    Log.d(
-                        "DEBUG",
-                        "Starting PaintInfoActivity with colorHex: $hexColor, colorName: ${
-                            colorName.replace(
-                                "Closest Paint: ",
-                                ""
-                            )
-                        }"
-                    )
-                    parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, fragments)
-                        .addToBackStack(null)
-                        .commit()
+                    Log.d("DEBUG", "Starting PaintInfoActivity with colorHex: $hexColor, colorName: ${colorName.replace("Closest Paint: ", "")}")
+                    startActivity(intent)
                 } catch (e: IllegalArgumentException) {
                     Log.e("ERROR", "Invalid hex color format: $hexColor")
-                    Toast.makeText(context, "Invalid color format", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Invalid color format", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 Log.e("ERROR", "RGB format is incorrect: $rgbText")
-                Toast.makeText(context, "Error processing color", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error processing color", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -487,12 +447,12 @@ class FindColorFragment : Fragment() {
     private fun loadBitmapFromUri(uri: Uri): Bitmap? {
         return try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                val source = ImageDecoder.createSource(requireContext().contentResolver, uri)
+                val source = ImageDecoder.createSource(contentResolver, uri)
                 ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
                     decoder.setAllocator(ImageDecoder.ALLOCATOR_SOFTWARE)
                 }
             } else {
-                requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
+                contentResolver.openInputStream(uri)?.use { inputStream ->
                     BitmapFactory.decodeStream(inputStream, null, BitmapFactory.Options().apply {
                         inPreferredConfig = Bitmap.Config.ARGB_8888
                     })
@@ -531,7 +491,7 @@ class FindColorFragment : Fragment() {
     }
 
     private fun saveImageWithBanner(
-        context: FindColorFragment,
+        context: Context,
         originalBitmap: Bitmap,
         paintName: String,
         rgb: String,
@@ -541,18 +501,18 @@ class FindColorFragment : Fragment() {
         val bannerHeight = 400
         val bannerBitmap = Bitmap.createBitmap(originalBitmap.width, bannerHeight, Bitmap.Config.ARGB_8888)
         val bannerCanvas = Canvas(bannerBitmap)
-        bannerCanvas.drawColor(Color.BLACK)
+        bannerCanvas.drawColor(saveColor)
 
         val paint = Paint().apply {
-            color = Color.WHITE
+            color = textColor
             textSize = 80f
             typeface = Typeface.DEFAULT_BOLD
             isAntiAlias = true
         }
 
-        bannerCanvas.drawText("Closest Paint: $paintName", 20f, 60f, paint)
-        bannerCanvas.drawText("RGB: $rgb", 20f, 160f, paint)
-        bannerCanvas.drawText("Hex: $hex", 20f, 260f, paint)
+        bannerCanvas.drawText("$paintName", 20f, 80f, paint)
+        bannerCanvas.drawText("$rgb", 20f, 180f, paint)
+        bannerCanvas.drawText("$hex", 20f, 280f, paint)
 
         // Step 2: Combine the image
         val combinedHeight = bannerHeight + originalBitmap.height
@@ -569,15 +529,17 @@ class FindColorFragment : Fragment() {
             put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DCIM + "/ColorSensor")
         }
 
-        val imageUri = requireContext().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+        val imageUri = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
 
         imageUri?.let { uri ->
-            requireContext().contentResolver.openOutputStream(uri)?.use { outputStream ->
+            context.contentResolver.openOutputStream(uri)?.use { outputStream ->
                 combinedBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
             }
-            Toast.makeText(requireContext(), "Image saved to DCIM/ColorSensor", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Image saved to DCIM/ColorSensor", Toast.LENGTH_LONG).show()
         } ?: run {
-            Toast.makeText(requireContext(), "Failed to save image", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Failed to save image", Toast.LENGTH_LONG).show()
         }
     }
+
+
 }
