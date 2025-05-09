@@ -47,7 +47,7 @@ class HomeFragment : Fragment() {
         // Set a click listener for the Shop button
         goToShopButton.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, LoginFragment())
+                .replace(R.id.fragment_container, ShopFragment())
                 .addToBackStack(null)
                 .commit()
         }
