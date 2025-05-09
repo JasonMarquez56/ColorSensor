@@ -21,8 +21,6 @@ Android Emulator
 Android Emulator hypervisor driver (installer)
 Android SDK Platform-Tools
 
-Current some files may be a bit outdated, but it is working. If issues are ran into, versions can be updated for build.gradle (app and root) and settings.gradle
-
 
 # Project Setup Guide – Kotlin Jetpack Compose (API 35, Java 21)
 
