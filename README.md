@@ -43,7 +43,7 @@ Before starting, make sure the following are installed on the machine:
 
 ---
 
-## 🔧 Environment Setup
+## Environment Setup
 
 ### 1. Set JAVA_HOME (Java 21):
 
