@@ -26,6 +26,8 @@ Current some files may be a bit outdated, but it is working. If issues are ran i
 
 # Project Setup Guide – Kotlin Jetpack Compose (API 35, Java 21)
 
+[Tutorial Video](https://youtu.be/JUsXiWSVtOs)
+
 ## Prerequisites
 Before starting, make sure the following are installed on the machine:
 
