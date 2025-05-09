@@ -179,7 +179,6 @@ class ShopFragment : Fragment() {
                                 results.addView(textView)
                                 logos.addView(logo)
                             }
-                            //}
                         }
                     }
                 }
@@ -188,18 +187,7 @@ class ShopFragment : Fragment() {
             }
         }.start()
     }
-    //    private fun sherwin(name: String, callback: (Boolean) -> Unit) {
-//        firestore.collection("finalizedPaints")
-//            .whereEqualTo("brand", "Sherwin Williams")
-//            .whereEqualTo("name", name)
-//            .get()
-//            .addOnSuccessListener { documents ->
-//                callback(!documents.isEmpty)
-//            }
-//            .addOnFailureListener {
-//                callback(false)
-//            }
-//    }
+
     @SuppressLint("InflateParams")
     private fun showPopup(searchColors: EditText) {
         // Inflate the popup layout

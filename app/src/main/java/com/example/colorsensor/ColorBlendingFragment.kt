@@ -47,10 +47,9 @@ class ColorBlendingFragment : Fragment(), ColorPickerDialogFragment.OnColorSelec
 
         // Define the click listener for color blocks
         val clickListener = View.OnClickListener { view ->
-            //selectedBlock = view
-            //val dialog = ColorPickerDialogFragment()
-            //dialog.setTargetFragment(this, 0)  // Make sure to set the target fragment
-            //dialog.show(parentFragmentManager, "ColorPickerDialog")
+            selectedBlock = view
+            val dialog = ColorPickerDialogFragment()
+            dialog.show(childFragmentManager, "ColorPickerDialog")
         }
 
         // Set click listeners for color blocks

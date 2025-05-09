@@ -25,6 +25,7 @@ class ColorPickerDialogFragment : DialogFragment() {
         val colorPicker: ColorPickerView = view.findViewById(R.id.colorPickerView)
         val hexInput: EditText = view.findViewById(R.id.hexInput)
         val colorPreview: View = view.findViewById(R.id.colorPreview)
+        val listener = parentFragment as? OnColorSelectedListener
 
         // Function to update preview based on color
         fun updatePreview(color: Int) {
