@@ -80,7 +80,7 @@ export PATH=$JAVA_HOME/bin:$PATH
 
 Using **Git**:
 ```bash
-git clone https://github.com/your-org/your-project.git
+git clone [https://github.com/your-org/your-project.git](https://github.com/daveshepherdGI/Color-Sensor.git)
 cd your-project
 ```
 
