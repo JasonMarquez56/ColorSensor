@@ -183,22 +183,23 @@ class FindColorFragment : Fragment() {
         }
 
 
-//        changeColorButton.setOnClickListener {
-//            if (imageUri != null) {
-//                parentFragmentManager.beginTransaction()
-//                    .replace(R.id.fragment_container, ColorChangerFragment())
-//                    .addToBackStack(null)
-//                    .commit()
+        changeColorButton.setOnClickListener {
+            if (imageUri != null) {
+                val fragment = ColorChangerFragment.newInstance(imageUri.toString())
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit()
 //                val fragments = FindColorFragment().apply {
 //                    arguments = Bundle().apply {
 //                        putString("image_uri", imageUri.toString())
 //                    }
 //                }
-//            } else {
-//                Log.e("FindColorActivity", "No image URI found to pass")
-//                Toast.makeText(context, "No image selected", Toast.LENGTH_SHORT).show()
-//            }
-//        }
+            } else {
+                Log.e("FindColorActivity", "No image URI found to pass")
+                Toast.makeText(context, "No image selected", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         // image split
         // Avoid crashing dur to high-resolution images. Pass the image along a temporary png file
