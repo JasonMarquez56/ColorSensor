@@ -30,6 +30,7 @@ import com.example.colorsensor.RegisterActivity.favColor
 // import for popupWindow
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.widget.LinearLayout
 import android.widget.PopupWindow
@@ -44,6 +45,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.core.net.toUri
 import androidx.core.graphics.toColorInt
+import java.io.File
 
 
 class FindColorFragment : Fragment() {
@@ -190,11 +192,6 @@ class FindColorFragment : Fragment() {
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
                     .commit()
-//                val fragments = FindColorFragment().apply {
-//                    arguments = Bundle().apply {
-//                        putString("image_uri", imageUri.toString())
-//                    }
-//                }
             } else {
                 Log.e("FindColorActivity", "No image URI found to pass")
                 Toast.makeText(context, "No image selected", Toast.LENGTH_SHORT).show()
@@ -203,21 +200,18 @@ class FindColorFragment : Fragment() {
 
         // image split
         // Avoid crashing dur to high-resolution images. Pass the image along a temporary png file
-//        testButton.setOnClickListener {
-//            //intent is created to navigate from the current activity to ImageSplitActivity
-//            val intent = Intent(this, ImageSplitActivity::class.java)
-//
-//            // Save Bitmap to a temporary file inside the cacheDir on Android
-//            val file = File(cacheDir, "image.png")
-//            file.outputStream().use { outputStream ->
-//                //Bitmap is compressed into a PNG format and written to the file using the output stream.
-//                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-//            }
-//
-//            // Pass file path through intent
-//            intent.putExtra("image", file.absolutePath)
-//            startActivity(intent)
-//        }
+        testButton.setOnClickListener {
+            if (imageUri != null) {
+                val fragment = ImageSplitFragment.newInstance(imageUri.toString())
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit()
+            } else {
+                Log.e("ImageSplitActivity", "No image URI found to pass")
+                Toast.makeText(requireContext(), "No image selected", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         imageView.post {
             // bitmap is initialized before finding color and update color strip
@@ -551,9 +545,9 @@ class FindColorFragment : Fragment() {
             isAntiAlias = true
         }
 
-        bannerCanvas.drawText("Closest Paint: $paintName", 20f, 60f, paint)
-        bannerCanvas.drawText("RGB: $rgb", 20f, 160f, paint)
-        bannerCanvas.drawText("Hex: $hex", 20f, 260f, paint)
+        bannerCanvas.drawText("$paintName", 20f, 60f, paint)
+        bannerCanvas.drawText("$rgb", 20f, 160f, paint)
+        bannerCanvas.drawText("$hex", 20f, 260f, paint)
 
         // Step 2: Combine the image
         val combinedHeight = bannerHeight + originalBitmap.height

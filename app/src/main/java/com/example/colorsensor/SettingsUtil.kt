@@ -2,6 +2,7 @@ package com.example.colorsensor
 
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -110,6 +111,15 @@ object SettingsUtil {
     }
 
     fun navigationBar(activity: HomeActivity) {
+
+        val decorView = activity.window?.decorView ?: return
+        decorView.systemUiVisibility = (
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        or View.SYSTEM_UI_FLAG_FULLSCREEN
+                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                )
         val bottomNavigationView = activity.findViewById<BottomNavigationView>(R.id.bottomNavigationView3)
 
         val iconMap = mapOf(

@@ -83,8 +83,9 @@ class ProfileFavoriteColorsFragment : Fragment() {
 
     private fun displayColors(favColorContainer : LinearLayout,favColors:MutableList<favColor>){
         favColorContainer.removeAllViews()
+        val context = context ?: return
         for (color in favColors){
-            val textView = TextView(requireContext())
+            val textView = TextView(context)
             textView.text = color.name
 
             val red = color.rgb.r
