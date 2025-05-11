@@ -61,7 +61,7 @@ import java.util.Stack
 import ColorPickerDialogFragment
 
 
-class ImageSplitFragment : Fragment() {
+class ImageSplitFragment : Fragment(), ColorPickerDialogFragment.OnColorSelectedListener {
 
     private lateinit var rgbValueText: TextView
     private lateinit var imageView: ImageView
@@ -529,28 +529,28 @@ class ImageSplitFragment : Fragment() {
         }
     }
 
-    fun onColorSelected(color: Int) {
-        selectedColor = color
-        colorBox.setBackgroundColor(color)
-
-        // Collecting RGB values of selected color
-        val r = Color.red(color)
-        val g = Color.green(color)
-        val b = Color.blue(color)
-
-        // Finding closest matching paint in the database
-        val targetColor = PaintFinder.PaintColor("Selected", "Current", r, g, b)
-        val closestPaint = PaintFinder.findClosestPaint(targetColor, requireContext())
-
-        rgbValueText.text = if (closestPaint != null) {
-            "Closest Paint: ${closestPaint.name}"
-        } else {
-            "No close match found"
-        }
-
-        updateColorInfo(color, colorBox)
-        colorBox.setBackgroundColor(color)
-    }
+//    fun onColorSelected(color: Int) {
+//        selectedColor = color
+//        colorBox.setBackgroundColor(color)
+//
+//        // Collecting RGB values of selected color
+//        val r = Color.red(color)
+//        val g = Color.green(color)
+//        val b = Color.blue(color)
+//
+//        // Finding closest matching paint in the database
+//        val targetColor = PaintFinder.PaintColor("Selected", "Current", r, g, b)
+//        val closestPaint = PaintFinder.findClosestPaint(targetColor, requireContext())
+//
+//        rgbValueText.text = if (closestPaint != null) {
+//            "Closest Paint: ${closestPaint.name}"
+//        } else {
+//            "No close match found"
+//        }
+//
+//        updateColorInfo(color, colorBox)
+//        colorBox.setBackgroundColor(color)
+//    }
 
 
     private fun scaleBitmap(bitmap: Bitmap, maxWidth: Int, maxHeight: Int): Bitmap {
@@ -640,5 +640,16 @@ class ImageSplitFragment : Fragment() {
                 startActivity(intent)
             }
         }
+    }
+
+    override fun onColorSelected(color: Int) {
+        selectedColor = color
+        requireView().findViewById<View>(R.id.colorBox).setBackgroundColor(color)
+
+
+        val r = Color.red(color)
+        val g = Color.green(color)
+        val b = Color.blue(color)
+        requireView().findViewById<TextView>(R.id.rgbValueText).text = "Selected: RGB($r, $g, $b)"
     }
 }
