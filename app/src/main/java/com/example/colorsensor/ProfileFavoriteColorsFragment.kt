@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import com.example.colorsensor.RegisterActivity.RGB
 import com.example.colorsensor.RegisterActivity.favColor
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FieldValue
@@ -34,6 +35,9 @@ class ProfileFavoriteColorsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Initialize the navigation bar
+        //navigationBar()
 
         // Find Views
         val favColorContainer: LinearLayout = view.findViewById(R.id.colors)
@@ -104,6 +108,61 @@ class ProfileFavoriteColorsFragment : Fragment() {
 
             // Add to LinearLayout
             favColorContainer.addView(textView)
+        }
+    }
+
+    private fun navigationBar() {
+        // Navigation bar
+        val bottomNavigationView = view?.findViewById<BottomNavigationView>(R.id.bottomNavigationView3)
+
+        // Map default and selected icons
+        val iconMap = mapOf(
+            R.id.profile to Pair(R.drawable.account_outline, R.drawable.account),
+            R.id.home to Pair(R.drawable.home_outline, R.drawable.home),
+            R.id.settings to Pair(R.drawable.cog_outline, R.drawable.cog)
+        )
+
+        // Track currently selected item
+        var selectedItemId: Int? = null
+
+        bottomNavigationView?.setOnNavigationItemSelectedListener { item ->
+
+            // Reset previous selection
+            selectedItemId?.let { prevId ->
+                bottomNavigationView.menu.findItem(prevId).setIcon(iconMap[prevId]?.first ?: R.drawable.home)
+            }
+
+            // Change selected icon
+            item.setIcon(iconMap[item.itemId]?.second ?: R.drawable.home)
+            selectedItemId = item.itemId
+
+            when (item.itemId) {
+                R.id.profile -> {
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, ProfileFragment())
+                        .addToBackStack(null)
+                        .commit()
+                    true
+                }
+
+                R.id.home -> {
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, HomeFragment())
+                        .addToBackStack(null)
+                        .commit()
+                    true
+                }
+
+                R.id.settings -> {
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, LandingFragment())
+                        .addToBackStack(null)
+                        .commit()
+                    true
+                }
+
+                else -> false
+            }
         }
     }
 }

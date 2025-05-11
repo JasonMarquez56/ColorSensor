@@ -37,17 +37,17 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitCenter"
-            android:contentDescription="Image to change color"/>
+            android:contentDescription="Image to change color"
+            android:scaleType="fitCenter" />
 
         <!-- Divider line in the center of the ImageView -->
         <View
             android:id="@+id/verticalDivider"
             android:layout_width="2dp"
             android:layout_height="match_parent"
-            android:visibility="visible"
             android:layout_gravity="center"
-            android:background="#000000" />
+            android:background="#000000"
+            android:visibility="visible" />
 
         <!-- ProgressBar to overlay over the ImageView -->
         <ProgressBar
@@ -55,8 +55,8 @@
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:visibility="gone" />
     </FrameLayout>
 
     <!-- Color Picker View to allow the user to choose a color -->
