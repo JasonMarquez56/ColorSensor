@@ -1,5 +1,6 @@
 package com.example.colorsensor
 
+import PaintInfoFragment
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
@@ -22,7 +23,6 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import com.example.colorsensor.PaintInfoActivity
 import com.example.colorsensor.R
 import com.example.colorsensor.utils.PaintFinder
 
@@ -101,7 +101,7 @@ class FragmentLiveFeed : Fragment() {
                                 val color = Color.parseColor(hexValue)
 
                                 // Create an Intent to start the PaintInfoActivity
-                                val intent = Intent(requireActivity(), PaintInfoActivity::class.java).apply {
+                                val intent = Intent(requireActivity(), PaintInfoFragment::class.java).apply {
                                     // Pass the RGB color (as hex), color name, and hex value using putExtra
                                     putExtra("selected_color", color)
                                     putExtra("color_name", colorName)

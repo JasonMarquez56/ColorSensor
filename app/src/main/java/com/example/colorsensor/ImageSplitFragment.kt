@@ -25,8 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.io.IOException
 import java.lang.ref.WeakReference
 import com.example.colorsensor.utils.PaintFinder
-import com.example.colorsensor.RegisterActivity.RGB
-import com.example.colorsensor.RegisterActivity.favColor
 // import for popupWindow
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
@@ -124,7 +122,7 @@ class ImageSplitFragment : Fragment(), ColorPickerDialogFragment.OnColorSelected
         divider = requireView().findViewById(R.id.verticalDivider)
         val spinner = requireView().findViewById<ProgressBar>(R.id.loadingSpinner)
         // navigation bar
-        SettingsUtil.navigationBar(HomeActivity())
+        //SettingsUtil.navigationBar(HomeActivity())
 
         // Retrieve the image URI from intent (passed from ColorFinder)
         arguments?.let {
@@ -633,7 +631,7 @@ class ImageSplitFragment : Fragment(), ColorPickerDialogFragment.OnColorSelected
 
             // Make the box clickable and route to PaintInfoActivity
             colorBox.setOnClickListener {
-                val intent = Intent(requireContext(), PaintInfoActivity::class.java)
+                val intent = Intent(requireContext(), PaintInfoFragment::class.java)
                 // Pass the paint color and name
                 intent.putExtra("selected_color", closestPaintColor)
                 intent.putExtra("color_name", closestPaint.name)

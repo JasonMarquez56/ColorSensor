@@ -25,8 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.io.IOException
 import java.lang.ref.WeakReference
 import com.example.colorsensor.utils.PaintFinder
-import com.example.colorsensor.RegisterActivity.RGB
-import com.example.colorsensor.RegisterActivity.favColor
 // import for popupWindow
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
@@ -45,6 +43,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.core.net.toUri
 import androidx.core.graphics.toColorInt
+import com.example.colorsensor.RegisterFragment.RGB
+import com.example.colorsensor.RegisterFragment.favColor
 import java.io.File
 
 

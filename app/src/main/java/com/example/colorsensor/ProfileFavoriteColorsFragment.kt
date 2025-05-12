@@ -10,12 +10,12 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
-import com.example.colorsensor.RegisterActivity.RGB
-import com.example.colorsensor.RegisterActivity.favColor
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FieldValue
+import com.example.colorsensor.RegisterFragment.RGB
+import com.example.colorsensor.RegisterFragment.favColor
 
 class ProfileFavoriteColorsFragment : Fragment() {
     override fun onCreateView(

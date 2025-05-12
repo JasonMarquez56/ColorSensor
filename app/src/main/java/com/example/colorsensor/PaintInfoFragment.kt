@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
-import com.example.colorsensor.PaintInfoActivity
 import com.example.colorsensor.R
 import com.example.colorsensor.ShadeCompareFragment
 import com.example.colorsensor.utils.PaintFinder
@@ -128,8 +127,8 @@ class PaintInfoFragment : Fragment() {
         // Display a back button
         val backButton = view.findViewById<ImageView>(R.id.backButton)
         backButton.setOnClickListener {
-            for (instance in PaintInfoActivity.instances) {
-                instance.finish() // Close each instance
+            for (instance in PaintInfoFragment.instances) {
+                //instance.finish() // Close each instance
             }
         }
     }

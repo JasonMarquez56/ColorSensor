@@ -12,8 +12,6 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.example.colorsensor.RegisterActivity.Companion.hashPassword
-import com.example.colorsensor.RegisterActivity.favColor
 import com.google.firebase.firestore.FirebaseFirestore
 import java.security.MessageDigest
 

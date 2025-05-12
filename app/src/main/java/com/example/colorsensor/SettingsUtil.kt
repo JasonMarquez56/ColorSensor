@@ -95,68 +95,68 @@ object SettingsUtil {
     }
 
 
-    fun isProtanomalyEnabled(context: ColorBlendingActivity): Boolean {
+    fun isProtanomalyEnabled(context: Context): Boolean {
         val prefs = context.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
         return prefs.getBoolean("protanomaly_enabled", false)
     }
 
-    fun isDeuteranomalyEnabled(context: ColorBlendingActivity): Boolean {
+    fun isDeuteranomalyEnabled(context: Context): Boolean {
         val prefs = context.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
         return prefs.getBoolean("deuteranomaly_enabled", false)
     }
 
-    fun isTritanomalyEnabled(context: ColorBlendingActivity): Boolean {
+    fun isTritanomalyEnabled(context: Context): Boolean {
         val prefs = context.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
         return prefs.getBoolean("tritanomaly_enabled", false)
     }
 
-    fun navigationBar(activity: HomeActivity) {
-
-        val decorView = activity.window?.decorView ?: return
-        decorView.systemUiVisibility = (
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        or View.SYSTEM_UI_FLAG_FULLSCREEN
-                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                )
-        val bottomNavigationView = activity.findViewById<BottomNavigationView>(R.id.bottomNavigationView3)
-
-        val iconMap = mapOf(
-            R.id.profile to Pair(R.drawable.account_outline, R.drawable.account),
-            R.id.home to Pair(R.drawable.home_outline, R.drawable.home),
-            R.id.settings to Pair(R.drawable.cog_outline, R.drawable.cog)
-        )
-
-        var selectedItemId: Int? = null
-
-        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-
-            selectedItemId?.let { prevId ->
-                bottomNavigationView.menu.findItem(prevId).setIcon(iconMap[prevId]?.first ?: R.drawable.home)
-            }
-
-            item.setIcon(iconMap[item.itemId]?.second ?: R.drawable.home)
-            selectedItemId = item.itemId
-
-            when (item.itemId) {
-                R.id.profile -> {
-                    val intent = Intent(activity, ProfileActivity::class.java)
-                    activity.startActivity(intent)
-                    true
-                }
-                R.id.home -> {
-                    val intent = Intent(activity, HomeActivity::class.java)
-                    activity.startActivity(intent)
-                    true
-                }
-                R.id.settings -> {
-                    val intent = Intent(activity, SettingActivity::class.java)
-                    activity.startActivity(intent)
-                    true
-                }
-                else -> false
-            }
-        }
-    }
+//    fun navigationBar(activity: HomeActivity) {
+//
+//        val decorView = activity.window?.decorView ?: return
+//        decorView.systemUiVisibility = (
+//                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                        or View.SYSTEM_UI_FLAG_FULLSCREEN
+//                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+//                        or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//                )
+//        val bottomNavigationView = activity.findViewById<BottomNavigationView>(R.id.bottomNavigationView3)
+//
+//        val iconMap = mapOf(
+//            R.id.profile to Pair(R.drawable.account_outline, R.drawable.account),
+//            R.id.home to Pair(R.drawable.home_outline, R.drawable.home),
+//            R.id.settings to Pair(R.drawable.cog_outline, R.drawable.cog)
+//        )
+//
+//        var selectedItemId: Int? = null
+//
+//        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+//
+//            selectedItemId?.let { prevId ->
+//                bottomNavigationView.menu.findItem(prevId).setIcon(iconMap[prevId]?.first ?: R.drawable.home)
+//            }
+//
+//            item.setIcon(iconMap[item.itemId]?.second ?: R.drawable.home)
+//            selectedItemId = item.itemId
+//
+//            when (item.itemId) {
+//                R.id.profile -> {
+//                    val intent = Intent(activity, ProfileActivity::class.java)
+//                    activity.startActivity(intent)
+//                    true
+//                }
+//                R.id.home -> {
+//                    val intent = Intent(activity, HomeActivity::class.java)
+//                    activity.startActivity(intent)
+//                    true
+//                }
+//                R.id.settings -> {
+//                    val intent = Intent(activity, SettingActivity::class.java)
+//                    activity.startActivity(intent)
+//                    true
+//                }
+//                else -> false
+//            }
+//        }
+//    }
 }

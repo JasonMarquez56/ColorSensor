@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import ColorPickerDialogFragment
+import PaintInfoFragment
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
@@ -439,7 +440,7 @@ class ColorChangerActivity : AppCompatActivity(), ColorPickerDialogFragment.OnCo
 
             // Make the box clickable and route to PaintInfoActivity
             colorBox.setOnClickListener {
-                val intent = Intent(this, PaintInfoActivity::class.java)
+                val intent = Intent(this, PaintInfoFragment::class.java)
                 // Pass the paint color and name
                 intent.putExtra("selected_color", closestPaintColor)
                 intent.putExtra("color_name", closestPaint.name)

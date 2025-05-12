@@ -22,8 +22,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity.LAYOUT_INFLATER_SERVICE
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
-import com.example.colorsensor.RegisterActivity.RGB
-import com.example.colorsensor.RegisterActivity.favColor
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import okhttp3.OkHttpClient
@@ -31,6 +29,8 @@ import okhttp3.Request
 import org.json.JSONObject
 import java.net.URL
 import androidx.core.net.toUri
+import com.example.colorsensor.RegisterFragment.RGB
+import com.example.colorsensor.RegisterFragment.favColor
 
 class ShopFragment : Fragment() {
     override fun onCreateView(
