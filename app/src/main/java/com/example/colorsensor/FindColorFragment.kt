@@ -66,10 +66,10 @@ class FindColorFragment : Fragment() {
             ?: throw IllegalStateException("View not found")
     }
 
-    private val accessibility: View by lazy {
-        view?.findViewById<View>(R.id.viewColor15)
-            ?: throw IllegalStateException("View not found")
-    }
+//    private val accessibility: View by lazy {
+//        view?.findViewById<View>(R.id.viewColor15)
+//            ?: throw IllegalStateException("View not found")
+//    }
 
     private val accessibilityText: TextView by lazy {
         view?.findViewById<TextView>(R.id.textView13)
