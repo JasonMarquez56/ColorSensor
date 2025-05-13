@@ -120,7 +120,8 @@ class HomeFragment : Fragment() {
         // Track currently selected item
         var selectedItemId: Int? = null
 
-        bottomNavigationView?.setOnNavigationItemSelectedListener { item ->
+        bottomNavigationView?.setOnItemSelectedListener { item ->
+
 
             // Reset previous selection
             selectedItemId?.let { prevId ->

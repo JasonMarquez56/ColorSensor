@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.colorsensor.utils.PaintFinder
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class ColorBlendingFragment : Fragment(), ColorPickerDialogFragment.OnColorSelectedListener {
 
@@ -28,8 +29,7 @@ class ColorBlendingFragment : Fragment(), ColorPickerDialogFragment.OnColorSelec
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        //SettingsUtil.navigationBar(ColorBlendingActivity())
+        navigationBar()
 
         val color1 = view.findViewById<View>(R.id.blendColor1)
         val color2 = view.findViewById<View>(R.id.blendColor2)
@@ -119,5 +119,61 @@ class ColorBlendingFragment : Fragment(), ColorPickerDialogFragment.OnColorSelec
         val b = (Color.blue(color1) + Color.blue(color2)) / 2
 
         return Color.rgb(r, g, b)
+    }
+
+    private fun navigationBar() {
+        // Navigation bar
+        val bottomNavigationView = view?.findViewById<BottomNavigationView>(R.id.bottomNavigationView3)
+
+        // Map default and selected icons
+        val iconMap = mapOf(
+            R.id.profile to Pair(R.drawable.account_outline, R.drawable.account),
+            R.id.home to Pair(R.drawable.home_outline, R.drawable.home),
+            R.id.settings to Pair(R.drawable.cog_outline, R.drawable.cog)
+        )
+
+        // Track currently selected item
+        var selectedItemId: Int? = null
+
+        bottomNavigationView?.setOnItemSelectedListener { item ->
+
+
+            // Reset previous selection
+            selectedItemId?.let { prevId ->
+                bottomNavigationView.menu.findItem(prevId).setIcon(iconMap[prevId]?.first ?: R.drawable.home)
+            }
+
+            // Change selected icon
+            item.setIcon(iconMap[item.itemId]?.second ?: R.drawable.home)
+            selectedItemId = item.itemId
+
+            when (item.itemId) {
+                R.id.profile -> {
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, ProfileFragment())
+                        .addToBackStack(null)
+                        .commit()
+                    true
+                }
+
+                R.id.home -> {
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, HomeFragment())
+                        .addToBackStack(null)
+                        .commit()
+                    true
+                }
+
+                R.id.settings -> {
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, LandingFragment())
+                        .addToBackStack(null)
+                        .commit()
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 }

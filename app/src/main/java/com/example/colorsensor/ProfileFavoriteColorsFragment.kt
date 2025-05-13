@@ -37,7 +37,7 @@ class ProfileFavoriteColorsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Initialize the navigation bar
-        //navigationBar()
+        navigationBar()
 
         // Find Views
         val favColorContainer: LinearLayout = view.findViewById(R.id.colors)

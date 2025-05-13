@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.random.Random
 import androidx.core.graphics.toColorInt
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class PopularColorFragment : Fragment() {
     private var magnifier: Magnifier? = null
@@ -31,6 +32,7 @@ class PopularColorFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.fragment_popular_color, container, false)
+        navigationBar()
 
         imageView = view.findViewById(R.id.imageView2)
         hexMessage = view.findViewById(R.id.textView9)
@@ -55,9 +57,15 @@ class PopularColorFragment : Fragment() {
             true
         }
 
-        loadPopularColors(view)
 
+
+        loadPopularColors(view)
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        navigationBar()
     }
 
     private fun loadPopularColors(root: View) {
@@ -170,5 +178,61 @@ class PopularColorFragment : Fragment() {
         }
 
         return mutableBitmap
+    }
+
+    private fun navigationBar() {
+        // Navigation bar
+        val bottomNavigationView = view?.findViewById<BottomNavigationView>(R.id.bottomNavigationView3)
+
+        // Map default and selected icons
+        val iconMap = mapOf(
+            R.id.profile to Pair(R.drawable.account_outline, R.drawable.account),
+            R.id.home to Pair(R.drawable.home_outline, R.drawable.home),
+            R.id.settings to Pair(R.drawable.cog_outline, R.drawable.cog)
+        )
+
+        // Track currently selected item
+        var selectedItemId: Int? = null
+
+        bottomNavigationView?.setOnItemSelectedListener { item ->
+
+
+            // Reset previous selection
+            selectedItemId?.let { prevId ->
+                bottomNavigationView.menu.findItem(prevId).setIcon(iconMap[prevId]?.first ?: R.drawable.home)
+            }
+
+            // Change selected icon
+            item.setIcon(iconMap[item.itemId]?.second ?: R.drawable.home)
+            selectedItemId = item.itemId
+
+            when (item.itemId) {
+                R.id.profile -> {
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, ProfileFragment())
+                        .addToBackStack(null)
+                        .commit()
+                    true
+                }
+
+                R.id.home -> {
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, HomeFragment())
+                        .addToBackStack(null)
+                        .commit()
+                    true
+                }
+
+                R.id.settings -> {
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, LandingFragment())
+                        .addToBackStack(null)
+                        .commit()
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 }

@@ -5,6 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        app:itemIconTint="@color/white"
+        app:itemRippleColor="@color/white"
+        app:itemTextColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav" />
+
     <EditText
         android:id="@+id/searchColors"
         android:layout_width="320dp"
@@ -24,16 +37,17 @@
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.134" />
+        app:layout_constraintVertical_bias="0.107" />
 
     <Button
         android:id="@+id/favoriteButton"
         android:layout_width="142dp"
         android:layout_height="63dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginBottom="140dp"
+        android:layout_marginBottom="52dp"
         android:text="Favorite"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
@@ -57,10 +71,10 @@
         android:layout_height="356dp"
         app:layout_constraintBottom_toTopOf="@+id/favoriteButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.407"
+        app:layout_constraintStart_toEndOf="@+id/Images"
         app:layout_constraintTop_toBottomOf="@+id/searchColors"
-        app:layout_constraintVertical_bias="0.216">
+        app:layout_constraintVertical_bias="0.41">
 
         <!--        <androidx.constraintlayout.widget.ConstraintLayout-->
         <!--            android:layout_width="match_parent"-->
@@ -152,10 +166,10 @@
         android:layout_height="356dp"
         app:layout_constraintBottom_toTopOf="@+id/favoriteButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.121"
+        app:layout_constraintHorizontal_bias="0.037"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchColors"
-        app:layout_constraintVertical_bias="0.216">
+        app:layout_constraintVertical_bias="0.41">
 
         <!--        <androidx.constraintlayout.widget.ConstraintLayout-->
         <!--            android:layout_width="match_parent"-->

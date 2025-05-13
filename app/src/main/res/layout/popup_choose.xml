@@ -42,6 +42,6 @@
         android:text="Close"
         android:textAllCaps="false"
         android:background="@drawable/rounded_button"
-        android:textColor="@android:color/white"
+        android:textColor="@color/black"
         android:layout_marginTop="16dp" />
 </LinearLayout>
