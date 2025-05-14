@@ -40,6 +40,7 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Environment
 import android.provider.MediaStore
+import androidx.core.content.FileProvider
 import java.io.File
 import java.io.FileOutputStream
 
@@ -87,6 +88,7 @@ class FindColorActivity : AppCompatActivity() {
         val testButton = findViewById<Button>(R.id.button27)
         val saveButton = findViewById<Button>(R.id.saveColorButton)
         val favoriteButton = findViewById<ImageButton>(R.id.favoriteButton)
+        val shareButton = findViewById<ImageButton>(R.id.shareButton)
         changeColorButton = findViewById(R.id.changeColorButton)
         firestore = FirebaseFirestore.getInstance()
 
@@ -95,6 +97,37 @@ class FindColorActivity : AppCompatActivity() {
             val originalBitmap = bitmap
             saveImageWithBanner(this, originalBitmap, textName.text.toString(), textRGB.text.toString(), textHex.text.toString())
             Toast.makeText(this, "Image saved with banner", Toast.LENGTH_SHORT).show()
+        }
+
+
+        shareButton.setOnClickListener {
+            val imageFile = File(cacheDir, "shared_image.png")
+
+            // Replace this with your actual bitmap
+            val bitmap = bitmap  // e.g., from ImageView or generated
+
+            // Save bitmap to cache file
+            FileOutputStream(imageFile).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+            }
+
+            // Get content URI with FileProvider (secure sharing)
+            val imageUri = FileProvider.getUriForFile(
+                this,
+                "${packageName}.provider",
+                imageFile
+            )
+
+            // Create share intent
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "image/*"
+                putExtra(Intent.EXTRA_STREAM, imageUri)
+                putExtra(Intent.EXTRA_TEXT, "Check out this color I found!")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+
+            // Launch chooser
+            startActivity(Intent.createChooser(shareIntent, "Share with"))
         }
 
         favoriteButton.setOnClickListener {

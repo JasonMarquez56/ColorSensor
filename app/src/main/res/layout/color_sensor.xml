@@ -117,6 +117,19 @@ on the imageview and the app will display information-->
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.146" />
 
+    <ImageButton
+        android:id="@+id/shareButton"
+        android:layout_width="31dp"
+        android:layout_height="22dp"
+        android:background="@drawable/share_24"
+        android:backgroundTint="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/viewColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.871"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.184" />
+
     <Button
         android:id="@+id/changeColorButton"
         android:layout_width="wrap_content"
