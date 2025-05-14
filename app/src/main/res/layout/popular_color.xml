@@ -27,16 +27,17 @@ favorite color and display on a wall-->
         app:menu="@menu/bottom_nav" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="135dp"
         android:layout_height="114dp"
         android:layout_marginTop="249dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.809"
-        app:layout_constraintStart_toEndOf="@+id/gridLayout"
+        app:layout_constraintHorizontal_bias="0.127"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.777">
 
         <View
             android:id="@+id/viewColor11"
@@ -46,7 +47,7 @@ favorite color and display on a wall-->
 
         <TextView
             android:id="@+id/textView9"
-            android:layout_width="146dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Hex:" />
@@ -66,10 +67,10 @@ favorite color and display on a wall-->
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.809"
-        app:layout_constraintStart_toEndOf="@+id/gridLayout"
+        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout"
         app:layout_constraintTop_toTopOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.688">
 
         <View
             android:id="@+id/viewColor12"
@@ -79,7 +80,7 @@ favorite color and display on a wall-->
 
         <TextView
             android:id="@+id/textViewAccessbility"
-            android:layout_width="146dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="" />
@@ -103,10 +104,10 @@ favorite color and display on a wall-->
         android:rowCount="5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.022">
 
         <!-- Creating 25 Views inside the Grid -->
         <Button
@@ -287,25 +288,10 @@ favorite color and display on a wall-->
         <!-- Repeat 25 times for a full 5x5 grid -->
     </GridLayout>
 
-    <TextView
-        android:id="@+id/textView10"
-        android:layout_width="296dp"
-        android:layout_height="63dp"
-        android:text="Popular Color"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        android:textSize="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.217"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gridLayout"
-        app:layout_constraintVertical_bias="0.0" />
-
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="424dp"
-        android:layout_height="233dp"
+        android:layout_width="395dp"
+        android:layout_height="230dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.538"
@@ -315,60 +301,13 @@ favorite color and display on a wall-->
         app:srcCompat="@drawable/blank_wall" />
     <!--empty button-->
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Magnifier"
-        android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.993"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gridLayout"
-        app:layout_constraintVertical_bias="0.0"
-        android:backgroundTint="#52b6de"/>
-
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="324dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="65dp"
-        android:layout_marginBottom="108dp"
-        android:text="Favorite colors among our users and our recommendations."
-        android:textColor="@color/black"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.287"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView10"
-        app:layout_constraintVertical_bias="0.0" />
-
     <ImageView
         android:id="@+id/imageView5"
         android:layout_width="47dp"
         android:layout_height="40dp"
-        android:layout_marginStart="249dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textView10"
-        app:layout_constraintHorizontal_bias="0.476"
-        app:layout_constraintStart_toStartOf="@+id/textView10"
-        app:layout_constraintTop_toTopOf="@+id/textView10"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/favorite_button_selector" />
-
-    <TextView
-        android:id="@+id/textView17"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text=""
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.929"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:srcCompat="@drawable/favorite_button_selector"
+        tools:layout_editor_absoluteX="274dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

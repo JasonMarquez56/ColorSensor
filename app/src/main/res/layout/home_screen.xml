@@ -56,15 +56,14 @@
     </ScrollView>
 
     <androidx.gridlayout.widget.GridLayout
-        android:layout_width="410dp"
-        android:layout_height="382dp"
+        android:layout_width="339dp"
+        android:layout_height="309dp"
         android:layout_gravity="center"
         android:layout_marginTop="21dp"
         android:padding="8dp"
         app:columnCount="2"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/HomeBanner"
         app:layout_constraintVertical_bias="0.0"

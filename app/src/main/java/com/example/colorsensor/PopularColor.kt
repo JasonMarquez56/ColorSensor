@@ -50,7 +50,7 @@ class PopularColor : AppCompatActivity() {
         val imageView: ImageView = findViewById(R.id.imageView2)
         val hexMessage = findViewById<TextView>(R.id.textView9)
         val textRGB = findViewById<TextView>(R.id.textView11)
-        val zoomButton: Button = findViewById(R.id.button) // Button to toggle magnifier
+        //val zoomButton: Button = findViewById(R.id.button) // Button to toggle magnifier
         // Load the original bitmap
         val bitmap = BitmapFactory.decodeResource(resources, R.drawable.blank_wall)
         // Define the region to change (xStart, yStart, width, height)
@@ -76,20 +76,20 @@ class PopularColor : AppCompatActivity() {
         }
 
         // Toggle magnifier on button press
-        val disappearImage = findViewById<ImageView>(R.id.imageView5)
-        zoomButton.setOnClickListener {
-            isMagnifierActive = !isMagnifierActive // Toggle state
-            // toggle image to go away
-            disappearImage.visibility = View.GONE
-
-            if (isMagnifierActive) {
-                zoomButton.text = "Disable Magnifier"
-            } else {
-                zoomButton.text = "Magnifier"
-                disappearImage.visibility = View.VISIBLE
-                magnifier?.dismiss()
-            }
-        }
+//        val disappearImage = findViewById<ImageView>(R.id.imageView5)
+//        zoomButton.setOnClickListener {
+//            isMagnifierActive = !isMagnifierActive // Toggle state
+//            // toggle image to go away
+//            disappearImage.visibility = View.GONE
+//
+//            if (isMagnifierActive) {
+//                zoomButton.text = "Disable Magnifier"
+//            } else {
+//                zoomButton.text = "Magnifier"
+//                disappearImage.visibility = View.VISIBLE
+//                magnifier?.dismiss()
+//            }
+//        }
 
         // Move the magnifier while touching the screen
         imageView.setOnTouchListener { _, event ->
